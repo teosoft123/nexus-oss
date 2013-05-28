@@ -100,6 +100,15 @@
 
     <dependency>
       <groupId>org.sonatype.nexus.plugins</groupId>
+      <artifactId>nexus-restdoc-plugin</artifactId>
+      <version>${nexus.version}</version>
+      <classifier>bundle</classifier>
+      <type>zip</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.sonatype.nexus.plugins</groupId>
       <artifactId>nexus-crypto-plugin</artifactId>
       <version>${nexus.version}</version>
       <classifier>bundle</classifier>
@@ -224,6 +233,13 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>org.sonatype.nexus.plugins</groupId>
+                  <artifactId>nexus-restdoc-plugin</artifactId>
+                  <version>${nexus.version}</version>
+                  <classifier>bundle</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.sonatype.nexus.plugins</groupId>
                   <artifactId>nexus-crypto-plugin</artifactId>
                   <version>${nexus.version}</version>
                   <classifier>bundle</classifier>
@@ -334,32 +350,32 @@
       </plugin>
 
       <!--<plugin>-->
-        <!--<groupId>org.apache.maven.plugins</groupId>-->
-        <!--<artifactId>maven-war-plugin</artifactId>-->
-        <!--<configuration>-->
-          <!--<warSourceIncludes>-->
-            <!--*,-->
-            <!--ext-3.4.1.1/adapter/ext/ext-base-debug.js,-->
-            <!--ext-3.4.1.1/ext-all-debug.js,-->
-            <!--ext-3.4.1.1/adapter/ext/ext-base.js,-->
-            <!--ext-3.4.1.1/ext-all.js,-->
-            <!--ext-3.4.1.1/resources/css/ext-all.css,-->
-            <!--ext-3.4.1.1/resources/css/xtheme-gray.css,-->
-            <!--ext-3.4.1.1/resources/images/**,-->
-            <!--images/**,-->
-            <!--WEB-INF/*,-->
-            <!--style/sonatype-all.css-->
-          <!--</warSourceIncludes>-->
-          <!--<webResources>-->
-            <!--<resource>-->
-              <!--<directory>${project.basedir}/src/main/webapp</directory>-->
-              <!--<includes>-->
-                <!--<include>js/**/*.js</include>-->
-                <!--<include>style/**/*.css</include>-->
-              <!--</includes>-->
-            <!--</resource>-->
-          <!--</webResources>-->
-        <!--</configuration>-->
+      <!--<groupId>org.apache.maven.plugins</groupId>-->
+      <!--<artifactId>maven-war-plugin</artifactId>-->
+      <!--<configuration>-->
+      <!--<warSourceIncludes>-->
+      <!--*,-->
+      <!--ext-3.4.1.1/adapter/ext/ext-base-debug.js,-->
+      <!--ext-3.4.1.1/ext-all-debug.js,-->
+      <!--ext-3.4.1.1/adapter/ext/ext-base.js,-->
+      <!--ext-3.4.1.1/ext-all.js,-->
+      <!--ext-3.4.1.1/resources/css/ext-all.css,-->
+      <!--ext-3.4.1.1/resources/css/xtheme-gray.css,-->
+      <!--ext-3.4.1.1/resources/images/**,-->
+      <!--images/**,-->
+      <!--WEB-INF/*,-->
+      <!--style/sonatype-all.css-->
+      <!--</warSourceIncludes>-->
+      <!--<webResources>-->
+      <!--<resource>-->
+      <!--<directory>${project.basedir}/src/main/webapp</directory>-->
+      <!--<includes>-->
+      <!--<include>js/**/*.js</include>-->
+      <!--<include>style/**/*.css</include>-->
+      <!--</includes>-->
+      <!--</resource>-->
+      <!--</webResources>-->
+      <!--</configuration>-->
       <!--</plugin>-->
     </plugins>
   </build>

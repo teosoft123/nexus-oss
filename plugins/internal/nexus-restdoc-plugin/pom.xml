@@ -39,44 +39,70 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.sonatype.nexus.plugins</groupId>
-      <artifactId>nexus-plugin-console-plugin</artifactId>
-    </dependency>
+    <!--<dependency>-->
+    <!--<groupId>org.sonatype.nexus.plugins</groupId>-->
+    <!--<artifactId>nexus-plugin-console-plugin</artifactId>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+    <!--<groupId>org.sonatype.nexus.plugins</groupId>-->
+    <!--<artifactId>nexus-rrb-plugin</artifactId>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+    <!--<groupId>org.sonatype.nexus.plugins</groupId>-->
+    <!--<artifactId>nexus-timeline-plugin</artifactId>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+    <!--<groupId>org.sonatype.nexus.plugins</groupId>-->
+    <!--<artifactId>nexus-unpack-plugin</artifactId>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+    <!--<groupId>org.sonatype.nexus.plugins</groupId>-->
+    <!--<artifactId>nexus-indexer-lucene-plugin</artifactId>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+    <!--<groupId>org.sonatype.nexus.plugins</groupId>-->
+    <!--<artifactId>nexus-p2-repository-plugin</artifactId>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+    <!--<groupId>org.sonatype.nexus.plugins</groupId>-->
+    <!--<artifactId>nexus-restlet1x-plugin</artifactId>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+    <!--<groupId>org.sonatype.nexus.plugins</groupId>-->
+    <!--<artifactId>nexus-ldap-realm-plugin</artifactId>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>org.sonatype.nexus.plugins</groupId>
-      <artifactId>nexus-rrb-plugin</artifactId>
+      <artifactId>nexus-siesta-plugin</artifactId>
+      <type>${nexus-plugin.type}</type>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.sonatype.nexus.plugins</groupId>
-      <artifactId>nexus-timeline-plugin</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.sonatype.nexus.plugins</groupId>
-      <artifactId>nexus-unpack-plugin</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.sonatype.nexus.plugins</groupId>
-      <artifactId>nexus-indexer-lucene-plugin</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.sonatype.nexus.plugins</groupId>
-      <artifactId>nexus-p2-repository-plugin</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.sonatype.nexus.plugins</groupId>
-      <artifactId>nexus-restlet1x-plugin</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.sonatype.nexus.plugins</groupId>
-      <artifactId>nexus-ldap-realm-plugin</artifactId>
+      <groupId>com.wordnik</groupId>
+      <artifactId>swagger-jaxrs_2.9.1</artifactId>
+      <version>1.2.3</version>
+      <exclusions>
+        <!--<exclusion>-->
+          <!--<groupId>com.sun.jersey</groupId>-->
+          <!--<artifactId>*</artifactId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+          <!--<groupId>javax.ws.rs</groupId>-->
+          <!--<artifactId>jsr311</artifactId>-->
+        <!--</exclusion>-->
+        <!--
+        TODO: Sort out jackson, this is using jackson 2, when siesta exposes jackson 1.x
+        -->
+      </exclusions>
     </dependency>
   </dependencies>
 
@@ -87,36 +113,36 @@
         <artifactId>nexus-plugin-bundle-maven-plugin</artifactId>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9</version>
-        <executions>
-          <execution>
-            <phase>compile</phase>
-            <goals>
-              <goal>javadoc</goal>
-            </goals>
-            <configuration>
-              <doclet>com.hypnoticocelot.jaxrs.doclet.ServiceDoclet</doclet>
-              <docletArtifact>
-                <groupId>org.sonatype.swagger</groupId>
-                <artifactId>jaxrs-doclet</artifactId>
-                <version>0.0.2-SNAPSHOT</version>
-              </docletArtifact>
+      <!--<plugin>-->
+      <!--<groupId>org.apache.maven.plugins</groupId>-->
+      <!--<artifactId>maven-javadoc-plugin</artifactId>-->
+      <!--<version>2.9</version>-->
+      <!--<executions>-->
+      <!--<execution>-->
+      <!--<phase>compile</phase>-->
+      <!--<goals>-->
+      <!--<goal>javadoc</goal>-->
+      <!--</goals>-->
+      <!--<configuration>-->
+      <!--<doclet>com.hypnoticocelot.jaxrs.doclet.ServiceDoclet</doclet>-->
+      <!--<docletArtifact>-->
+      <!--<groupId>org.sonatype.swagger</groupId>-->
+      <!--<artifactId>jaxrs-doclet</artifactId>-->
+      <!--<version>0.0.2-SNAPSHOT</version>-->
+      <!--</docletArtifact>-->
 
-              <reportOutputDirectory>${project.build.outputDirectory}</reportOutputDirectory>
-              <destDir>docs</destDir>
-              <includeDependencySources>true</includeDependencySources>
-              <includeTransitiveDependencySources>false</includeTransitiveDependencySources>
-              <source>1.6</source>
+      <!--<reportOutputDirectory>${project.build.outputDirectory}</reportOutputDirectory>-->
+      <!--<destDir>docs</destDir>-->
+      <!--<includeDependencySources>true</includeDependencySources>-->
+      <!--<includeTransitiveDependencySources>false</includeTransitiveDependencySources>-->
+      <!--<source>1.6</source>-->
 
-              <useStandardDocletOptions>false</useStandardDocletOptions>
-              <!--<additionalparam>-apiVersion 1 -docBasePath /apidocs -apiBasePath /</additionalparam>-->
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+      <!--<useStandardDocletOptions>false</useStandardDocletOptions>-->
+      <!--<additionalparam>-apiVersion 1 -docBasePath /apidocs -apiBasePath /</additionalparam>-->
+      <!--</configuration>-->
+      <!--</execution>-->
+      <!--</executions>-->
+      <!--</plugin>-->
     </plugins>
   </build>
 
