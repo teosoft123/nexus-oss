@@ -29,7 +29,7 @@
 
   <properties>
     <pluginName>Nexus REST Documentation Plugin</pluginName>
-    <pluginDescription>Provides Nexus REST documentation.</pluginDescription>
+    <pluginDescription>Nexus OSS REST API documentation.</pluginDescription>
 
     <!-- enunciate configuration -->
     <enunciate.version>1.26.2</enunciate.version>
