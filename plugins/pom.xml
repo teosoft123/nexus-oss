@@ -578,11 +578,11 @@
     -->
     <profile>
       <id>enunciate</id>
-      <activation>
-        <file>
-          <exists>enunciate.xml</exists>
-        </file>
-      </activation>
+      <!--<activation>-->
+        <!--<file>-->
+          <!--<exists>enunciate.xml</exists>-->
+        <!--</file>-->
+      <!--</activation>-->
       <build>
         <plugins>
           <plugin>
