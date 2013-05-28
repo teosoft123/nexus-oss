@@ -49,10 +49,6 @@
       <version>${enunciate.version}</version>
       <scope>provided</scope>
       <exclusions>
-        <!--<exclusion>-->
-        <!--<groupId>org.codehaus.enunciate</groupId>-->
-        <!--<artifactId>enunciate-core-rt</artifactId>-->
-        <!--</exclusion>-->
         <exclusion>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
@@ -71,6 +67,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!--
+    Reference all plugins which produce documentation in scope=provided so that classpath is sane for apt.
+    -->
 
     <dependency>
       <groupId>org.sonatype.nexus.plugins</groupId>
@@ -122,20 +122,17 @@
   </dependencies>
 
   <build>
-    <!--
-    HACK: Enunicate does not support changing the source folder have to configure project sources to aggregate location
-    HACK: and _exclude_ all sources from compilation.
-    -->
-    <sourceDirectory>${project.build.directory}/java-sources</sourceDirectory>
-
     <plugins>
+      <!--
+      Only compile restdoc classes, we do not want to re-compile aggregated sources.
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <excludes>
-            <exclude>**/*</exclude>
-          </excludes>
+          <includes>
+            <include>org/sonatype/nexus/restdoc/**/*.java</include>
+          </includes>
         </configuration>
       </plugin>
 
@@ -144,6 +141,9 @@
         <artifactId>nexus-plugin-bundle-maven-plugin</artifactId>
       </plugin>
 
+      <!--
+      Aggregate sources for Enunciate processing.
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -158,6 +158,9 @@
               <outputDirectory>${project.build.directory}/java-sources</outputDirectory>
               <includes>**/*.java</includes>
               <artifactItems>
+                <!--
+                Include all sources for plugins which produce documentation.
+                -->
                 <dependency>
                   <groupId>org.sonatype.nexus.plugins</groupId>
                   <artifactId>nexus-plugin-console-plugin</artifactId>
@@ -219,6 +222,30 @@
         </executions>
       </plugin>
 
+      <!--
+      Attach aggregated sources, so Enucicate can find them.
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/java-sources</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+      Execute Enunicate, exclude restdoc classes as this causes apt to barf?
+      -->
       <plugin>
         <groupId>org.codehaus.enunciate</groupId>
         <artifactId>maven-enunciate-slim-plugin</artifactId>
@@ -249,6 +276,9 @@
             <configuration>
               <configFile>enunciate.xml</configFile>
               <docsDir>${project.build.outputDirectory}/docs</docsDir>
+              <excludes>
+                <exclude>**/org/sonatype/nexus/restdoc/**/*.java</exclude>
+              </excludes>
             </configuration>
           </execution>
         </executions>
