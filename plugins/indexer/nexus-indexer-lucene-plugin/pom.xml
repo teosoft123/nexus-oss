@@ -38,15 +38,16 @@
       <artifactId>nexus-plugin-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.sonatype.nexus.plugins</groupId>
-      <artifactId>nexus-restlet1x-model</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.sonatype.nexus.plugins</groupId>
       <artifactId>nexus-indexer-lucene-model</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.sonatype.nexus.plugins</groupId>
+          <artifactId>nexus-restlet1x-model</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!--
@@ -92,7 +93,7 @@
 
     <dependency>
       <groupId>org.sonatype.nexus</groupId>
-      <artifactId>nexus-plugin-test-api</artifactId>
+      <artifactId>nexus-plugin-testsupport</artifactId>
       <scope>test</scope>
     </dependency>
 
