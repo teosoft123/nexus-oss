@@ -30,6 +30,12 @@
   <properties>
     <pluginName>Nexus REST Documentation Plugin</pluginName>
     <pluginDescription>Nexus OSS REST API documentation.</pluginDescription>
+
+    <!--
+    For Enunciate copyright year.
+    -->
+    <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
+    <copyright.year>${maven.build.timestamp}</copyright.year>
   </properties>
 
   <dependencies>
