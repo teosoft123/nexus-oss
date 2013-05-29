@@ -19,7 +19,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
- * ???
+ * Provides URL to aggregated Nexus OSS REST documentation in the Plugin Console.
  *
  * @since 2.5
  */

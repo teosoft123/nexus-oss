@@ -30,10 +30,6 @@
   <properties>
     <pluginName>Nexus REST Documentation Plugin</pluginName>
     <pluginDescription>Nexus OSS REST API documentation.</pluginDescription>
-
-    <!-- enunciate configuration -->
-    <enunciate.version>1.26.2</enunciate.version>
-    <copyright.year>2013</copyright.year>
   </properties>
 
   <dependencies>
@@ -70,6 +66,8 @@
 
     <!--
     Reference all plugins which produce documentation in scope=provided so that classpath is sane for apt.
+
+    TODO: Include the rest of the bundled plugins which provide REST resources, presently this is an incomplete set.
     -->
 
     <dependency>
@@ -143,11 +141,12 @@
 
       <!--
       Aggregate sources for Enunciate processing.
+
+      TODO: See if source:aggregate can help at all here?
       -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.8</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
@@ -223,7 +222,9 @@
       </plugin>
 
       <!--
-      Attach aggregated sources, so Enucicate can find them.
+      Attach aggregated sources, so Enunciate can find them.
+
+      FIXME: This confuses IDEA... fucking Enunciate shit.
       -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -244,7 +245,7 @@
       </plugin>
 
       <!--
-      Execute Enunicate, exclude restdoc classes as this causes apt to barf?
+      Execute Enunciate, exclude restdoc classes as this causes apt to barf?
       -->
       <plugin>
         <groupId>org.codehaus.enunciate</groupId>
