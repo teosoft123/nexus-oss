@@ -1371,7 +1371,7 @@ public abstract class AbstractRepository
         {
             // maybe in the path there is a linked collection
             // if so, grab the item from linked collection
-            final StorageLinkItem linkedColl = getLinkedItemIfPresent( request );
+            final StorageLinkItem linkedColl = getLinkedItemIfPresent( request, request.getRequestPath() );
             if ( linkedColl != null )
             {
                 String targetSubPath = request.getRequestPath().substring( linkedColl.getPath().length() );
@@ -1414,43 +1414,60 @@ public abstract class AbstractRepository
         return localItem;
     }
 
-    private StorageLinkItem getLinkedItemIfPresent( final ResourceStoreRequest request )
+    private StorageLinkItem getLinkedItemIfPresent( final ResourceStoreRequest request,
+                                                    final String requestPath )
     {
-        String parentPath = request.getRequestPath();
-        while ( parentPath != null && parentPath.length() > 1 )
+        String path = requestPath;
+        // no point to look if request is about root
+        if ( path == null )
         {
-            final int lastSlash = parentPath.lastIndexOf( '/' );
-            parentPath = parentPath.substring( 0, lastSlash );
-            if ( parentPath.length() > 1 )
+            return null;
+        }
+        path = path.trim();
+        if ( "/".equals( path ) )
+        {
+            return null;
+        }
+        if ( path.endsWith( "/" ) )
+        {
+            path = path.substring( 0, path.length() - 1 );
+        }
+        if ( !path.startsWith( "/" ) )
+        {
+            path = "/" + path;
+        }
+
+        try
+        {
+            request.pushRequestPath( path );
+            final StorageItem storageItem = getLocalStorage().retrieveItem( this, request );
+            if ( storageItem instanceof StorageLinkItem )
             {
-                try
-                {
-                    request.pushRequestPath( parentPath );
-                    final StorageItem storageItem = getLocalStorage().retrieveItem( this, request );
-                    if ( storageItem instanceof StorageLinkItem )
-                    {
-                        return (StorageLinkItem) storageItem;
-                    }
-                }
-                catch ( ItemNotFoundException e )
-                {
-                    // maybe there is a parent, so? continue
-                }
-                catch ( LocalStorageException e )
-                {
-                    // that is a problem, lets bail out
-                    getLogger().trace(
-                        "Could not retrieve item {} from local storage due to {}/{}",
-                        parentPath, e.getClass().getName(), e.getMessage()
-                    );
-                    break;
-                }
-                finally
-                {
-                    request.popRequestPath();
-                }
+                return (StorageLinkItem) storageItem;
             }
         }
+        catch ( ItemNotFoundException e )
+        {
+            // maybe there is a parent, so? continue
+            final int lastSlashPos = path.lastIndexOf( '/' );
+            if ( lastSlashPos > 0 )
+            {
+                return getLinkedItemIfPresent( request, path.substring( 0, lastSlashPos ) );
+            }
+        }
+        catch ( LocalStorageException e )
+        {
+            // that is a problem, lets bail out
+            getLogger().trace(
+                "Could not retrieve item {} from local storage due to {}/{}",
+                path, e.getClass().getName(), e.getMessage()
+            );
+        }
+        finally
+        {
+            request.popRequestPath();
+        }
+
         return null;
     }
 
