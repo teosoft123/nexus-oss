@@ -67,6 +67,7 @@ import org.sonatype.nexus.proxy.item.RepositoryItemUidLock;
 import org.sonatype.nexus.proxy.item.StorageCollectionItem;
 import org.sonatype.nexus.proxy.item.StorageFileItem;
 import org.sonatype.nexus.proxy.item.StorageItem;
+import org.sonatype.nexus.proxy.item.StorageLinkItem;
 import org.sonatype.nexus.proxy.item.uid.RepositoryItemUidAttributeManager;
 import org.sonatype.nexus.proxy.storage.UnsupportedStorageOperationException;
 import org.sonatype.nexus.proxy.storage.local.DefaultLocalStorageContext;
@@ -1342,7 +1343,7 @@ public abstract class AbstractRepository
     protected StorageItem doRetrieveItem( ResourceStoreRequest request )
         throws IllegalOperationException, ItemNotFoundException, StorageException
     {
-        AbstractStorageItem localItem = null;
+        AbstractStorageItem localItem;
 
         try
         {
@@ -1368,6 +1369,40 @@ public abstract class AbstractRepository
         }
         catch ( ItemNotFoundException ex )
         {
+            // maybe in the path there is a linked collection
+            // if so, grab the item from linked collection
+            final StorageLinkItem linkedColl = getLinkedItemIfPresent( request );
+            if ( linkedColl != null )
+            {
+                String targetSubPath = request.getRequestPath().substring( linkedColl.getPath().length() );
+                if ( targetSubPath.startsWith( "/" ) )
+                {
+                    targetSubPath = targetSubPath.substring( 1 );
+                }
+                try
+                {
+                    String targetPath = linkedColl.getTarget().getPath();
+                    if ( !targetPath.endsWith( "/" ) )
+                    {
+                        targetPath += "/";
+                    }
+                    request.pushRequestPath( targetPath + targetSubPath );
+                    return linkedColl.getTarget().getRepository().retrieveItem( request );
+                }
+                catch ( Exception e )
+                {
+                    getLogger().trace(
+                        "Could not retrieve linked item {} due to {}/{}",
+                        linkedColl.getTarget().toString() + targetSubPath,
+                        e.getClass().getName(), e.getMessage()
+                    );
+                }
+                finally
+                {
+                    request.popRequestPath();
+                }
+            }
+
             if ( getLogger().isDebugEnabled() )
             {
                 getLogger().debug( "Item " + request.toString() + " not found in local storage." );
@@ -1377,6 +1412,46 @@ public abstract class AbstractRepository
         }
 
         return localItem;
+    }
+
+    private StorageLinkItem getLinkedItemIfPresent( final ResourceStoreRequest request )
+    {
+        String parentPath = request.getRequestPath();
+        while ( parentPath != null && parentPath.length() > 1 )
+        {
+            final int lastSlash = parentPath.lastIndexOf( '/' );
+            parentPath = parentPath.substring( 0, lastSlash );
+            if ( parentPath.length() > 1 )
+            {
+                try
+                {
+                    request.pushRequestPath( parentPath );
+                    final StorageItem storageItem = getLocalStorage().retrieveItem( this, request );
+                    if ( storageItem instanceof StorageLinkItem )
+                    {
+                        return (StorageLinkItem) storageItem;
+                    }
+                }
+                catch ( ItemNotFoundException e )
+                {
+                    // maybe there is a parent, so? continue
+                }
+                catch ( LocalStorageException e )
+                {
+                    // that is a problem, lets bail out
+                    getLogger().trace(
+                        "Could not retrieve item {} from local storage due to {}/{}",
+                        parentPath, e.getClass().getName(), e.getMessage()
+                    );
+                    break;
+                }
+                finally
+                {
+                    request.popRequestPath();
+                }
+            }
+        }
+        return null;
     }
 
     protected boolean isActionAllowedReadOnly( Action action )
