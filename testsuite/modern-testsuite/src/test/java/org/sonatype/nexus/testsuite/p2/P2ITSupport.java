@@ -58,9 +58,7 @@ public abstract class P2ITSupport
                 artifactResolver().resolvePluginFromDependencyManagement(
                     "org.sonatype.nexus.plugins", "nexus-p2-repository-plugin"
                 )
-            )
-            .setLogLevel( "DEBUG" )
-            .setLogLevel( "remote.storage.timing", "DEBUG" );
+            );
     }
 
     Repositories repositories()
