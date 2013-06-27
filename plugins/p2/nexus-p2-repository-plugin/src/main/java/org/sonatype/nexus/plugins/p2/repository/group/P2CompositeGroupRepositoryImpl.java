@@ -284,7 +284,7 @@ public class P2CompositeGroupRepositoryImpl
     {
         try
         {
-            final Collection<StorageItem> rootItems = list( new ResourceStoreRequest( "/", true, false ) );
+            final Collection<StorageItem> rootItems = list( false, new ResourceStoreRequest( "/", true, false ) );
             for ( StorageItem rootItem : rootItems )
             {
                 if ( rootItem instanceof StorageLinkItem )
