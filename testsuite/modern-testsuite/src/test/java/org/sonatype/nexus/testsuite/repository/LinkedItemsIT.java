@@ -148,13 +148,13 @@ public class LinkedItemsIT
             .excludeFromSearchResults()
             .save();
 
+        final File uploaded = testData().resolveFile( "artifacts/" + AOP_POM );
+        content().upload( repositoryLocation( repository2.id(), AOP_POM ), uploaded );
+
         final MavenProxyRepository proxy = repositories()
             .create( MavenProxyRepository.class, repositoryIdForTest( "proxy" ) )
             .asProxyOf( repository2.contentUri() )
             .save();
-
-        final File uploaded = testData().resolveFile( "artifacts/" + AOP_POM );
-        content().upload( repositoryLocation( repository2.id(), AOP_POM ), uploaded );
 
         linkedItems().create( repository1.id(), "linkToAop.pom", proxy.id(), AOP_POM );
 
@@ -178,13 +178,13 @@ public class LinkedItemsIT
             .excludeFromSearchResults()
             .save();
 
+        final File uploaded = testData().resolveFile( "artifacts/" + AOP_POM );
+        content().upload( repositoryLocation( repository2.id(), AOP_POM ), uploaded );
+
         final MavenProxyRepository proxy = repositories()
             .create( MavenProxyRepository.class, repositoryIdForTest( "proxy" ) )
             .asProxyOf( repository2.contentUri() )
             .save();
-
-        final File uploaded = testData().resolveFile( "artifacts/" + AOP_POM );
-        content().upload( repositoryLocation( repository2.id(), AOP_POM ), uploaded );
 
         linkedItems().create( repository1.id(), "linkToAopDir", proxy.id(), "aopalliance/aopalliance/1.0" );
 
