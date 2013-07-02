@@ -85,6 +85,26 @@ public class LinkedItemsIT
     }
 
     @Test
+    public void linkToDirInSameHostedRepoEdingWithSlash()
+        throws Exception
+    {
+        final MavenHostedRepository repository = repositories()
+            .create( MavenHostedRepository.class, repositoryIdForTest() )
+            .excludeFromSearchResults()
+            .save();
+
+        final File uploaded = testData().resolveFile( "artifacts/" + AOP_POM );
+        content().upload( repositoryLocation( repository.id(), AOP_POM ), uploaded );
+
+        linkedItems().create( repository.id(), "linkToAopDir", "aopalliance/aopalliance/1.0/" );
+
+        final File downloaded = new File( testIndex().getDirectory( "downloads" ), "linkToAop.pom" );
+        content().download( repositoryLocation( repository.id(), "linkToAopDir/aopalliance-1.0.pom" ), downloaded );
+
+        assertThat( downloaded, matchSha1( uploaded ) );
+    }
+
+    @Test
     public void linkToFileInOtherHostedRepo()
         throws Exception
     {
@@ -127,6 +147,31 @@ public class LinkedItemsIT
         content().upload( repositoryLocation( repository2.id(), AOP_POM ), uploaded );
 
         linkedItems().create( repository1.id(), "linkToAopDir", repository2.id(), "aopalliance/aopalliance/1.0" );
+
+        final File downloaded = new File( testIndex().getDirectory( "downloads" ), "linkToAop.pom" );
+        content().download( repositoryLocation( repository1.id(), "linkToAopDir/aopalliance-1.0.pom" ), downloaded );
+
+        assertThat( downloaded, matchSha1( uploaded ) );
+    }
+
+    @Test
+    public void linkToDirInOtherHostedRepoEdingWithSlash()
+        throws Exception
+    {
+        final MavenHostedRepository repository1 = repositories()
+            .create( MavenHostedRepository.class, repositoryIdForTest( "1" ) )
+            .excludeFromSearchResults()
+            .save();
+
+        final MavenHostedRepository repository2 = repositories()
+            .create( MavenHostedRepository.class, repositoryIdForTest( "2" ) )
+            .excludeFromSearchResults()
+            .save();
+
+        final File uploaded = testData().resolveFile( "artifacts/" + AOP_POM );
+        content().upload( repositoryLocation( repository2.id(), AOP_POM ), uploaded );
+
+        linkedItems().create( repository1.id(), "linkToAopDir", repository2.id(), "aopalliance/aopalliance/1.0/" );
 
         final File downloaded = new File( testIndex().getDirectory( "downloads" ), "linkToAop.pom" );
         content().download( repositoryLocation( repository1.id(), "linkToAopDir/aopalliance-1.0.pom" ), downloaded );
@@ -195,6 +240,36 @@ public class LinkedItemsIT
     }
 
     @Test
+    public void linkToDirInOtherProxyRepoEndingWithSlash()
+        throws Exception
+    {
+        final MavenHostedRepository repository1 = repositories()
+            .create( MavenHostedRepository.class, repositoryIdForTest( "1" ) )
+            .excludeFromSearchResults()
+            .save();
+
+        final MavenHostedRepository repository2 = repositories()
+            .create( MavenHostedRepository.class, repositoryIdForTest( "2" ) )
+            .excludeFromSearchResults()
+            .save();
+
+        final File uploaded = testData().resolveFile( "artifacts/" + AOP_POM );
+        content().upload( repositoryLocation( repository2.id(), AOP_POM ), uploaded );
+
+        final MavenProxyRepository proxy = repositories()
+            .create( MavenProxyRepository.class, repositoryIdForTest( "proxy" ) )
+            .asProxyOf( repository2.contentUri() )
+            .save();
+
+        linkedItems().create( repository1.id(), "linkToAopDir", proxy.id(), "aopalliance/aopalliance/1.0/" );
+
+        final File downloaded = new File( testIndex().getDirectory( "downloads" ), "linkToAop.pom" );
+        content().download( repositoryLocation( repository1.id(), "linkToAopDir/aopalliance-1.0.pom" ), downloaded );
+
+        assertThat( downloaded, matchSha1( uploaded ) );
+    }
+
+    @Test
     public void linkToRootDirInSameHostedRepo()
         throws Exception
     {
@@ -229,6 +304,28 @@ public class LinkedItemsIT
         content().upload( repositoryLocation( repository.id(), AOP_JAR ), uploadedJar );
 
         linkedItems().create( repository.id(), "linkToAopDir", "aopalliance/aopalliance/1.0" );
+
+        final File downloaded = new File( testIndex().getDirectory( "downloads" ), "linkToAopDir" );
+        content().download( repositoryLocation( repository.id(), "linkToAopDir/" ), downloaded );
+
+        assertThat( downloaded, contains( "aopalliance-1.0.pom", "aopalliance-1.0.jar" ) );
+    }
+
+    @Test
+    public void listContentOfDirEdingWithSlash()
+        throws Exception
+    {
+        final MavenHostedRepository repository = repositories()
+            .create( MavenHostedRepository.class, repositoryIdForTest() )
+            .excludeFromSearchResults()
+            .save();
+
+        final File uploadedPom = testData().resolveFile( "artifacts/" + AOP_POM );
+        final File uploadedJar = testData().resolveFile( "artifacts/" + AOP_JAR );
+        content().upload( repositoryLocation( repository.id(), AOP_POM ), uploadedPom );
+        content().upload( repositoryLocation( repository.id(), AOP_JAR ), uploadedJar );
+
+        linkedItems().create( repository.id(), "linkToAopDir", "aopalliance/aopalliance/1.0/" );
 
         final File downloaded = new File( testIndex().getDirectory( "downloads" ), "linkToAopDir" );
         content().download( repositoryLocation( repository.id(), "linkToAopDir/" ), downloaded );
