@@ -1428,44 +1428,41 @@ public abstract class AbstractRepository
         {
             return null;
         }
-        if ( path.endsWith( "/" ) )
-        {
-            path = path.substring( 0, path.length() - 1 );
-        }
         if ( !path.startsWith( "/" ) )
         {
             path = "/" + path;
         }
 
-        try
+        int slashPos = 0;
+        while ( ( slashPos = path.indexOf( "/", slashPos + 1 ) ) > -1 )
         {
-            request.pushRequestPath( path );
-            final StorageItem storageItem = getLocalStorage().retrieveItem( this, request );
-            if ( storageItem instanceof StorageLinkItem )
+            try
             {
-                return (StorageLinkItem) storageItem;
+                request.pushRequestPath( path.substring( 0, slashPos ) );
+                final StorageItem storageItem = getLocalStorage().retrieveItem( this, request );
+                if ( storageItem instanceof StorageLinkItem )
+                {
+                    return (StorageLinkItem) storageItem;
+                }
             }
-        }
-        catch ( ItemNotFoundException e )
-        {
-            // maybe there is a parent, so? continue
-            final int lastSlashPos = path.lastIndexOf( '/' );
-            if ( lastSlashPos > 0 )
+            catch ( ItemNotFoundException e )
             {
-                return getLinkedItemIfPresent( request, path.substring( 0, lastSlashPos ) );
+                // parent path does not exit, no point to look further
+                break;
             }
-        }
-        catch ( LocalStorageException e )
-        {
-            // that is a problem, lets bail out
-            getLogger().trace(
-                "Could not retrieve item {} from local storage due to {}/{}",
-                path, e.getClass().getName(), e.getMessage()
-            );
-        }
-        finally
-        {
-            request.popRequestPath();
+            catch ( LocalStorageException e )
+            {
+                // that is a problem, lets bail out
+                getLogger().trace(
+                    "Could not retrieve item {} from local storage due to {}/{}",
+                    path, e.getClass().getName(), e.getMessage()
+                );
+                break;
+            }
+            finally
+            {
+                request.popRequestPath();
+            }
         }
 
         return null;
