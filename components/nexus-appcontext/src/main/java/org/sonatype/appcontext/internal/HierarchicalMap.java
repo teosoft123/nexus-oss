@@ -101,7 +101,7 @@ public class HierarchicalMap<K, V>
 
     public boolean containsKey( Object key, boolean fallBackToParent )
     {
-        boolean result = super.containsKey( key );
+        boolean result = super.get(key) != null;
         if ( fallBackToParent && !result && getParent() != null )
         {
             result = getParent().containsKey( key );
