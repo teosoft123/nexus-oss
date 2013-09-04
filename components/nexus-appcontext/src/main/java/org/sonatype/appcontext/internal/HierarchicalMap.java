@@ -32,7 +32,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @param <V>
  */
 public class HierarchicalMap<K, V>
-//    extends ConcurrentHashMap<K, V>
     implements Map<K, V>
 {
     private static final long serialVersionUID = 3445870461584217031L;
