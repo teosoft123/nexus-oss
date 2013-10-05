@@ -27,6 +27,7 @@ import javax.ws.rs.QueryParam;
 import org.sonatype.nexus.capabilities.model.CapabilityTypeXO;
 import org.sonatype.nexus.capabilities.model.FormFieldXO;
 import org.sonatype.nexus.capability.CapabilitiesPlugin;
+import org.sonatype.nexus.directjngine.DirectResource;
 import org.sonatype.nexus.formfields.FormField;
 import org.sonatype.nexus.formfields.Selectable;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
@@ -36,6 +37,8 @@ import org.sonatype.sisu.siesta.common.Resource;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.softwarementors.extjs.djn.config.annotations.DirectAction;
+import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -50,9 +53,10 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 @Singleton
 @Path(CapabilityTypesResource.RESOURCE_URI)
 @Produces({"application/xml", "application/json"})
+@DirectAction(action = "CapabilityTypes")
 public class CapabilityTypesResource
     extends ComponentSupport
-    implements Resource
+    implements Resource, DirectResource
 {
 
   public static final String RESOURCE_URI = CapabilitiesPlugin.REST_PREFIX + "/types";
@@ -72,6 +76,7 @@ public class CapabilityTypesResource
   @GET
   @Produces({APPLICATION_XML, APPLICATION_JSON})
   @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX_TYPES + "read")
+  @DirectMethod
   public List<CapabilityTypeXO> get(@QueryParam($INCLUDE_NOT_EXPOSED) Boolean includeNotExposed) {
 
     final List<CapabilityTypeXO> types = Lists.newArrayList();

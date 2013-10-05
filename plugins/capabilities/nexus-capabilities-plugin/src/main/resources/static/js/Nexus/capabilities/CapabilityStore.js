@@ -38,7 +38,7 @@ NX.define('Nexus.capabilities.CapabilityStore', {
     Ext.apply(config, {
       id: 'capability.id',
 
-      paramsAsHash:false,
+      paramsAsHash: false,
       directFn: Capabilities.get,
 
       fields: [
