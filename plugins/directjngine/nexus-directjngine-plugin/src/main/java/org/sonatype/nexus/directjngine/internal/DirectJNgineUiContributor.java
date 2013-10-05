@@ -21,7 +21,7 @@ import org.sonatype.nexus.plugins.ui.contribution.UiContributionBuilder;
 import org.sonatype.nexus.plugins.ui.contribution.UiContributor;
 
 /**
- * Capabilities {@link UiContributor}.
+ * DirectJNgine {@link UiContributor}.
  *
  * @since 2.7
  */

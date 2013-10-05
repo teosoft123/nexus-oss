@@ -11,10 +11,24 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 /*global define,NX*/
-define('nexus-directjngine-plugin-boot', [
+define('nexus-directjngine-testsupport-plugin-boot', [
+  'Nexus/directjngine/testsupport/DirectJNgineTestSupportView'
 ], function () {
-  NX.log.debug('Main nexus-directjngine-plugin modules loaded');
-  Ext.Direct.addProvider(
-      Nexus.direct.REMOTING_API
-  );
+  var view = NX.create('Nexus.directjngine.testsupport.DirectJNgineTestSupportView');
+
+  NX.log.debug('Main nexus-directjngine-testsupport-plugin modules loaded');
+
+  // install panel into main NX navigation
+  Sonatype.Events.on('nexusNavigationInit', function (panel) {
+    panel.add({
+      enabled: true,
+      sectionId: 'st-nexus-config',
+      title: 'DirectJNgine',
+      tabId: 'directjngine',
+      tabCode: function() {
+        return view;
+      }
+    })
+  });
+
 });

@@ -10,11 +10,31 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-/*global define,NX*/
-define('nexus-directjngine-plugin-boot', [
-], function () {
-  NX.log.debug('Main nexus-directjngine-plugin modules loaded');
-  Ext.Direct.addProvider(
-      Nexus.direct.REMOTING_API
-  );
-});
+
+package org.sonatype.nexus.directjngine.testsupport;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.sonatype.nexus.plugins.ui.contribution.UiContributionBuilder;
+import org.sonatype.nexus.plugins.ui.contribution.UiContributor;
+
+/**
+ * DirectJNgine Test Support {@link UiContributor}.
+ *
+ * @since 2.7
+ */
+@Named
+@Singleton
+public class DirectJNgineTestSupportUiContributor
+    implements UiContributor
+{
+
+  @Override
+  public UiContribution contribute(final boolean debug) {
+    return new UiContributionBuilder(
+        this, DirectJNgineTestSupportPlugin.GROUP_ID, DirectJNgineTestSupportPlugin.ARTIFACT_ID
+    ).build(debug);
+  }
+
+}
