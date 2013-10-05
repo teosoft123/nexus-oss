@@ -30,11 +30,11 @@ public class DirectJNgineSanityIT
 
   @Test
   public void appJsAreGenerated() throws Exception {
-    File nexusJs = new File(testIndex().getDirectory("downloads"), "nexus-directjngine-plugin-app.js");
-    utilities().download("static/js/nexus-directjngine-plugin-app.js", nexusJs);
+    File nexusJs = new File(testIndex().getDirectory("downloads"), "nexus-direct-app.js");
+    utilities().download("static/js/nexus-direct-app.js", nexusJs);
 
-    File nexusDebugJs = new File(testIndex().getDirectory("downloads"), "nexus-directjngine-plugin-app-debug.js");
-    utilities().download("static/js/nexus-directjngine-plugin-app-debug.js", nexusJs);
+    File nexusDebugJs = new File(testIndex().getDirectory("downloads"), "nexus-direct-app-debug.js");
+    utilities().download("static/js/nexus-direct-app-debug.js", nexusDebugJs);
   }
 
 }

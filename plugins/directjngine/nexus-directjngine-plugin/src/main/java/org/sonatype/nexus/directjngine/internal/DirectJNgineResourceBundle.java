@@ -53,8 +53,8 @@ public class DirectJNgineResourceBundle
   @Override
   public List<StaticResource> getContributedResouces() {
     return Lists.newArrayList(
-        staticResourceFor(DirectJNginePlugin.ARTIFACT_ID + "-app.js", "Nexus.js"),
-        staticResourceFor(DirectJNginePlugin.ARTIFACT_ID + "-app-debug.js", "Nexus-debug.js")
+        staticResourceFor("nexus-direct-app.js", "Nexus.js"),
+        staticResourceFor("nexus-direct-app-debug.js", "Nexus-debug.js")
     );
   }
 

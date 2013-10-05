@@ -39,7 +39,7 @@ public class DirectJNgineUiContributor
     return builder
         .withDependency("static/directjngine-2.2/djn-remote-call-support.js")
         .withDependency("static/directjngine-2.2/ejn-assert.js")
-        .withDependency("static/js/" + DirectJNginePlugin.ARTIFACT_ID + "-app" + (debug ? "-debug" : "") + ".js")
+        .withDependency("static/js/nexus-direct-app" + (debug ? "-debug" : "") + ".js")
         .build(debug);
   }
 
