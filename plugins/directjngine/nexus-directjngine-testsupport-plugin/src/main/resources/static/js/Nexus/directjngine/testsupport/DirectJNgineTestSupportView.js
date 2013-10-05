@@ -21,7 +21,7 @@ NX.define('Nexus.directjngine.testsupport.DirectJNgineTestSupportView', {
   extend: 'Ext.Panel',
 
   mixins: [
-    'Nexus.LogAwareMixin',
+    'Nexus.LogAwareMixin'
   ],
 
   /**
@@ -29,6 +29,10 @@ NX.define('Nexus.directjngine.testsupport.DirectJNgineTestSupportView', {
    */
   initComponent: function () {
     var self = this;
+
+    self.userName = NX.create('Ext.form.TextField', {
+      label: 'Name'
+    });
 
     Ext.apply(self, {
       title: 'DirectJNgine',
@@ -41,6 +45,36 @@ NX.define('Nexus.directjngine.testsupport.DirectJNgineTestSupportView', {
               alert(result);
             });
           }
+        },
+        {
+          xtype: "button",
+          text: "Get Nexus Temp dir",
+          handler: function () {
+            Info.getTempDir(function (result) {
+              alert(result);
+            });
+          }
+        },
+        {
+          xtype: 'container',
+          layout: 'column',
+          items: [
+            self.userName,
+            {
+              xtype: "button",
+              text: "Get full name",
+              handler: function () {
+                Info.getUser(self.userName.getValue(), function (result, e) {
+                  if (e.serverException) {
+                    alert(e.serverException.exception.message)
+                  }
+                  else {
+                    alert(result.firstName + ' ' + result.lastName);
+                  }
+                });
+              }
+            }
+          ]
         }
       ]
     });
