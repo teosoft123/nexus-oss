@@ -64,6 +64,13 @@
 
     <dependency>
       <groupId>org.sonatype.nexus.plugins</groupId>
+      <artifactId>nexus-directjngine-plugin</artifactId>
+      <scope>provided</scope>
+      <type>${nexus-plugin.type}</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.sonatype.nexus.plugins</groupId>
       <artifactId>nexus-crypto-plugin</artifactId>
       <type>${nexus-plugin.type}</type>
       <scope>provided</scope>

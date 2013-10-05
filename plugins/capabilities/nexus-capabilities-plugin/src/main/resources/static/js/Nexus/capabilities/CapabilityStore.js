@@ -18,7 +18,7 @@
  * @since 2.7
  */
 NX.define('Nexus.capabilities.CapabilityStore', {
-  extend: 'Ext.data.JsonStore',
+  extend: 'Ext.data.DirectStore',
 
   mixins: [
     'Nexus.LogAwareMixin'
@@ -36,8 +36,10 @@ NX.define('Nexus.capabilities.CapabilityStore', {
     config = config || {};
 
     Ext.apply(config, {
-      url: Nexus.siesta.basePath + '/capabilities',
       id: 'capability.id',
+
+      paramsAsHash:false,
+      directFn: Capabilities.get,
 
       fields: [
         { name: 'id', mapping: 'capability.id' },

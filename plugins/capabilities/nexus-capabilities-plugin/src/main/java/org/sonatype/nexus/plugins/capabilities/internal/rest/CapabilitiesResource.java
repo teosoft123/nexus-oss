@@ -37,6 +37,7 @@ import org.sonatype.nexus.capabilities.model.CapabilityXO;
 import org.sonatype.nexus.capabilities.model.PropertyXO;
 import org.sonatype.nexus.capabilities.model.TagXO;
 import org.sonatype.nexus.capability.CapabilitiesPlugin;
+import org.sonatype.nexus.directjngine.DirectResource;
 import org.sonatype.nexus.plugins.capabilities.Capability;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
 import org.sonatype.nexus.plugins.capabilities.CapabilityIdentity;
@@ -55,6 +56,8 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.softwarementors.extjs.djn.config.annotations.DirectAction;
+import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,9 +77,10 @@ import static org.sonatype.nexus.plugins.capabilities.support.CapabilityReferenc
 @Named
 @Singleton
 @Path(CapabilitiesResource.RESOURCE_URI)
+@DirectAction(action = "Capabilities")
 public class CapabilitiesResource
     extends ComponentSupport
-    implements Resource
+    implements Resource, DirectResource
 {
 
   public static final String RESOURCE_URI = CapabilitiesPlugin.REST_PREFIX;
@@ -127,6 +131,18 @@ public class CapabilitiesResource
       throw new CapabilityNotFoundException(capabilityId);
     }
     return asCapabilityStatus(reference);
+  }
+
+  /**
+   * Retrieve a list of all capabilities currently configured in nexus.
+   */
+  @GET
+  @Path("/all")
+  @Produces({APPLICATION_XML, APPLICATION_JSON})
+  @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "read")
+  @DirectMethod
+  public List<CapabilityStatusXO> get() {
+    return get(null, null, null, null, null);
   }
 
   /**

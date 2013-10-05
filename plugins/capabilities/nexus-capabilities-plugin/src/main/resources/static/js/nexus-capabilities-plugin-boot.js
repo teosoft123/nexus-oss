@@ -12,6 +12,7 @@
  */
 /*global define,NX*/
 define('nexus-capabilities-plugin-boot', [
+  'nexus-directjngine-plugin-boot',
   'Nexus/capabilities/CapabilitiesView'
 ], function () {
   NX.log.debug('Main nexus-capabilities-plugin modules loaded');
