@@ -39,9 +39,12 @@ import com.google.common.collect.Maps;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.servlet.ServletModule;
+import com.softwarementors.extjs.djn.api.RegisteredMethod;
 import com.softwarementors.extjs.djn.config.ApiConfiguration;
+import com.softwarementors.extjs.djn.router.dispatcher.Dispatcher;
 import com.softwarementors.extjs.djn.servlet.DirectJNgineServlet;
 import com.softwarementors.extjs.djn.servlet.DirectJNgineServlet.GlobalParameters;
+import com.softwarementors.extjs.djn.servlet.ssm.SsmDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,6 +159,27 @@ public class DirectJNgineModule
           )
       );
     }
+
+    @Override
+    protected Dispatcher createDispatcher(final Class<? extends Dispatcher> cls) {
+      return new SsmDispatcher()
+      {
+        @Override
+        protected Object createInvokeInstanceForMethodWithDefaultConstructor(final RegisteredMethod method)
+            throws Exception
+        {
+          log.debug(
+              "Creating instance of action class '{}' mapped to '{}",
+              method.getActionClass().getName(), method.getActionName()
+          );
+          Iterable<BeanEntry<Annotation, Object>> actionInstance = beanLocator.locate(
+              Key.get((Class)method.getActionClass())
+          );
+          return actionInstance.iterator().next().getValue();
+        }
+      };
+    }
+
   }
 
 }
