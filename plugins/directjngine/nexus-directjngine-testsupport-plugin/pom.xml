@@ -18,39 +18,42 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.sonatype.nexus</groupId>
-    <artifactId>nexus-oss</artifactId>
+    <groupId>org.sonatype.nexus.plugins</groupId>
+    <artifactId>nexus-plugins-directjngine</artifactId>
     <version>2.7.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.sonatype.nexus.buildsupport</groupId>
-  <artifactId>nexus-buildsupport</artifactId>
+  <artifactId>nexus-directjngine-testsupport-plugin</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
-  <packaging>pom</packaging>
+  <packaging>nexus-plugin</packaging>
 
-  <modules>
-    <module>bouncycastle</module>
-    <module>commons</module>
-    <module>goodies</module>
-    <module>groovy</module>
-    <module>guice</module>
-    <module>httpclient</module>
-    <module>jetty</module>
-    <module>logging</module>
-    <module>maven</module>
-    <module>metrics</module>
-    <module>other</module>
-    <module>plexus</module>
-    <module>rest</module>
-    <module>shiro</module>
-    <module>directjngine</module>
-    <module>testing</module>
+  <properties>
+    <pluginName>Nexus ExtDirect DirectJNgine Test Support Plugin</pluginName>
+    <pluginDescription>Provides helpers for ExtDirect DirectJNgine testsuite.</pluginDescription>
+  </properties>
 
-    <!-- aggregator -->
-    <module>all</module>
+  <dependencies>
+    <dependency>
+      <groupId>org.sonatype.nexus</groupId>
+      <artifactId>nexus-plugin-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-    <!-- ancillary -->
-    <module>scripts</module>
-  </modules>
+    <dependency>
+      <groupId>org.sonatype.nexus.plugins</groupId>
+      <artifactId>nexus-directjngine-plugin</artifactId>
+      <scope>provided</scope>
+      <type>${nexus-plugin.type}</type>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.nexus</groupId>
+        <artifactId>nexus-plugin-bundle-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
