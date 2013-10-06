@@ -6,20 +6,26 @@ Ext.define('NX.app.Application', {
   ],
 
   name: 'NX',
+  namespaces: [],
+  controllers: [
+    'Main'
+  ],
+  models: [],
+  refs: [],
+  stores: [],
+  views: [],
 
   constructor: function (config) {
     var self = this, custom, keys;
 
-    // FIXME: Have to sort out how we want to apply non-plugin configuration, asis has to be done here, not above
-
     // only these customizations will be allowed
     custom = {
-      controllers: ['Test'],
-      models: [],
-      namespaces: [],
-      refs: [],
-      stores: [],
-      views: []
+      namespaces: self.namespaces,
+      controllers: self.controllers,
+      models: self.models,
+      refs: self.refs,
+      stores: self.stores,
+      views: self.views
     };
     keys = Object.keys(custom);
     console.log('Supported customizations: ' + keys);
