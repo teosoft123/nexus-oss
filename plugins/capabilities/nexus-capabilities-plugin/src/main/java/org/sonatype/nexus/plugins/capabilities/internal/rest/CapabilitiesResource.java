@@ -134,23 +134,12 @@ public class CapabilitiesResource
   }
 
   /**
-   * Retrieve a list of all capabilities currently configured in nexus.
-   */
-  @GET
-  @Path("/all")
-  @Produces({APPLICATION_XML, APPLICATION_JSON})
-  @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "read")
-  @DirectMethod
-  public List<CapabilityStatusXO> get() {
-    return get(null, null, null, null, null);
-  }
-
-  /**
    * Retrieve a list of capabilities currently configured in nexus.
    */
   @GET
   @Produces({APPLICATION_XML, APPLICATION_JSON})
   @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "read")
+  @DirectMethod
   public List<CapabilityStatusXO> get(@QueryParam($TYPE) String type,
                                       @QueryParam($ENABLED) Boolean enabled,
                                       @QueryParam($ACTIVE) Boolean active,

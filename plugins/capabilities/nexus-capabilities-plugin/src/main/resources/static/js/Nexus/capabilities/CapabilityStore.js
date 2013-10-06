@@ -40,6 +40,14 @@ NX.define('Nexus.capabilities.CapabilityStore', {
 
       paramsAsHash: false,
       directFn: Capabilities.get,
+      paramOrder: ['type', 'enabled', 'active', 'includeNotExposed', 'properties'],
+      baseParams: {
+        type: null,
+        enabled: null,
+        active: null,
+        includeNotExposed: null,
+        properties: null
+      },
 
       fields: [
         { name: 'id', mapping: 'capability.id' },
