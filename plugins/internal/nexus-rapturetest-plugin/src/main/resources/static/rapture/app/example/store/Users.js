@@ -3,7 +3,7 @@ Ext.define('NX.example.store.Users', {
   model: 'NX.example.model.User',
 
   data: [
-    {name: 'Ed', email: 'ed@sencha.com'},
-    {name: 'Tommy', email: 'tommy@sencha.com'}
+    {name: 'Jason', email: 'jdillon@sonatype.com'},
+    {name: 'Alin', email: 'alin@sonatype.com'}
   ]
 });
