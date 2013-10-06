@@ -255,13 +255,13 @@ NX.define('Nexus.capabilities.CreateCapabilityWindow', {
           mask.hide();
           self.close();
           if (self.callbackOnSuccess) {
-            if (response) {
-              self.callbackOnSuccess(response.capability.id);
-            }
+            self.callbackOnSuccess(response.id);
           }
         },
-        function (e) {
-          self.mediator().handleValidation(e, 'Capability could not be created', self.formPanel.getForm());
+        function (response, status) {
+          self.mediator().handleValidation(
+              response, status, 'Capability could not be created', self.formPanel.getForm()
+          );
           mask.hide();
         }
     );

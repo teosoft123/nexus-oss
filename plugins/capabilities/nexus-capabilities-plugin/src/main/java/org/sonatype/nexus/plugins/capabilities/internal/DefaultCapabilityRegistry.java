@@ -16,7 +16,6 @@ package org.sonatype.nexus.plugins.capabilities.internal;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -29,6 +28,7 @@ import javax.inject.Singleton;
 import org.sonatype.configuration.validation.InvalidConfigurationException;
 import org.sonatype.configuration.validation.ValidationMessage;
 import org.sonatype.configuration.validation.ValidationResponse;
+import org.sonatype.nexus.capability.CapabilitiesPlugin;
 import org.sonatype.nexus.configuration.ConfigurationIdGenerator;
 import org.sonatype.nexus.configuration.PasswordHelper;
 import org.sonatype.nexus.formfields.Encrypted;
@@ -58,6 +58,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -97,15 +98,15 @@ public class DefaultCapabilityRegistry
   private final ReentrantReadWriteLock lock;
 
   @Inject
-  DefaultCapabilityRegistry(final CapabilityStorage capabilityStorage,
-                            final ConfigurationIdGenerator idGenerator,
-                            final Provider<ValidatorRegistry> validatorRegistryProvider,
-                            final CapabilityFactoryRegistry capabilityFactoryRegistry,
-                            final CapabilityDescriptorRegistry capabilityDescriptorRegistry,
-                            final EventBus eventBus,
-                            final ActivationConditionHandlerFactory activationConditionHandlerFactory,
-                            final ValidityConditionHandlerFactory validityConditionHandlerFactory,
-                            final PasswordHelper passwordHelper)
+  public DefaultCapabilityRegistry(final CapabilityStorage capabilityStorage,
+                                   final ConfigurationIdGenerator idGenerator,
+                                   final Provider<ValidatorRegistry> validatorRegistryProvider,
+                                   final CapabilityFactoryRegistry capabilityFactoryRegistry,
+                                   final CapabilityDescriptorRegistry capabilityDescriptorRegistry,
+                                   final EventBus eventBus,
+                                   final ActivationConditionHandlerFactory activationConditionHandlerFactory,
+                                   final ValidityConditionHandlerFactory validityConditionHandlerFactory,
+                                   final PasswordHelper passwordHelper)
   {
     this.capabilityStorage = checkNotNull(capabilityStorage);
     this.idGenerator = checkNotNull(idGenerator);
@@ -117,11 +118,12 @@ public class DefaultCapabilityRegistry
     this.validityConditionHandlerFactory = checkNotNull(validityConditionHandlerFactory);
     this.passwordHelper = checkNotNull(passwordHelper);
 
-    references = new HashMap<CapabilityIdentity, DefaultCapabilityReference>();
+    references = Maps.newHashMap();
     lock = new ReentrantReadWriteLock();
   }
 
   @Override
+  @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "create")
   public CapabilityReference add(final CapabilityType type,
                                  final boolean enabled,
                                  final String notes,
@@ -166,6 +168,7 @@ public class DefaultCapabilityRegistry
   }
 
   @Override
+  @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "update")
   public CapabilityReference update(final CapabilityIdentity id,
                                     final boolean enabled,
                                     final String notes,
@@ -211,6 +214,7 @@ public class DefaultCapabilityRegistry
   }
 
   @Override
+  @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "delete")
   public CapabilityReference remove(final CapabilityIdentity id)
       throws IOException
   {
@@ -234,6 +238,7 @@ public class DefaultCapabilityRegistry
   }
 
   @Override
+  @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "update")
   public CapabilityReference enable(final CapabilityIdentity id)
       throws IOException
   {
@@ -257,6 +262,7 @@ public class DefaultCapabilityRegistry
   }
 
   @Override
+  @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "update")
   public CapabilityReference disable(final CapabilityIdentity id)
       throws IOException
   {
@@ -292,6 +298,7 @@ public class DefaultCapabilityRegistry
   }
 
   @Override
+  @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "read")
   public Collection<DefaultCapabilityReference> get(final Predicate<CapabilityReference> filter) {
     return unmodifiableCollection(Collections2.filter(getAll(), filter));
   }

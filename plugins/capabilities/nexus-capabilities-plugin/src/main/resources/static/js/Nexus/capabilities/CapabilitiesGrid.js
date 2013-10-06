@@ -232,7 +232,6 @@ NX.define('Nexus.capabilities.CapabilitiesGrid', {
     var self = this;
 
     self.getSelectionModel().clearSelections();
-    self.refresh();
     self.mediator().capabilityStore.on('load',
         function () {
           var record = self.getStore().getById(capabilityId);
@@ -242,6 +241,7 @@ NX.define('Nexus.capabilities.CapabilitiesGrid', {
         },
         self, {single: true}
     );
+    self.refresh();
   },
 
   /**
@@ -295,9 +295,9 @@ NX.define('Nexus.capabilities.CapabilitiesGrid', {
                 self.mediator().showMessage('Capability deleted', self.mediator().describeCapability(capability));
                 self.refresh();
               },
-              function (e) {
+              function (response, status) {
                 self.mediator().handleException(e, 'Capability could not be deleted');
-                if (e.type.indexOf('CapabilityNotFoundException') >= 0) {
+                if (response && response.shouldRefresh) {
                   self.refresh();
                 }
               }

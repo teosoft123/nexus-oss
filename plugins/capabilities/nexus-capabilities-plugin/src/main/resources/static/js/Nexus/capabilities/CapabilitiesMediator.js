@@ -59,22 +59,22 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
   },
 
   /**
-   * Creates a capability via REST.
+   * Creates a capability.
    */
   addCapability: function (capability, successHandler, failureHandler) {
     var self = this;
 
     self.logDebug('Adding capability: ' + Ext.encode(capability));
 
-    Capabilities.create(capability, function (response, e) {
-      if (e.serverException) {
-        if (failureHandler) {
-          failureHandler(e.serverException.exception);
+    Capabilities.create(capability, function (response, status) {
+      if (!status.serverException && response && response.success) {
+        if (successHandler) {
+          successHandler(response, status);
         }
       }
       else {
-        if (successHandler) {
-          successHandler(response);
+        if (failureHandler) {
+          failureHandler(response, status);
         }
       }
     });
@@ -88,15 +88,15 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
 
     self.logDebug('Updating capability: ' + Ext.encode(capability));
 
-    Capabilities.update(capability.id, capability, function (response, e) {
-      if (e.serverException) {
-        if (failureHandler) {
-          failureHandler(e.serverException.exception);
+    Capabilities.update(capability, function (response, status) {
+      if (!status.serverException && response && response.success) {
+        if (successHandler) {
+          successHandler(response, status);
         }
       }
       else {
-        if (successHandler) {
-          successHandler(response);
+        if (failureHandler) {
+          failureHandler(response, status);
         }
       }
     });
@@ -146,15 +146,15 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
 
     self.logDebug('Deleting capability: ' + capability.id);
 
-    Capabilities.delete(capability.id, function (response, e) {
-      if (e.serverException) {
-        if (failureHandler) {
-          failureHandler(e.serverException.exception);
+    Capabilities.delete(capability.id, function (response, status) {
+      if (!status.serverException && response && response.success) {
+        if (successHandler) {
+          successHandler(response, status);
         }
       }
       else {
-        if (successHandler) {
-          successHandler(response);
+        if (failureHandler) {
+          failureHandler(response, status);
         }
       }
     });
@@ -251,25 +251,25 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
 
   /**
    * Handles an exception, eventually marking fields as invalid.
-   * @param exception to handle
+   * @param response response
+   * @param status response status
    * @param [title] dialog title
    * @param [form] containing fields that should be marked in case of a validation error
    */
-  handleValidation: function (e, title, form) {
+  handleValidation: function (response, status, title, form) {
     var handled = false,
-        remainingMessages = [],
-        message;
+        remainingMessages = [];
 
-    if (response.siestaValidationError) {
+    if (response && response.validationMessages) {
       handled = true;
-      Ext.each(response.siestaValidationError, function (error) {
+      Ext.each(response.validationMessages, function (error) {
         var marked = false,
             field;
 
         if (form) {
-          field = form.findField('property.' + error.id);
+          field = form.findField('property.' + error.key);
           if (!field) {
-            field = form.findField(error.id);
+            field = form.findField(error.key);
           }
           if (field) {
             marked = true;
@@ -281,19 +281,14 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
         }
       });
     }
-    if (response.siestaError) {
+    if (!handled && response && response.message) {
       handled = true;
-      remainingMessages.push(response.siestaError.message);
+      remainingMessages.push(response.message);
     }
     if (!handled) {
-      if (response.responseText) {
-        message = Sonatype.utils.parseHTMLErrorMessage(response.responseText);
+      if (status && status.serverException ) {
+        remainingMessages.push(status.serverException.exception.message);
       }
-      if (!message) {
-        message = title + ' (' + response.statusText + ')';
-        title = undefined;
-      }
-      remainingMessages.push(message);
     }
     if (remainingMessages.length > 0) {
       Ext.Msg.show({
@@ -308,13 +303,14 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
 
   /**
    * Handles an exception.
-   * @param exception to handle
+   * @param response response
+   * @param status response status
    * @param [title] dialog title
    */
-  handleException: function (exception, title) {
+  handleException: function (response, status, title) {
     Ext.Msg.show({
       title: title || 'Operation failed',
-      msg: exception.message,
+      msg: response && response.exceptionMessage ? response.exceptionMessage : status.serverException.exception.message,
       buttons: Ext.Msg.OK,
       icon: Ext.MessageBox.ERROR,
       closeable: false
