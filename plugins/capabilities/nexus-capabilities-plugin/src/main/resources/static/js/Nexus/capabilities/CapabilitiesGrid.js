@@ -295,9 +295,9 @@ NX.define('Nexus.capabilities.CapabilitiesGrid', {
                 self.mediator().showMessage('Capability deleted', self.mediator().describeCapability(capability));
                 self.refresh();
               },
-              function (response, options) {
-                self.mediator().handleError(response, options, 'Capability could not be deleted');
-                if (response.status === 404) {
+              function (e) {
+                self.mediator().handleException(e, 'Capability could not be deleted');
+                if (e.type.indexOf('CapabilityNotFoundException') >= 0) {
                   self.refresh();
                 }
               }

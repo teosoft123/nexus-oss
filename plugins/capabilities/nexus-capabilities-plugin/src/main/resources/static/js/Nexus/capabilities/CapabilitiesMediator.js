@@ -140,13 +140,17 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
 
     self.logDebug('Deleting capability: ' + capability.id);
 
-    Ext.Ajax.request({
-      url: self.capabilityStore.urlOf(capability.id),
-      method: 'DELETE',
-      scope: self,
-      suppressStatus: true,
-      success: successHandler,
-      failure: failureHandler
+    Capabilities.delete(capability.id, function (response, e) {
+      if (e.serverException) {
+        if (failureHandler) {
+          failureHandler(e.serverException.exception);
+        }
+      }
+      else {
+        if (successHandler) {
+          successHandler.call();
+        }
+      }
     });
   },
 
@@ -237,6 +241,21 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
         closeable: false
       });
     }
+  },
+
+  /**
+   * Handles an exception.
+   * @param exception to handle
+   * @param [title] dialog title
+   */
+  handleException: function (exception, title) {
+    Ext.Msg.show({
+      title: title || 'Operation failed',
+      msg: exception.message,
+      buttons: Ext.Msg.OK,
+      icon: Ext.MessageBox.ERROR,
+      closeable: false
+    });
   },
 
   /**

@@ -211,6 +211,7 @@ public class CapabilitiesResource
   @DELETE
   @Path("/{id}")
   @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "delete")
+  @DirectMethod
   public void delete(final @PathParam("id") String id)
       throws Exception
   {
