@@ -1,4 +1,4 @@
-Ext.define('NX.model.example.User', {
+Ext.define('NX.example.model.User', {
   extend: 'Ext.data.Model',
   fields: [
     'name', 'email'

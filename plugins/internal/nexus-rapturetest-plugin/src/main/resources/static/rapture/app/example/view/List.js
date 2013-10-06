@@ -1,10 +1,10 @@
-Ext.define('NX.view.example.List', {
+Ext.define('NX.example.view.List', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.userlist',
 
   title: 'All Users',
 
-  store: 'example.Users',
+  store: 'Users',
 
   initComponent: function () {
     this.columns = [

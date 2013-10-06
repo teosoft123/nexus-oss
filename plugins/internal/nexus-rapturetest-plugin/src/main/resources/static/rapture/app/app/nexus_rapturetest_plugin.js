@@ -1,7 +1,11 @@
 Ext.define('NX.app.nexus_rapturetest_plugin', {
 
+  namespaces: [
+      'NX.example'
+  ],
+
   controllers: [
-    'example.Users'
+    'NX.example.controller.Users'
   ]
 
 });

@@ -1,6 +1,6 @@
-Ext.define('NX.store.example.Users', {
+Ext.define('NX.example.store.Users', {
   extend: 'Ext.data.Store',
-  model: 'NX.model.example.User',
+  model: 'NX.example.model.User',
 
   data: [
     {name: 'Ed', email: 'ed@sencha.com'},
