@@ -31,12 +31,21 @@ Ext.define('NX.app.Application', {
       console.log('Loading plugin: ' + pluginId + ', from class: ' + className);
       plugin = Ext.create(className);
 
-      // Detect customizations
+      // Detect customizations, these are simply fields defined on the plugin object
+      // supported types are Array and String only
       Ext.each(keys, function(key) {
         var value = plugin[key];
         if (value) {
           console.log(key + ': ' + value);
-          custom[key] = custom[key].concat(value);
+          if (Ext.isString(value)) {
+            custom[key].push(value);
+          }
+          else if (Ext.isArray(value)) {
+            custom[key] = custom[key].concat(value);
+          }
+          else {
+            Ext.Error.raise('Invalid customization; class: ' + className + ', property: ' + key);
+          }
         }
       });
     });
