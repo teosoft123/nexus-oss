@@ -2,7 +2,7 @@ Ext.define('NX.example.view.List', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.userlist',
 
-  title: 'All Users',
+  title: 'Example',
 
   store: 'Users',
 
