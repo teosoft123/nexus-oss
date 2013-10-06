@@ -14,7 +14,7 @@ Ext.define('NX.example.controller.Users', {
 
   init: function () {
     this.control({
-      'viewport > userlist': {
+      'userlist': {
         itemdblclick: this.editUser
       },
       'useredit button[action=save]': {
