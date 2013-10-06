@@ -1,4 +1,4 @@
-Ext.define('NX.view.user.Edit', {
+Ext.define('NX.view.example.Edit', {
   extend: 'Ext.window.Window',
   alias: 'widget.useredit',
 

@@ -1,10 +1,3 @@
-Ext.Loader.setConfig({
-  enabled: true,
-  paths: {
-    NX: 'app'
-  }
-});
-
 Ext.application({
   requires: [
     'NX.view.Viewport'
@@ -12,7 +5,7 @@ Ext.application({
 
   name: 'NX',
   controllers: [
-    'Users'
+    'example.Users'
   ],
 
   launch: function () {

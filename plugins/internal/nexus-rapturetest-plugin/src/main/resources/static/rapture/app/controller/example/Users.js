@@ -1,15 +1,15 @@
-Ext.define('NX.controller.Users', {
+Ext.define('NX.controller.example.Users', {
   extend: 'Ext.app.Controller',
 
   stores: [
-    'Users'
+    'example.Users'
   ],
   models: [
-    'User'
+    'example.User'
   ],
   views: [
-    'user.List',
-    'user.Edit'
+    'example.List',
+    'example.Edit'
   ],
 
   init: function () {
