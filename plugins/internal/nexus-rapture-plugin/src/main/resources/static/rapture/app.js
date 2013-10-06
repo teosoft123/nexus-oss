@@ -1,21 +1,22 @@
 Ext.Loader.setConfig({
-    enabled: true
+  enabled: true,
+  paths: {
+    NX: 'app'
+  }
 });
 
 Ext.application({
   requires: [
-    'Ext.container.Viewport'
+    'NX.view.Viewport'
   ],
 
-  name: 'AM',
-  appFolder: 'app',
-
+  name: 'NX',
   controllers: [
     'Users'
   ],
 
   launch: function () {
-    Ext.create('AM.view.Viewport');
+    Ext.create('NX.view.Viewport');
 
     // hide the loading mask after we have loaded
     var hideMask = function () {

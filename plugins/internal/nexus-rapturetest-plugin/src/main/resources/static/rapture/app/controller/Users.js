@@ -1,4 +1,4 @@
-Ext.define('AM.controller.Users', {
+Ext.define('NX.controller.Users', {
   extend: 'Ext.app.Controller',
 
   stores: [
