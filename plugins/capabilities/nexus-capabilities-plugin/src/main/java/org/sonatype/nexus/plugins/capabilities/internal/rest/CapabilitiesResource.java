@@ -170,7 +170,8 @@ public class CapabilitiesResource
   @Consumes({APPLICATION_JSON, APPLICATION_XML})
   @Produces({APPLICATION_JSON, APPLICATION_XML})
   @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "create")
-  public CapabilityStatusXO post(final CapabilityXO capability)
+  @DirectMethod
+  public CapabilityStatusXO create(final CapabilityXO capability)
       throws Exception
   {
     return asCapabilityStatus(
@@ -191,8 +192,9 @@ public class CapabilitiesResource
   @Consumes({APPLICATION_JSON, APPLICATION_XML})
   @Produces({APPLICATION_XML, APPLICATION_JSON})
   @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX + "update")
-  public CapabilityStatusXO put(final @PathParam("id") String id,
-                                final CapabilityXO capability)
+  @DirectMethod
+  public CapabilityStatusXO update(final @PathParam("id") String id,
+                                   final CapabilityXO capability)
       throws Exception
   {
     return asCapabilityStatus(

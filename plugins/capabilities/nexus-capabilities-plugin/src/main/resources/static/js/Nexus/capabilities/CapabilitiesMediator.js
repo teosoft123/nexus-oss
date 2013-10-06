@@ -66,33 +66,39 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
 
     self.logDebug('Adding capability: ' + Ext.encode(capability));
 
-    Ext.Ajax.request({
-      url: self.capabilityStore.url,
-      method: 'POST',
-      scope: self,
-      suppressStatus: true,
-      jsonData: capability,
-      success: successHandler,
-      failure: failureHandler
+    Capabilities.create(capability, function (response, e) {
+      if (e.serverException) {
+        if (failureHandler) {
+          failureHandler(e.serverException.exception);
+        }
+      }
+      else {
+        if (successHandler) {
+          successHandler(response);
+        }
+      }
     });
   },
 
   /**
-   * Updates a capability via REST.
+   * Updates a capability.
    */
   updateCapability: function (capability, successHandler, failureHandler) {
     var self = this;
 
     self.logDebug('Updating capability: ' + Ext.encode(capability));
 
-    Ext.Ajax.request({
-      url: self.capabilityStore.urlOf(capability.id),
-      method: 'PUT',
-      scope: self,
-      suppressStatus: true,
-      jsonData: capability,
-      success: successHandler,
-      failure: failureHandler
+    Capabilities.update(capability.id, capability, function (response, e) {
+      if (e.serverException) {
+        if (failureHandler) {
+          failureHandler(e.serverException.exception);
+        }
+      }
+      else {
+        if (successHandler) {
+          successHandler(response);
+        }
+      }
     });
   },
 
@@ -115,7 +121,7 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
   },
 
   /**
-   * Disables a capability via REST.
+   * Disables a capability.
    */
   disableCapability: function (capability, successHandler, failureHandler) {
     var self = this;
@@ -148,7 +154,7 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
       }
       else {
         if (successHandler) {
-          successHandler.call();
+          successHandler(response);
         }
       }
     });
@@ -193,6 +199,63 @@ NX.define('Nexus.capabilities.CapabilitiesMediator', {
    * @param [form] containing fields that should be marked in case of a validation error
    */
   handleError: function (response, options, title, form) {
+    var handled = false,
+        remainingMessages = [],
+        message;
+
+    if (response.siestaValidationError) {
+      handled = true;
+      Ext.each(response.siestaValidationError, function (error) {
+        var marked = false,
+            field;
+
+        if (form) {
+          field = form.findField('property.' + error.id);
+          if (!field) {
+            field = form.findField(error.id);
+          }
+          if (field) {
+            marked = true;
+            field.markInvalid(error.message);
+          }
+        }
+        if (!marked) {
+          remainingMessages.push(error.message);
+        }
+      });
+    }
+    if (response.siestaError) {
+      handled = true;
+      remainingMessages.push(response.siestaError.message);
+    }
+    if (!handled) {
+      if (response.responseText) {
+        message = Sonatype.utils.parseHTMLErrorMessage(response.responseText);
+      }
+      if (!message) {
+        message = title + ' (' + response.statusText + ')';
+        title = undefined;
+      }
+      remainingMessages.push(message);
+    }
+    if (remainingMessages.length > 0) {
+      Ext.Msg.show({
+        title: title || 'Operation failed',
+        msg: remainingMessages.join('\n'),
+        buttons: Ext.Msg.OK,
+        icon: Ext.MessageBox.ERROR,
+        closeable: false
+      });
+    }
+  },
+
+  /**
+   * Handles an exception, eventually marking fields as invalid.
+   * @param exception to handle
+   * @param [title] dialog title
+   * @param [form] containing fields that should be marked in case of a validation error
+   */
+  handleValidation: function (e, title, form) {
     var handled = false,
         remainingMessages = [],
         message;

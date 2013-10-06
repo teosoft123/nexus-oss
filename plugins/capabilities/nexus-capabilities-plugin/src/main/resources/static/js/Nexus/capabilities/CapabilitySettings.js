@@ -141,8 +141,8 @@ NX.define('Nexus.capabilities.CapabilitySettings', {
           self.mediator().showMessage('Capability saved', self.mediator().describeCapability(self.currentRecord));
           self.mediator().refresh();
         },
-        function (response, options) {
-          self.mediator().handleError(response, options, 'Capability could not be saved', form);
+        function (e) {
+          self.mediator().handleValidation(e, 'Capability could not be saved', form);
         }
     );
   },
