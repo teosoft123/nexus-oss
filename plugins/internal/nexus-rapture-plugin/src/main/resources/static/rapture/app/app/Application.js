@@ -60,8 +60,10 @@ Ext.define('NX.app.Application', {
     });
     Ext.apply(self, custom);
 
-    // Have to manually add namepaces, this is done by onClassExtended in super no in ctor call
-    Ext.app.addNamespaces(custom.namespaces);
+    // Have to manually add namespaces, this is done by onClassExtended in super not in parent call
+    if (custom.namespaces) {
+      Ext.app.addNamespaces(custom.namespaces);
+    }
 
     // and then let the super-class do the real work
     self.callParent(arguments);
