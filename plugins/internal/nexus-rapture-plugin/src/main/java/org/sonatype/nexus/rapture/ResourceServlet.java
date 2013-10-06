@@ -73,7 +73,14 @@ public class ResourceServlet
       return;
     }
     typeName = typeName.toUpperCase(Locale.ENGLISH);
-    Type type = Type.valueOf(typeName);
+    Type type;
+    try {
+      type = Type.valueOf(typeName);
+    }
+    catch (IllegalArgumentException e) {
+      resp.sendError(400, "Invalid 'type' parameter value: " + typeName);
+      return;
+    }
 
     // HACK: Just list matching resources now
     resp.setContentType("text/plain");
