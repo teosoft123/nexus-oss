@@ -6,6 +6,8 @@ Ext.define('NX.app.Application', {
   ],
 
   name: 'NX',
+  appFolder: 'NX',
+
   namespaces: [],
   controllers: [
     'Main'
@@ -34,19 +36,20 @@ Ext.define('NX.app.Application', {
     keys = Object.keys(custom);
     console.log('Supported customizations: ' + keys);
 
-    // for each plugin, merge its customizations
-    console.log('Plugins: ' + NX.app.pluginIds);
-    Ext.each(NX.app.pluginIds, function (pluginId) {
-      var className = 'NX.' + pluginId + '.Plugin',
-          plugin;
+    // TODO: More error handling around pluginConfigClassNames content, this needs to be defined, should have at least one element, etc
 
-      console.log('Loading plugin: ' + pluginId + ', from class: ' + className);
-      plugin = Ext.create(className);
+    // for each plugin, merge its customizations
+    console.log('Plugins config class names: ' + NX.app.pluginConfigClassNames);
+    Ext.each(NX.app.pluginConfigClassNames, function (className) {
+      var pluginConfig;
+
+      console.log('Loading plugin config from class: ' + className);
+      pluginConfig = Ext.create(className);
 
       // Detect customizations, these are simply fields defined on the plugin object
       // supported types are Array and String only
       Ext.each(keys, function (key) {
-        var value = plugin[key];
+        var value = pluginConfig[key];
         if (value) {
           console.log(key + ': ' + value);
           if (Ext.isString(value)) {

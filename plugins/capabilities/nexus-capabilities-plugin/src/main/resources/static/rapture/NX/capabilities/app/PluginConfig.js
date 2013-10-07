@@ -1,4 +1,4 @@
-Ext.define('NX.capabilities.Plugin', {
+Ext.define('NX.capabilities.app.PluginConfig', {
 
   namespaces: [
     'NX.capabilities'

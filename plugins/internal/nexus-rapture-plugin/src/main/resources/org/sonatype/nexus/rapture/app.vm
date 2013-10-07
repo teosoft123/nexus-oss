@@ -1,12 +1,11 @@
 Ext.Loader.setConfig({
   enabled: true,
   paths: {
-    NX: 'app'
+    NX: 'NX'
   }
 });
 
-// TODO: Sort out how to dynamically get the list of plugin ids
 Ext.ns('NX.app');
-NX.app.pluginIds = [${plugins}];
+NX.app.pluginConfigClassNames = [${pluginConfigClassNames}];
 
 Ext.application('NX.app.Application');
