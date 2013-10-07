@@ -68,7 +68,7 @@ public class CapabilitiesDirectResource
       final Collection<? extends CapabilityReference> references = capabilityRegistry.get(
           CapabilityReferenceFilterBuilder.capabilities()
       );
-      return new SuccessfulListResponse(
+      return new SuccessfulListResponse<>(
           Lists.transform(Lists.newArrayList(references), new Function<CapabilityReference, CapabilityStatusXO>()
           {
             @Nullable

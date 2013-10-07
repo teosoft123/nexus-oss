@@ -36,7 +36,7 @@ NX.define('Nexus.capabilities.CapabilityStore', {
     config = config || {};
 
     Ext.apply(config, {
-      root: 'capabilities',
+      root: 'entries',
       successProperty: 'success',
 
       paramsAsHash: false,

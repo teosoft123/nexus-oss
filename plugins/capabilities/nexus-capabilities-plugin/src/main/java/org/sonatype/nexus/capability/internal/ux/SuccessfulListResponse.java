@@ -15,22 +15,20 @@ package org.sonatype.nexus.capability.internal.ux;
 
 import java.util.List;
 
-import org.sonatype.nexus.capabilities.model.CapabilityStatusXO;
-
 /**
  * Ext.Direct response.
  *
  * @since 2.7
  */
-class SuccessfulListResponse
+class SuccessfulListResponse<E>
     extends Response
 {
 
-  private List<CapabilityStatusXO> capabilities;
+  private List<E> entries;
 
-  SuccessfulListResponse(List<CapabilityStatusXO> capabilities) {
+  SuccessfulListResponse(List<E> entries) {
     super(true);
-    this.capabilities = capabilities;
+    this.entries = entries;
   }
 
 }
