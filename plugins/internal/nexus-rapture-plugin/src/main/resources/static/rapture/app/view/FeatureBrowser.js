@@ -4,20 +4,6 @@ Ext.define('NX.view.FeatureBrowser', {
 
   config: {
     tabPosition: 'left'
-  },
-
-  initComponent: function () {
-    var self = this;
-
-    self.items = [
-      {
-        xtype: 'userlist'
-      },
-      {
-        xtype: 'capabilitylist'
-      }
-    ];
-
-    this.callParent(arguments);
   }
+
 });

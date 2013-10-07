@@ -14,8 +14,13 @@ Ext.define('NX.capabilities.controller.Capabilities', {
 
   init: function () {
     this.control({
+      'featurebrowser': {
+        beforerender: function (featureBrowser) {
+          featureBrowser.add(this.getListView())
+        }
+      },
       'capabilitylist': {
-        show: function () {
+        beforerender: function () {
           this.getCapabilitiesStore().load();
         },
         itemdblclick: this.editCapability

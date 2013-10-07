@@ -14,6 +14,11 @@ Ext.define('NX.example.controller.Users', {
 
   init: function () {
     this.control({
+      'featurebrowser': {
+        beforerender: function (featureBrowser) {
+          featureBrowser.add(this.getListView())
+        }
+      },
       'userlist': {
         itemdblclick: this.editUser
       },
