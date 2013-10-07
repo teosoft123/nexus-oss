@@ -8,8 +8,16 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     'Capability'
   ],
   views: [
+    'MasterDetail',
     'List',
+    'Detail',
     'Edit'
+  ],
+  refs: [
+    {
+      ref: 'detail',
+      selector: 'capabilitydetail'
+    }
   ],
 
   init: function () {
@@ -19,7 +27,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
       },
       'capabilitylist': {
         beforerender: this.loadCapabilities,
-        itemdblclick: this.editCapability
+        itemclick: this.showDetails
       },
       'capabilityedit button[action=save]': {
         click: this.updateCapability
@@ -28,16 +36,15 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   },
 
   addToBrowser: function (featureBrowser) {
-    featureBrowser.add(this.getListView());
+    featureBrowser.add(this.getMasterDetailView());
   },
 
   loadCapabilities: function () {
     this.getCapabilitiesStore().load();
   },
 
-  editCapability: function (grid, record) {
-    var view = Ext.widget('capabilityedit');
-    view.down('form').loadRecord(record);
+  showDetails: function (grid, record) {
+    this.getDetail().setTitle(record.data.typeName);
   },
 
   updateCapability: function (button) {
