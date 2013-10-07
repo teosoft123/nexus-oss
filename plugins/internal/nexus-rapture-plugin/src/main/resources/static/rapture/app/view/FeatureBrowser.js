@@ -12,6 +12,9 @@ Ext.define('NX.view.FeatureBrowser', {
     self.items = [
       {
         xtype: 'userlist'
+      },
+      {
+        xtype: 'capabilitylist'
       }
     ];
 
