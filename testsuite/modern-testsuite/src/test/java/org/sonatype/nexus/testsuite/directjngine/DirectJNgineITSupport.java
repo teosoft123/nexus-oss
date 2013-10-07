@@ -54,12 +54,7 @@ public abstract class DirectJNgineITSupport
   protected NexusBundleConfiguration configureNexus(final NexusBundleConfiguration configuration) {
     return configuration
         .setLogLevel("com.softwarementors.extjs.djn", "DEBUG")
-        .setLogLevel("org.sonatype.nexus.directjngine", "DEBUG")
-        .addPlugins(
-            artifactResolver().resolvePluginFromDependencyManagement(
-                "org.sonatype.nexus.plugins", "nexus-directjngine-testsupport-plugin"
-            )
-        );
+        .setLogLevel("org.sonatype.nexus.directjngine", "DEBUG");
   }
 
   Utilities utilities() {
