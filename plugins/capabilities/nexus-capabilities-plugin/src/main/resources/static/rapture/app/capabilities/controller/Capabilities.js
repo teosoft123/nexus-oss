@@ -15,20 +15,24 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   init: function () {
     this.control({
       'featurebrowser': {
-        beforerender: function (featureBrowser) {
-          featureBrowser.add(this.getListView())
-        }
+        beforerender: this.addToBrowser
       },
       'capabilitylist': {
-        beforerender: function () {
-          this.getCapabilitiesStore().load();
-        },
+        beforerender: this.loadCapabilities,
         itemdblclick: this.editCapability
       },
       'capabilityedit button[action=save]': {
         click: this.updateCapability
       }
     });
+  },
+
+  addToBrowser: function (featureBrowser) {
+    featureBrowser.add(this.getListView());
+  },
+
+  loadCapabilities: function () {
+    this.getCapabilitiesStore().load();
   },
 
   editCapability: function (grid, record) {
