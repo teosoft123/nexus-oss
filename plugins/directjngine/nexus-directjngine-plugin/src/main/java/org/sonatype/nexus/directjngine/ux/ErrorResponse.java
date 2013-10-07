@@ -24,7 +24,7 @@ public class ErrorResponse
 
   private String message;
 
-  public ErrorResponse(Throwable cause) {
+  public ErrorResponse(final Throwable cause) {
     super(false);
     message = cause.getMessage();
   }

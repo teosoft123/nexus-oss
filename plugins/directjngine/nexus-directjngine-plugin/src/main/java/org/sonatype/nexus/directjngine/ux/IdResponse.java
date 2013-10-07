@@ -18,13 +18,13 @@ package org.sonatype.nexus.directjngine.ux;
  *
  * @since 2.7
  */
-public class IdResponse
+public class IdResponse<T>
     extends Response
 {
 
-  private String id;
+  private T id;
 
-  public IdResponse(String id) {
+  public IdResponse(T id) {
     super(true);
     this.id = id;
   }

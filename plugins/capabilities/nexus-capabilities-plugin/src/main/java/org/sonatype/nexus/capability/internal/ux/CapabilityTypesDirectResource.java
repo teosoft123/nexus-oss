@@ -23,8 +23,6 @@ import javax.inject.Singleton;
 import org.sonatype.nexus.capabilities.model.CapabilityTypeXO;
 import org.sonatype.nexus.capabilities.model.FormFieldXO;
 import org.sonatype.nexus.directjngine.DirectResource;
-import org.sonatype.nexus.directjngine.ux.ErrorResponse;
-import org.sonatype.nexus.directjngine.ux.ListResponse;
 import org.sonatype.nexus.directjngine.ux.Response;
 import org.sonatype.nexus.formfields.FormField;
 import org.sonatype.nexus.formfields.Selectable;
@@ -36,6 +34,9 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.softwarementors.extjs.djn.config.annotations.DirectAction;
 import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
+
+import static org.sonatype.nexus.directjngine.ux.Responses.error;
+import static org.sonatype.nexus.directjngine.ux.Responses.list;
 
 /**
  * Capabilities Types Ext.Direct resource.
@@ -115,10 +116,10 @@ public class CapabilityTypesDirectResource
         }
       }
 
-      return new ListResponse<>(types);
+      return list(types);
     }
     catch (Exception e) {
-      return new ErrorResponse(e);
+      return error(e);
     }
   }
 

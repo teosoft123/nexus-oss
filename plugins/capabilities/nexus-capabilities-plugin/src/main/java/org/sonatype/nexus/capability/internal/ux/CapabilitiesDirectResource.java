@@ -25,11 +25,7 @@ import org.sonatype.configuration.validation.InvalidConfigurationException;
 import org.sonatype.nexus.capabilities.model.CapabilityStatusXO;
 import org.sonatype.nexus.capabilities.model.CapabilityXO;
 import org.sonatype.nexus.directjngine.DirectResource;
-import org.sonatype.nexus.directjngine.ux.ErrorResponse;
-import org.sonatype.nexus.directjngine.ux.IdResponse;
-import org.sonatype.nexus.directjngine.ux.ListResponse;
 import org.sonatype.nexus.directjngine.ux.Response;
-import org.sonatype.nexus.directjngine.ux.ValidationResponse;
 import org.sonatype.nexus.plugins.capabilities.CapabilityNotFoundException;
 import org.sonatype.nexus.plugins.capabilities.CapabilityReference;
 import org.sonatype.nexus.plugins.capabilities.CapabilityRegistry;
@@ -42,6 +38,11 @@ import com.softwarementors.extjs.djn.config.annotations.DirectAction;
 import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.sonatype.nexus.directjngine.ux.Responses.error;
+import static org.sonatype.nexus.directjngine.ux.Responses.id;
+import static org.sonatype.nexus.directjngine.ux.Responses.invalid;
+import static org.sonatype.nexus.directjngine.ux.Responses.list;
+import static org.sonatype.nexus.directjngine.ux.Responses.success;
 import static org.sonatype.nexus.plugins.capabilities.CapabilityIdentity.capabilityIdentity;
 import static org.sonatype.nexus.plugins.capabilities.CapabilityType.capabilityType;
 
@@ -73,7 +74,7 @@ public class CapabilitiesDirectResource
       final Collection<? extends CapabilityReference> references = capabilityRegistry.get(
           CapabilityReferenceFilterBuilder.capabilities()
       );
-      return new ListResponse<>(
+      return list(
           Lists.transform(Lists.newArrayList(references), new Function<CapabilityReference, CapabilityStatusXO>()
           {
             @Nullable
@@ -88,7 +89,7 @@ public class CapabilitiesDirectResource
       ).shouldRefresh();
     }
     catch (Exception e) {
-      return new ErrorResponse(e);
+      return error(e);
     }
   }
 
@@ -98,7 +99,7 @@ public class CapabilitiesDirectResource
   @DirectMethod
   public Response create(final CapabilityXO capability) {
     try {
-      return new IdResponse(
+      return id(
           capabilityRegistry.add(
               capabilityType(capability.getTypeId()),
               capability.isEnabled(),
@@ -108,10 +109,10 @@ public class CapabilitiesDirectResource
       ).shouldRefresh();
     }
     catch (InvalidConfigurationException e) {
-      return new ValidationResponse(e.getValidationResponse().getValidationErrors());
+      return invalid(e);
     }
     catch (Exception e) {
-      return new ErrorResponse(e);
+      return error(e);
     }
   }
 
@@ -121,7 +122,7 @@ public class CapabilitiesDirectResource
   @DirectMethod
   public Response update(final CapabilityXO capability) {
     try {
-      return new IdResponse(
+      return id(
           capabilityRegistry.update(
               capabilityIdentity(capability.getId()),
               capability.isEnabled(),
@@ -131,13 +132,13 @@ public class CapabilitiesDirectResource
       ).shouldRefresh();
     }
     catch (InvalidConfigurationException e) {
-      return new ValidationResponse(e.getValidationResponse().getValidationErrors());
+      return invalid(e);
     }
     catch (CapabilityNotFoundException e) {
-      return new ErrorResponse(e).shouldRefresh();
+      return error(e).shouldRefresh();
     }
     catch (Exception e) {
-      return new ErrorResponse(e);
+      return error(e);
     }
   }
 
@@ -148,13 +149,13 @@ public class CapabilitiesDirectResource
   public Response delete(final String id) {
     try {
       capabilityRegistry.remove(capabilityIdentity(id));
-      return new Response(true);
+      return success();
     }
     catch (CapabilityNotFoundException e) {
-      return new ErrorResponse(e).shouldRefresh();
+      return error(e).shouldRefresh();
     }
     catch (Exception e) {
-      return new ErrorResponse(e);
+      return error(e);
     }
   }
 
@@ -165,13 +166,13 @@ public class CapabilitiesDirectResource
   public Response enable(final String id) {
     try {
       capabilityRegistry.enable(capabilityIdentity(id));
-      return new Response(true);
+      return success();
     }
     catch (CapabilityNotFoundException e) {
-      return new ErrorResponse(e).shouldRefresh();
+      return error(e).shouldRefresh();
     }
     catch (Exception e) {
-      return new ErrorResponse(e);
+      return error(e);
     }
   }
 
@@ -182,13 +183,13 @@ public class CapabilitiesDirectResource
   public Response disable(final @PathParam("id") String id) {
     try {
       capabilityRegistry.disable(capabilityIdentity(id));
-      return new Response(true);
+      return success();
     }
     catch (CapabilityNotFoundException e) {
-      return new ErrorResponse(e).shouldRefresh();
+      return error(e).shouldRefresh();
     }
     catch (Exception e) {
-      return new ErrorResponse(e);
+      return error(e);
     }
   }
 
