@@ -11,27 +11,22 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.capability.internal.ux;
+package org.sonatype.nexus.directjngine.ux;
 
 /**
  * Ext.Direct response.
  *
  * @since 2.7
  */
-public class Response
+public class IdResponse
+    extends Response
 {
 
-  private boolean success;
+  private String id;
 
-  private boolean shouldRefresh;
-
-  Response(boolean success) {
-    this.success = success;
-  }
-
-  Response shouldRefresh() {
-    shouldRefresh = true;
-    return this;
+  public IdResponse(String id) {
+    super(true);
+    this.id = id;
   }
 
 }

@@ -11,22 +11,26 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.capability.internal.ux;
+package org.sonatype.nexus.directjngine.ux;
+
+import java.util.List;
+
+import org.sonatype.configuration.validation.ValidationMessage;
 
 /**
  * Ext.Direct response.
  *
  * @since 2.7
  */
-class SuccessfulIdResponse
+public class ValidationResponse
     extends Response
 {
 
-  private String id;
+  private List<ValidationMessage> validationMessages;
 
-  SuccessfulIdResponse(String id) {
-    super(true);
-    this.id = id;
+  public ValidationResponse(List<ValidationMessage> validationMessages) {
+    super(false);
+    this.validationMessages = validationMessages;
   }
 
 }

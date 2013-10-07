@@ -11,26 +11,27 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.capability.internal.ux;
-
-import java.util.List;
-
-import org.sonatype.configuration.validation.ValidationMessage;
+package org.sonatype.nexus.directjngine.ux;
 
 /**
  * Ext.Direct response.
  *
  * @since 2.7
  */
-class InvalidResponse
-    extends Response
+public class Response
 {
 
-  private List<ValidationMessage> validationMessages;
+  private boolean success;
 
-  InvalidResponse(List<ValidationMessage> validationMessages) {
-    super(false);
-    this.validationMessages = validationMessages;
+  private boolean shouldRefresh;
+
+  public Response(boolean success) {
+    this.success = success;
+  }
+
+  public Response shouldRefresh() {
+    shouldRefresh = true;
+    return this;
   }
 
 }

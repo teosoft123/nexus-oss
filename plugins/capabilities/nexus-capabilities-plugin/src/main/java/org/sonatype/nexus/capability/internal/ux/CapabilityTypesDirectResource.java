@@ -23,6 +23,9 @@ import javax.inject.Singleton;
 import org.sonatype.nexus.capabilities.model.CapabilityTypeXO;
 import org.sonatype.nexus.capabilities.model.FormFieldXO;
 import org.sonatype.nexus.directjngine.DirectResource;
+import org.sonatype.nexus.directjngine.ux.ErrorResponse;
+import org.sonatype.nexus.directjngine.ux.ListResponse;
+import org.sonatype.nexus.directjngine.ux.Response;
 import org.sonatype.nexus.formfields.FormField;
 import org.sonatype.nexus.formfields.Selectable;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
@@ -112,7 +115,7 @@ public class CapabilityTypesDirectResource
         }
       }
 
-      return new SuccessfulListResponse<>(types);
+      return new ListResponse<>(types);
     }
     catch (Exception e) {
       return new ErrorResponse(e);

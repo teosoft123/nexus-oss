@@ -25,6 +25,11 @@ import org.sonatype.configuration.validation.InvalidConfigurationException;
 import org.sonatype.nexus.capabilities.model.CapabilityStatusXO;
 import org.sonatype.nexus.capabilities.model.CapabilityXO;
 import org.sonatype.nexus.directjngine.DirectResource;
+import org.sonatype.nexus.directjngine.ux.ErrorResponse;
+import org.sonatype.nexus.directjngine.ux.IdResponse;
+import org.sonatype.nexus.directjngine.ux.ListResponse;
+import org.sonatype.nexus.directjngine.ux.Response;
+import org.sonatype.nexus.directjngine.ux.ValidationResponse;
 import org.sonatype.nexus.plugins.capabilities.CapabilityNotFoundException;
 import org.sonatype.nexus.plugins.capabilities.CapabilityReference;
 import org.sonatype.nexus.plugins.capabilities.CapabilityRegistry;
@@ -68,7 +73,7 @@ public class CapabilitiesDirectResource
       final Collection<? extends CapabilityReference> references = capabilityRegistry.get(
           CapabilityReferenceFilterBuilder.capabilities()
       );
-      return new SuccessfulListResponse<>(
+      return new ListResponse<>(
           Lists.transform(Lists.newArrayList(references), new Function<CapabilityReference, CapabilityStatusXO>()
           {
             @Nullable
@@ -93,7 +98,7 @@ public class CapabilitiesDirectResource
   @DirectMethod
   public Response create(final CapabilityXO capability) {
     try {
-      return new SuccessfulIdResponse(
+      return new IdResponse(
           capabilityRegistry.add(
               capabilityType(capability.getTypeId()),
               capability.isEnabled(),
@@ -103,7 +108,7 @@ public class CapabilitiesDirectResource
       ).shouldRefresh();
     }
     catch (InvalidConfigurationException e) {
-      return new InvalidResponse(e.getValidationResponse().getValidationErrors());
+      return new ValidationResponse(e.getValidationResponse().getValidationErrors());
     }
     catch (Exception e) {
       return new ErrorResponse(e);
@@ -116,7 +121,7 @@ public class CapabilitiesDirectResource
   @DirectMethod
   public Response update(final CapabilityXO capability) {
     try {
-      return new SuccessfulIdResponse(
+      return new IdResponse(
           capabilityRegistry.update(
               capabilityIdentity(capability.getId()),
               capability.isEnabled(),
@@ -126,7 +131,7 @@ public class CapabilitiesDirectResource
       ).shouldRefresh();
     }
     catch (InvalidConfigurationException e) {
-      return new InvalidResponse(e.getValidationResponse().getValidationErrors());
+      return new ValidationResponse(e.getValidationResponse().getValidationErrors());
     }
     catch (CapabilityNotFoundException e) {
       return new ErrorResponse(e).shouldRefresh();

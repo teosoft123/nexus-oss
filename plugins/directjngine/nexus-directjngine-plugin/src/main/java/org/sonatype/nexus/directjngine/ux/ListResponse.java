@@ -11,22 +11,24 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.capability.internal.ux;
+package org.sonatype.nexus.directjngine.ux;
+
+import java.util.List;
 
 /**
  * Ext.Direct response.
  *
  * @since 2.7
  */
-class ErrorResponse
+public class ListResponse<E>
     extends Response
 {
 
-  private String message;
+  private List<E> entries;
 
-  ErrorResponse(Throwable cause) {
-    super(false);
-    message = cause.getMessage();
+  public ListResponse(List<E> entries) {
+    super(true);
+    this.entries = entries;
   }
 
 }
