@@ -43,13 +43,13 @@ NX.define('Nexus.capabilities.CapabilityTypeStore', {
       idProperty: 'id',
       fields: [
         { name: 'id' },
-        { name: 'name' },
+        { name: 'name', sortType: ST.asUCString },
         { name: 'about' },
         { name: 'formFields' }
       ],
 
       sortInfo: {
-        field: 'id',
+        field: 'name',
         direction: 'ASC'
       },
 
