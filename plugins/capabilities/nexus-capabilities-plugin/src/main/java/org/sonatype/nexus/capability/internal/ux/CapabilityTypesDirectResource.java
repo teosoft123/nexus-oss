@@ -11,7 +11,7 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.plugins.capabilities.internal.rest;
+package org.sonatype.nexus.capability.internal.ux;
 
 import java.util.List;
 
@@ -27,6 +27,7 @@ import javax.ws.rs.QueryParam;
 import org.sonatype.nexus.capabilities.model.CapabilityTypeXO;
 import org.sonatype.nexus.capabilities.model.FormFieldXO;
 import org.sonatype.nexus.capability.CapabilitiesPlugin;
+import org.sonatype.nexus.directjngine.DirectResource;
 import org.sonatype.nexus.formfields.FormField;
 import org.sonatype.nexus.formfields.Selectable;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
@@ -36,48 +37,45 @@ import org.sonatype.sisu.siesta.common.Resource;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.softwarementors.extjs.djn.config.annotations.DirectAction;
+import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 /**
- * Capabilities Types REST resource.
+ * Capabilities Types Ext.Direct resource.
  *
  * @since 2.7
  */
 @Named
 @Singleton
-@Path(CapabilityTypesResource.RESOURCE_URI)
-@Produces({"application/xml", "application/json"})
-public class CapabilityTypesResource
+@DirectAction(action = "CapabilityTypes")
+public class CapabilityTypesDirectResource
     extends ComponentSupport
-    implements Resource
+    implements DirectResource
 {
-
-  public static final String RESOURCE_URI = CapabilitiesPlugin.REST_PREFIX + "/types";
-
-  public static final String $INCLUDE_NOT_EXPOSED = "$includeNotExposed";
 
   private final CapabilityDescriptorRegistry capabilityDescriptorRegistry;
 
   @Inject
-  public CapabilityTypesResource(final CapabilityDescriptorRegistry capabilityDescriptorRegistry) {
+  public CapabilityTypesDirectResource(final CapabilityDescriptorRegistry capabilityDescriptorRegistry) {
     this.capabilityDescriptorRegistry = capabilityDescriptorRegistry;
   }
 
   /**
    * Retrieve a list of capability types available.
    */
-  @GET
-  @Produces({APPLICATION_XML, APPLICATION_JSON})
-  public List<CapabilityTypeXO> get(@QueryParam($INCLUDE_NOT_EXPOSED) Boolean includeNotExposed) {
+  @DirectMethod
+  public List<CapabilityTypeXO> get() {
 
     final List<CapabilityTypeXO> types = Lists.newArrayList();
     final CapabilityDescriptor[] descriptors = capabilityDescriptorRegistry.getAll();
 
     if (descriptors != null) {
       for (final CapabilityDescriptor descriptor : descriptors) {
-        if (((includeNotExposed != null && includeNotExposed) || descriptor.isExposed())) {
+        if (descriptor.isExposed()) {
 
           CapabilityTypeXO type = new CapabilityTypeXO()
               .withId(descriptor.type().toString())

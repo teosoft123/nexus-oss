@@ -36,15 +36,11 @@ NX.define('Nexus.capabilities.CapabilityTypeStore', {
     config = config || {};
 
     Ext.apply(config, {
-      id: 'id',
 
       paramsAsHash: false,
       directFn: CapabilityTypes.get,
-      paramOrder: ['includeNotExposed'],
-      baseParams: {
-        includeNotExposed: false
-      },
 
+      idProperty: 'id',
       fields: [
         { name: 'id' },
         { name: 'name' },

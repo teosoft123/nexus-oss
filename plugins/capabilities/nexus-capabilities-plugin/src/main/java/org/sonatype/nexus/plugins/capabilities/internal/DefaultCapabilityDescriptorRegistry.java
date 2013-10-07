@@ -22,11 +22,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.sonatype.nexus.capability.CapabilitiesPlugin;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptorRegistry;
 import org.sonatype.nexus.plugins.capabilities.CapabilityType;
 
 import com.google.common.collect.Lists;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -68,6 +70,7 @@ class DefaultCapabilityDescriptorRegistry
   }
 
   @Override
+  @RequiresPermissions(CapabilitiesPlugin.PERMISSION_PREFIX_TYPES + "read")
   public CapabilityDescriptor[] getAll() {
     final Collection<CapabilityDescriptor> all = Lists.newArrayList();
     all.addAll(descriptors);
