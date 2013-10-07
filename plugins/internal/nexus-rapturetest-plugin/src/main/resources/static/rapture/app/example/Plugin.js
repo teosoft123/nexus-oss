@@ -1,4 +1,4 @@
-Ext.define('NX.app.nexus_rapturetest_plugin', {
+Ext.define('NX.example.Plugin', {
 
   namespaces: [
     'NX.example'

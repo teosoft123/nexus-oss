@@ -7,8 +7,6 @@ Ext.Loader.setConfig({
 
 // TODO: Sort out how to dynamically get the list of plugin ids
 Ext.ns('NX.app');
-NX.app.pluginIds = [
-    'nexus-rapturetest-plugin'
-];
+NX.app.pluginIds = [${plugins}];
 
 Ext.application('NX.app.Application');

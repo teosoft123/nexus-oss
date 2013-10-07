@@ -50,6 +50,10 @@
         <include>*:nexus-maven-bridge-plugin</include>
         <include>*:nexus-ui-extjs3-plugin</include>
         <include>*:nexus-capabilities-plugin</include>
+
+        <!-- rapture -->
+        <include>*:nexus-rapture-plugin</include>
+        <include>*:nexus-rapturetest-plugin</include>
       </includes>
     </dependencySet>
   </dependencySets>

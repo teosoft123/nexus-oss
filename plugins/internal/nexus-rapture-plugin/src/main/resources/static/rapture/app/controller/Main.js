@@ -6,6 +6,16 @@ Ext.define('NX.controller.Main', {
   ],
 
   init: function () {
-    // TODO
+    this.control({
+      'featurebrowser': {
+        afterrender: this.setActiveTab
+      }
+    });
+  },
+
+  setActiveTab: function (featureBrowser) {
+    // TODO any other algorithm?
+    featureBrowser.setActiveTab(0);
   }
+
 });

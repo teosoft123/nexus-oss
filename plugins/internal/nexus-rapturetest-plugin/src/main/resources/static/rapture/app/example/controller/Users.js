@@ -14,6 +14,9 @@ Ext.define('NX.example.controller.Users', {
 
   init: function () {
     this.control({
+      'featurebrowser': {
+        beforerender: this.addToBrowser
+      },
       'userlist': {
         itemdblclick: this.editUser
       },
@@ -21,6 +24,10 @@ Ext.define('NX.example.controller.Users', {
         click: this.updateUser
       }
     });
+  },
+
+  addToBrowser: function (featureBrowser) {
+    featureBrowser.add(this.getListView());
   },
 
   editUser: function (grid, record) {
