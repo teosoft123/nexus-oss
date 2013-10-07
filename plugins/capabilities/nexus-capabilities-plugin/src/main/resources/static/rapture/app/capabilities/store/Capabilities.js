@@ -3,14 +3,15 @@ Ext.define('NX.capabilities.store.Capabilities', {
   model: 'NX.capabilities.model.Capability',
 
   proxy: {
-    type: 'ajax',
-    url: '/nexus/service/siesta/capabilities',
-    headers: {
-      'accept': 'application/json'
-    },
+    type: 'direct',
+    paramsAsHash: false,
+    directFn: Capabilities.get,
+
     reader: {
       type: 'json',
-      idProperty: 'capability.id'
+      root: 'entries',
+      idProperty: 'capability.id',
+      successProperty: 'success'
     }
   },
 
