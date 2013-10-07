@@ -18,6 +18,10 @@ Ext.define('NX.app.Application', {
   constructor: function (config) {
     var self = this, custom, keys;
 
+    Ext.Direct.addProvider(
+        NX.direct.REMOTING_API
+    );
+
     // only these customizations will be allowed
     custom = {
       namespaces: self.namespaces,
