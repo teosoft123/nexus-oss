@@ -33,7 +33,7 @@ Ext.define('NX.app.Application', {
     // for each plugin, merge its customizations
     console.log('Plugins: ' + NX.app.pluginIds);
     Ext.each(NX.app.pluginIds, function (pluginId) {
-      var className = 'NX.app.' + pluginId.replace(/-/g, '_'), // replace all "-" with "_"
+      var className = 'NX.' + pluginId + '.Plugin',
           plugin;
 
       console.log('Loading plugin: ' + pluginId + ', from class: ' + className);
