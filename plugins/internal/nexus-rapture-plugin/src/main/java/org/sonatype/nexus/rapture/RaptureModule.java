@@ -6,6 +6,7 @@ import javax.inject.Named;
 
 import org.sonatype.nexus.guice.FilterChainModule;
 import org.sonatype.nexus.rapture.internal.DirectServlet;
+import org.sonatype.nexus.rapture.internal.ResourceServlet;
 import org.sonatype.nexus.web.MdcUserContextFilter;
 import org.sonatype.security.web.guice.SecurityWebFilter;
 

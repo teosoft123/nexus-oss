@@ -1,4 +1,4 @@
-package org.sonatype.nexus.rapture;
+package org.sonatype.nexus.rapture.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -30,16 +30,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Rapture resources.
+ * Rapture web-resources.
  *
  * @since 2.7
  */
 @Named
 @Singleton
-public class RaptureResources
+public class WebResources
     implements NexusResourceBundle
 {
-  private static final Logger log = LoggerFactory.getLogger(RaptureResources.class);
+  private static final Logger log = LoggerFactory.getLogger(WebResources.class);
 
   private final ApplicationConfiguration applicationConfiguration;
 
@@ -48,9 +48,9 @@ public class RaptureResources
   private final List<NexusResourceBundle> resourceBundles;
 
   @Inject
-  public RaptureResources(final ApplicationConfiguration applicationConfiguration,
-                          final TemplateEngine templateEngine,
-                          final List<NexusResourceBundle> resourceBundles)
+  public WebResources(final ApplicationConfiguration applicationConfiguration,
+                      final TemplateEngine templateEngine,
+                      final List<NexusResourceBundle> resourceBundles)
   {
     this.applicationConfiguration = checkNotNull(applicationConfiguration);
     this.templateEngine = checkNotNull(templateEngine);
@@ -121,7 +121,7 @@ public class RaptureResources
         log.debug("Plugin config class names: {}", classNames);
       }
 
-      URL template = RaptureResources.class.getResource("app.vm");
+      URL template = WebResources.class.getResource("app.vm");
       checkState(template != null, "Missing app.vm template");
 
       return new ByteArrayInputStream(templateEngine.render(
