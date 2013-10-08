@@ -11,7 +11,7 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.capability.direct;
+package org.sonatype.nexus.capability.internal.ux;
 
 import java.util.List;
 
