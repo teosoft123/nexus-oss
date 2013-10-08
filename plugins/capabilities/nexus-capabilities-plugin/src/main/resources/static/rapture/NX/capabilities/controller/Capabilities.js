@@ -2,21 +2,26 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   extend: 'Ext.app.Controller',
 
   stores: [
-    'Capabilities'
+    'Capabilities',
+    'CapabilityTypes'
   ],
   models: [
-    'Capability'
+    'Capability',
+    'CapabilityType'
   ],
   views: [
     'MasterDetail',
     'List',
-    'Detail',
+    'Summary',
+    'Settings',
+    'Status',
+    'About',
     'Edit'
   ],
   refs: [
     {
-      ref: 'detail',
-      selector: 'capabilitydetail'
+      ref: 'masterDetail',
+      selector: 'capabilityMasterDetail'
     }
   ],
 
@@ -25,11 +30,11 @@ Ext.define('NX.capabilities.controller.Capabilities', {
       'featurebrowser': {
         beforerender: this.addToBrowser
       },
-      'capabilitylist': {
+      'capabilityList': {
         beforerender: this.loadCapabilities,
-        itemclick: this.showDetails
+        selectionchange: this.showDetails
       },
-      'capabilityedit button[action=save]': {
+      'capabilityEdit button[action=save]': {
         click: this.updateCapability
       }
     });
@@ -41,10 +46,19 @@ Ext.define('NX.capabilities.controller.Capabilities', {
 
   loadCapabilities: function () {
     this.getCapabilitiesStore().load();
+    this.getCapabilityTypesStore().load();
   },
 
-  showDetails: function (grid, record) {
-    this.getDetail().setTitle(record.data.typeName);
+  showDetails: function (selectionModel, selectedModels) {
+    var detail = this.getMasterDetail().down('nxDetail');
+    if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
+      detail.setTitle(selectedModels[0].data.typeName)
+      detail.getLayout().setActiveItem(1);
+    }
+    else {
+      detail.setTitle('Empty selection')
+      detail.getLayout().setActiveItem(0);
+    }
   },
 
   updateCapability: function (button) {
