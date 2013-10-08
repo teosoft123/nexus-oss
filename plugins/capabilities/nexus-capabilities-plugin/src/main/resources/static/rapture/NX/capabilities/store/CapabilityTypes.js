@@ -5,7 +5,7 @@ Ext.define('NX.capabilities.store.CapabilityTypes', {
   proxy: {
     type: 'direct',
     paramsAsHash: false,
-    directFn: CapabilityTypes.get,
+    directFn: NX.direct.CapabilityTypes.get,
 
     reader: {
       type: 'json',

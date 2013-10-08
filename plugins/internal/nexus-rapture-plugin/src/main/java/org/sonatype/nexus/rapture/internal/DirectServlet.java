@@ -75,8 +75,8 @@ public class DirectServlet
             "nexus",
             apiFile.getName(),
             apiFile.getAbsolutePath(),
+            "NX.direct.api",
             "NX.direct",
-            "",
             apiClasses
         )
     );

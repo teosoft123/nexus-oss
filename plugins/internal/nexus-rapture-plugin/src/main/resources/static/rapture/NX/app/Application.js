@@ -22,7 +22,7 @@ Ext.define('NX.app.Application', {
     var self = this, custom, keys;
 
     Ext.Direct.addProvider(
-        NX.direct.REMOTING_API
+        NX.direct.api.REMOTING_API
     );
 
     // only these customizations will be allowed

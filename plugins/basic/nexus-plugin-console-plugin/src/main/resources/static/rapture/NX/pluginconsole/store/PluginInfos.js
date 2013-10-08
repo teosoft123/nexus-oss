@@ -5,7 +5,7 @@ Ext.define('NX.pluginconsole.store.PluginInfos', {
   proxy: {
     type: 'direct',
     paramsAsHash: false,
-    directFn: PluginConsole.listPluginInfos,
+    directFn: NX.direct.PluginConsole.listPluginInfos,
 
     reader: {
       type: 'json',
