@@ -8,8 +8,7 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
     'PluginInfo'
   ],
   views: [
-    'List',
-    'Summary'
+    'List'
   ],
 
   refs: [
