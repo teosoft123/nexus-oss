@@ -33,9 +33,6 @@ Ext.define('NX.capabilities.controller.Capabilities', {
       'nx-capability-list': {
         beforerender: this.loadCapabilities,
         selectionchange: this.showDetails
-      },
-      'nx-capability-edit button[action=save]': {
-        click: this.updateCapability
       }
     });
   },
@@ -62,14 +59,9 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   },
 
   showDetails: function (selectionModel, selectedModels) {
-    var detail = this.getList().up('nx-masterdetail-panel').down('nx-masterdetail-tabs');
+    var masterdetail = this.getList().up('nx-masterdetail-panel');
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
-      detail.setTitle(selectedModels[0].data.typeName);
-      detail.getLayout().setActiveItem(1);
-    }
-    else {
-      detail.setTitle('Empty selection');
-      detail.getLayout().setActiveItem(0);
+      masterdetail.setDescription(selectedModels[0].data.typeName);
     }
   },
 

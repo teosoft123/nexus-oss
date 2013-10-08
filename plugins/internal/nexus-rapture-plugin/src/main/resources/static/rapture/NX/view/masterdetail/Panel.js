@@ -20,6 +20,22 @@ Ext.define('NX.view.masterdetail.Panel', {
     ];
 
     this.callParent(arguments);
+
+    this.addEvents('selectionchange');
+
+    this.down(this.list).on('selectionchange', this.selectionChange, this);
+  },
+
+  selectionChange: function (selectionModel, selectedModels) {
+    this.fireEvent('selectionchange', this, selectedModels);
+  },
+
+  destroy: function () {
+    this.down(this.list).un('selectionchange', this.selectionChange);
+  },
+
+  setDescription: function (title) {
+    this.down('nx-masterdetail-tabs').setTitle(title);
   }
 
 });

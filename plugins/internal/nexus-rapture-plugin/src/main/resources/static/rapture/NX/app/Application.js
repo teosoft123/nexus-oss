@@ -10,7 +10,8 @@ Ext.define('NX.app.Application', {
 
   namespaces: [],
   controllers: [
-    'Main'
+    'Main',
+    'MasterDetail'
   ],
   models: [],
   refs: [],

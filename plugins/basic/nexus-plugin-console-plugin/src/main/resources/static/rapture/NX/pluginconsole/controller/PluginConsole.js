@@ -48,14 +48,9 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
   },
 
   showDetails: function (selectionModel, selectedModels) {
-    var detail = this.getList().up('nx-masterdetail-panel').down('nx-masterdetail-tabs');
+    var masterdetail = this.getList().up('nx-masterdetail-panel');
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
-      detail.setTitle(selectedModels[0].data.name);
-      detail.getLayout().setActiveItem(1);
-    }
-    else {
-      detail.setTitle('Empty selection');
-      detail.getLayout().setActiveItem(0);
+      masterdetail.setDescription(selectedModels[0].data.name);
     }
   }
 
