@@ -260,7 +260,7 @@ NX.define('Nexus.capabilities.CapabilitiesGrid', {
       self.reconfigure(self.gridStore, self.gridStore.getColumnModel());
     }
     else {
-      self.gridStore.loadCapabilities();
+      self.gridStore.loadStores();
     }
   },
 

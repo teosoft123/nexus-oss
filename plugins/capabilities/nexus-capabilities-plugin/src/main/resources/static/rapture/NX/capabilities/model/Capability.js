@@ -1,11 +1,9 @@
 Ext.define('NX.capabilities.model.Capability', {
   extend: 'Ext.data.Model',
   fields: [
-    'typeName',
+    'id',
     'description',
-    'status',
-    'capability',
-    'tags',
-    {name: 'notes', mapping: 'capability.notes'}
+    'notes',
+    'properties'
   ]
 });

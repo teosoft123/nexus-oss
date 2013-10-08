@@ -11,7 +11,7 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.capability.internal.ux;
+package org.sonatype.nexus.capability.ux;
 
 import java.util.List;
 
@@ -20,15 +20,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.nexus.capabilities.model.CapabilityTypeXO;
-import org.sonatype.nexus.capabilities.model.FormFieldXO;
+import org.sonatype.nexus.capability.ux.model.CapabilityTypeUX;
+import org.sonatype.nexus.capability.ux.model.FormFieldUX;
 import org.sonatype.nexus.formfields.FormField;
 import org.sonatype.nexus.formfields.Selectable;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptorRegistry;
 import org.sonatype.nexus.rapture.direct.DirectResource;
 import org.sonatype.nexus.rapture.direct.Response;
-import org.sonatype.sisu.goodies.common.ComponentSupport;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -39,22 +38,21 @@ import static org.sonatype.nexus.rapture.direct.Responses.error;
 import static org.sonatype.nexus.rapture.direct.Responses.success;
 
 /**
- * Capabilities Types Ext.Direct resource.
+ * Capability Type Ext.Direct resource.
  *
  * @since 2.7
  */
 @Named
 @Singleton
-@DirectAction(action = "CapabilityTypes")
-public class CapabilityTypesDirectResource
-    extends ComponentSupport
+@DirectAction(action = "CapabilityType")
+public class CapabilityTypeDirectResource
     implements DirectResource
 {
 
   private final CapabilityDescriptorRegistry capabilityDescriptorRegistry;
 
   @Inject
-  public CapabilityTypesDirectResource(final CapabilityDescriptorRegistry capabilityDescriptorRegistry) {
+  public CapabilityTypeDirectResource(final CapabilityDescriptorRegistry capabilityDescriptorRegistry) {
     this.capabilityDescriptorRegistry = capabilityDescriptorRegistry;
   }
 
@@ -62,16 +60,16 @@ public class CapabilityTypesDirectResource
    * Retrieve a list of capability types available.
    */
   @DirectMethod
-  public Response list() {
+  public Response read() {
     try {
-      final List<CapabilityTypeXO> types = Lists.newArrayList();
+      final List<CapabilityTypeUX> types = Lists.newArrayList();
       final CapabilityDescriptor[] descriptors = capabilityDescriptorRegistry.getAll();
 
       if (descriptors != null) {
         for (final CapabilityDescriptor descriptor : descriptors) {
           if (descriptor.isExposed()) {
 
-            CapabilityTypeXO type = new CapabilityTypeXO()
+            CapabilityTypeUX type = new CapabilityTypeUX()
                 .withId(descriptor.type().toString())
                 .withName(descriptor.name())
                 .withAbout(descriptor.about());
@@ -79,16 +77,16 @@ public class CapabilityTypesDirectResource
             types.add(type);
 
             if (descriptor.formFields() != null) {
-              type.withFormFields(Lists.transform(descriptor.formFields(), new Function<FormField, FormFieldXO>()
+              type.withFormFields(Lists.transform(descriptor.formFields(), new Function<FormField, FormFieldUX>()
               {
                 @Nullable
                 @Override
-                public FormFieldXO apply(@Nullable final FormField input) {
+                public FormFieldUX apply(@Nullable final FormField input) {
                   if (input == null) {
                     return null;
                   }
 
-                  FormFieldXO formField = new FormFieldXO()
+                  FormFieldUX formField = new FormFieldUX()
                       .withId(input.getId())
                       .withType(input.getType())
                       .withLabel(input.getLabel())

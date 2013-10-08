@@ -1,11 +1,13 @@
-Ext.define('NX.capabilities.store.CapabilityTypes', {
+Ext.define('NX.capabilities.store.CapabilityType', {
   extend: 'Ext.data.Store',
   model: 'NX.capabilities.model.CapabilityType',
 
   proxy: {
     type: 'direct',
     paramsAsHash: false,
-    directFn: NX.direct.CapabilityTypes.list,
+    api: {
+      read: NX.direct.CapabilityType.read
+    },
 
     reader: {
       type: 'json',

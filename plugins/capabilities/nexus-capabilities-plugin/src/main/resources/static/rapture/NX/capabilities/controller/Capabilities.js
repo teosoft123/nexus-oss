@@ -2,8 +2,9 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   extend: 'Ext.app.Controller',
 
   stores: [
-    'Capabilities',
-    'CapabilityTypes'
+    'Capability',
+    'CapabilityStatus',
+    'CapabilityType'
   ],
   models: [
     'Capability',
@@ -30,8 +31,11 @@ Ext.define('NX.capabilities.controller.Capabilities', {
         beforerender: this.addToBrowser
       },
       'nx-capability-list': {
-        beforerender: this.loadCapabilities,
+        beforerender: this.loadStores,
         selectionchange: this.showDetails
+      },
+      'nx-capability-summary button[action=save]': {
+        click: this.updateCapability
       }
     });
   },
@@ -52,15 +56,22 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     );
   },
 
-  loadCapabilities: function () {
-    this.getCapabilitiesStore().load();
-    this.getCapabilityTypesStore().load();
+  loadStores: function () {
+    this.getCapabilityStore().load();
+    this.getCapabilityStatusStore().load();
+    this.getCapabilityTypeStore().load();
+  },
+
+  reloadStores: function () {
+    this.getCapabilityStore().reload();
+    this.getCapabilityStatusStore().reload();
+    this.getCapabilityTypeStore().reload();
   },
 
   showDetails: function (selectionModel, selectedModels) {
     var me = this,
         masterdetail = me.getList().up('nx-masterdetail-panel'),
-        status, info;
+        status, info, summary, capabilityModel, capabilityTypeModel;
 
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
       status = selectedModels[0].data;
@@ -74,20 +85,31 @@ Ext.define('NX.capabilities.controller.Capabilities', {
           info[tag.key] = tag.value;
         });
       }
-      me.getSummary().showInfo(info);
-      me.getAbout().showAbout(me.getCapabilityTypesStore().getById(status.capability.typeId).get('about'));
+      summary = me.getSummary();
+      summary.showInfo(info);
+
+      capabilityModel = me.getCapabilityStore().getById(status.id);
+      summary.down('form').loadRecord(capabilityModel);
+
+      capabilityTypeModel = me.getCapabilityTypeStore().getById(status.typeId);
+      me.getAbout().showAbout(capabilityTypeModel.get('about'));
       me.getStatus().showStatus(status.status);
     }
 
   },
 
-  updateCapability: function (button) {
-    var win = button.up('window'),
-        form = win.down('form'),
-        record = form.getRecord(),
+  updateCapability: function () {
+    var form = this.getSummary().down('form'),
+        capabilityModel = form.getRecord(),
         values = form.getValues();
 
-    record.set(values);
-    win.close();
+    capabilityModel.set(values);
+    this.getCapabilityStore().sync({
+      callback: function(){
+        this.reloadStores();
+      },
+      scope: this
+    });
   }
+
 });

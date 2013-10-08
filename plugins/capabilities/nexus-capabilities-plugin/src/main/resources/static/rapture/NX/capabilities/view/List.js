@@ -2,7 +2,7 @@ Ext.define('NX.capabilities.view.List', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.nx-capability-list',
 
-  store: 'Capabilities',
+  store: 'CapabilityStatus',
 
   initComponent: function () {
     this.columns = [
