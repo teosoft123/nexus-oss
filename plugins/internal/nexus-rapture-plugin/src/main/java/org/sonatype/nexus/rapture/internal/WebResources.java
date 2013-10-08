@@ -80,6 +80,8 @@ public class WebResources
     }
   }
 
+  // FIXME: Add index.html generation here too
+
   /**
    * Renders app.js with {@code NX.app.pluginConfigClassNames} set to the list of detected
    * {@code NX._package_.app.PluginConfig} extjs classes.
