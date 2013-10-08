@@ -14,7 +14,7 @@ Ext.define('NX.example.controller.Users', {
 
   init: function () {
     this.control({
-      'featurebrowser': {
+      'nx-featurebrowser': {
         beforerender: this.addToBrowser
       },
       'userlist': {

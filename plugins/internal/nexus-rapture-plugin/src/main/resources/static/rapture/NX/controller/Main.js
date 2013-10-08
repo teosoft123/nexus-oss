@@ -9,7 +9,7 @@ Ext.define('NX.controller.Main', {
 
   init: function () {
     this.control({
-      'featurebrowser': {
+      'nx-featurebrowser': {
         afterrender: this.setActiveTab
       }
     });

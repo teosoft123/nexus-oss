@@ -27,7 +27,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
 
   init: function () {
     this.control({
-      'featurebrowser': {
+      'nx-featurebrowser': {
         beforerender: this.addToBrowser
       },
       'nx-capability-list': {

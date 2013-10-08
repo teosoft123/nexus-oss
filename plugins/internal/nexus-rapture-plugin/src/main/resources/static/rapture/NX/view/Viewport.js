@@ -4,7 +4,7 @@ Ext.define('NX.view.Viewport', {
   layout: 'fit',
   items: [
     {
-      xtype: 'featurebrowser'
+      xtype: 'nx-featurebrowser'
     }
   ]
 });
