@@ -1,6 +1,6 @@
 Ext.define('NX.view.masterdetail.Panel', {
   extend: 'Ext.panel.Panel',
-  alias: 'widget.nxMasterDetailPanel',
+  alias: 'widget.nx-masterdetail-panel',
 
   layout: 'border',
 
@@ -12,7 +12,7 @@ Ext.define('NX.view.masterdetail.Panel', {
         flex: 0.5
       },
       {
-        xtype: 'nxMasterDetailTabs',
+        xtype: 'nx-masterdetail-tabs',
         modelName: this.modelName || this.title.toLowerCase(),
         items: this.tabs
       }

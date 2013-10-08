@@ -1,6 +1,6 @@
 Ext.define('NX.view.masterdetail.Tabs', {
   extend: 'Ext.panel.Panel',
-  alias: 'widget.nxMasterDetailTabs',
+  alias: 'widget.nx-masterdetail-tabs',
 
   title: 'Empty Selection',
 
@@ -31,7 +31,7 @@ Ext.define('NX.view.masterdetail.Tabs', {
     this.items = [
       {
         xtype: 'panel',
-        html: '<span class="nx-masterdetail-EmptySelection-text">' + text + '</span>'
+        html: '<span class="nx-masterdetail-emptyselection-text">' + text + '</span>'
       },
       content
     ];

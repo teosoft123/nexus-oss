@@ -1,6 +1,6 @@
 Ext.define('NX.capabilities.view.Summary', {
   extend: 'Ext.panel.Panel',
-  alias: 'widget.capabilitySummary',
+  alias: 'widget.nx-capability-summary',
 
   title: 'Summary'
 

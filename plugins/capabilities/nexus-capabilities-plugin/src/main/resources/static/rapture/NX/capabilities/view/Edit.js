@@ -1,6 +1,6 @@
 Ext.define('NX.capabilities.view.Edit', {
   extend: 'Ext.window.Window',
-  alias: 'widget.capabilityEdit',
+  alias: 'widget.nx-capability-edit',
 
   title: 'Edit Capability',
   layout: 'fit',

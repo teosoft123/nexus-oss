@@ -21,7 +21,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   refs: [
     {
       ref: 'list',
-      selector: 'capabilityList'
+      selector: 'nx-capability-list'
     }
   ],
 
@@ -30,11 +30,11 @@ Ext.define('NX.capabilities.controller.Capabilities', {
       'featurebrowser': {
         beforerender: this.addToBrowser
       },
-      'capabilityList': {
+      'nx-capability-list': {
         beforerender: this.loadCapabilities,
         selectionchange: this.showDetails
       },
-      'capabilityEdit button[action=save]': {
+      'nx-capability-edit button[action=save]': {
         click: this.updateCapability
       }
     });
@@ -43,14 +43,14 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   addToBrowser: function (featureBrowser) {
     featureBrowser.add(
         {
-          xtype: 'nxMasterDetailPanel',
+          xtype: 'nx-masterdetail-panel',
           title: 'Capability',
-          list: 'capabilityList',
+          list: 'nx-capability-list',
           tabs: [
-            { xtype: 'capabilitySummary' },
-            { xtype: 'capabilitySettings' },
-            { xtype: 'capabilityStatus' },
-            { xtype: 'capabilityAbout' }
+            { xtype: 'nx-capability-summary' },
+            { xtype: 'nx-capability-settings' },
+            { xtype: 'nx-capability-status' },
+            { xtype: 'nx-capability-about' }
           ]
         }
     );
@@ -62,7 +62,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   },
 
   showDetails: function (selectionModel, selectedModels) {
-    var detail = this.getList().up('nxMasterDetailPanel').down('nxMasterDetailTabs');
+    var detail = this.getList().up('nx-masterdetail-panel').down('nx-masterdetail-tabs');
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
       detail.setTitle(selectedModels[0].data.typeName);
       detail.getLayout().setActiveItem(1);
