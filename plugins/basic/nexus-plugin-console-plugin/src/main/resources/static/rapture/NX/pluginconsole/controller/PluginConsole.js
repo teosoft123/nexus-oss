@@ -38,7 +38,7 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
           title: 'Plugin Console',
           emptyText: 'Please select a plugin to view details',
           list: 'nx-pluginconsole-list',
-          tabs: { xtype: 'nx-info' }
+          tabs: { xtype: 'nx-info-panel' }
         }
     );
   },
@@ -69,7 +69,7 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
           info['Documentation'] = me.asLink(doc.url, doc.label);
         });
       }
-      masterdetail.down("nx-info").showInfo(info);
+      masterdetail.down("nx-info-panel").showInfo(info);
     }
   },
 
