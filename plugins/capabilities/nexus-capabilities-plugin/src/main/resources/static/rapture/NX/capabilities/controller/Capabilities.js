@@ -14,8 +14,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     'Summary',
     'Settings',
     'Status',
-    'About',
-    'Edit'
+    'About'
   ],
 
   refs: [
