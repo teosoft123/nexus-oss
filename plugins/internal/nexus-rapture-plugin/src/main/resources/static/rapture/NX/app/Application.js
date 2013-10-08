@@ -5,6 +5,10 @@ Ext.define('NX.app.Application', {
     'NX.view.Viewport'
   ],
 
+  mixins: {
+      logAware: 'NX.LogAware'
+  },
+
   name: 'NX',
   appFolder: 'NX',
 
@@ -35,16 +39,16 @@ Ext.define('NX.app.Application', {
       views: self.views
     };
     keys = Object.keys(custom);
-    console.log('Supported customizations: ' + keys);
+    self.logDebug('Supported customizations: ' + keys);
 
     // TODO: More error handling around pluginConfigClassNames content, this needs to be defined, should have at least one element, etc
 
     // for each plugin, merge its customizations
-    console.log('Plugins config class names: ' + NX.app.pluginConfigClassNames);
+    self.logDebug('Plugins config class names: ' + NX.app.pluginConfigClassNames);
     Ext.each(NX.app.pluginConfigClassNames, function (className) {
       var pluginConfig;
 
-      console.log('Loading plugin config from class: ' + className);
+      self.logDebug('Loading plugin config from class: ' + className);
       pluginConfig = Ext.create(className);
 
       // Detect customizations, these are simply fields defined on the plugin object
@@ -52,7 +56,7 @@ Ext.define('NX.app.Application', {
       Ext.each(keys, function (key) {
         var value = pluginConfig[key];
         if (value) {
-          console.log(key + ': ' + value);
+          self.logDebug(key + ': ' + value);
           if (Ext.isString(value)) {
             custom[key].push(value);
           }
@@ -67,10 +71,10 @@ Ext.define('NX.app.Application', {
     });
 
     // apply the customization to this application
-    console.log('Applying customizations');
+    self.logDebug('Applying customizations');
 
     Ext.each(keys, function (key) {
-      console.log(key + ': ' + custom[key]);
+      self.logDebug(key + ': ' + custom[key]);
     });
     Ext.apply(self, custom);
 
