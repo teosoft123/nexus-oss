@@ -3,3 +3,15 @@
 .x-panel-default div {
   font: normal 11px arial, tahoma, verdana, helvetica;
 }
+
+.nx-info-entry td {
+  padding-bottom: 4px;
+}
+
+.nx-info-entry-name {
+  font-weight: bold;
+}
+
+.nx-info-entry-value {
+  padding-left: 20px;
+}

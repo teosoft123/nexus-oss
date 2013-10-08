@@ -3,6 +3,11 @@ Ext.define('NX.pluginconsole.model.PluginInfo', {
   fields: [
     'name',
     'version',
-    'description'
+    'description',
+    'status',
+    'scmVersion',
+    'scmTimestamp',
+    'site',
+    'documentation'
   ]
 });

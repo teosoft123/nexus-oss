@@ -38,7 +38,7 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
           title: 'Plugin Console',
           emptyText: 'Please select a plugin to view details',
           list: 'nx-pluginconsole-list',
-          tabs: { xtype: 'nx-pluginconsole-summary' }
+          tabs: { xtype: 'nx-info' }
         }
     );
   },
@@ -48,9 +48,37 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
   },
 
   showDetails: function (selectionModel, selectedModels) {
-    var masterdetail = this.getList().up('nx-masterdetail-panel');
+    var me = this,
+        masterdetail = me.getList().up('nx-masterdetail-panel'),
+        pluginInfo, info;
+
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
-      masterdetail.setDescription(selectedModels[0].data.name);
+      pluginInfo = selectedModels[0].data;
+      masterdetail.setDescription(pluginInfo.name);
+      info = {
+        'Name': pluginInfo.name,
+        'Version': pluginInfo.version,
+        'Status': pluginInfo.status,
+        'Description': pluginInfo.description,
+        'SCM Version': pluginInfo.scmVersion,
+        'SCM Timestamp': pluginInfo.scmTimestamp,
+        'Site': me.asLink(pluginInfo.site)
+      };
+      if (Ext.isDefined(pluginInfo.documentation)) {
+        Ext.each(pluginInfo.documentation, function (doc) {
+          info['Documentation'] = me.asLink(doc.url, doc.label);
+        });
+      }
+      masterdetail.down("nx-info").showInfo(info);
+    }
+  },
+
+  asLink: function (url, text) {
+    if (!Ext.isEmpty(url)) {
+      if (Ext.isEmpty(text)) {
+        text = url;
+      }
+      return '<a href=\'' + url + '\'>' + text + '</a>'
     }
   }
 
