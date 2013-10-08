@@ -248,6 +248,7 @@ public class CapabilityDirectResource
         .withNotes(reference.context().notes())
         .withTypeId(descriptor.type().toString())
         .withTypeName(descriptor.name())
+        .withEnabled(reference.context().isEnabled())
         .withActive(reference.context().isActive())
         .withError(reference.context().hasFailure());
 

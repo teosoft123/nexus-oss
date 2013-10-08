@@ -15,3 +15,7 @@
 .nx-info-entry-value {
   padding-left: 20px;
 }
+
+.nx-red-marker td {
+  color:  #D04437;
+}

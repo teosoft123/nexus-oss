@@ -60,12 +60,6 @@ public abstract class CapabilitiesITSupport
         .addPlugins(
             artifactResolver().resolvePluginFromDependencyManagement(
                 "org.sonatype.nexus.plugins", "nexus-capabilities-testsuite-helper"
-            ),
-            artifactResolver().resolvePluginFromDependencyManagement(
-                "org.sonatype.nexus.plugins", "nexus-rapture-plugin"
-            ),
-            artifactResolver().resolvePluginFromDependencyManagement(
-                "org.sonatype.nexus.plugins", "nexus-rapturetest-plugin"
             )
         );
   }
