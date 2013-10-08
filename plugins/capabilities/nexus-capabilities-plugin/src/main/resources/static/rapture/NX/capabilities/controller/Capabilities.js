@@ -18,10 +18,9 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   ],
 
   refs: [
-    {
-      ref: 'list',
-      selector: 'nx-capability-list'
-    }
+    { ref: 'list', selector: 'nx-capability-list' },
+    { ref: 'summary', selector: 'nx-capability-summary' },
+    { ref: 'about', selector: 'nx-capability-about' }
   ],
 
   init: function () {
@@ -58,10 +57,26 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   },
 
   showDetails: function (selectionModel, selectedModels) {
-    var masterdetail = this.getList().up('nx-masterdetail-panel');
+    var me = this,
+        masterdetail = me.getList().up('nx-masterdetail-panel'),
+        status, info;
+
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
-      masterdetail.setDescription(selectedModels[0].data.typeName);
+      status = selectedModels[0].data;
+      masterdetail.setDescription(status.typeName);
+      info = {
+        'Type': status.typeName,
+        'Description': status.description
+      }
+      if (Ext.isDefined(status.tags)) {
+        Ext.each(status.tags, function (tag) {
+          info[tag.key] = tag.value;
+        });
+      }
+      me.getSummary().showInfo(info);
+      me.getAbout().showAbout(me.getCapabilityTypesStore().getById(status.capability.typeId).get('about'));
     }
+
   },
 
   updateCapability: function (button) {
