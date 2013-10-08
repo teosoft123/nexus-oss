@@ -32,7 +32,6 @@
     <module>nexus-groovyremote-plugin</module>
     <module>nexus-plexusplugin-plugin</module>
     <module>nexus-rapture-plugin</module>
-    <module>nexus-rapturetest-plugin</module>
   </modules>
 
 </project>
