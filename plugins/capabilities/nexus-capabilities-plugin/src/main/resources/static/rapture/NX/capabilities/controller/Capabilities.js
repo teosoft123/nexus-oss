@@ -20,6 +20,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   refs: [
     { ref: 'list', selector: 'nx-capability-list' },
     { ref: 'summary', selector: 'nx-capability-summary' },
+    { ref: 'status', selector: 'nx-capability-status' },
     { ref: 'about', selector: 'nx-capability-about' }
   ],
 
@@ -75,6 +76,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
       }
       me.getSummary().showInfo(info);
       me.getAbout().showAbout(me.getCapabilityTypesStore().getById(status.capability.typeId).get('about'));
+      me.getStatus().showStatus(status.status);
     }
 
   },

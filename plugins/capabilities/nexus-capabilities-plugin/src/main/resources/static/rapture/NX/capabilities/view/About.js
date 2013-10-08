@@ -8,7 +8,10 @@ Ext.define('NX.capabilities.view.About', {
   html: '',
 
   showAbout: function (about) {
-    this.body.update(about);
+    this.html = about;
+    if (this.body) {
+      this.body.update(about);
+    }
   }
 
 });
