@@ -140,8 +140,8 @@ public class WebResources
           if (path.startsWith(NS_PREFIX) && path.endsWith(PLUGIN_CONFIG_SUFFIX)) {
             // rebuild the class name which has NX. prefix and minus the .js suffix
             String name = path.substring(NS_PREFIX.length() - "NX/".length(), path.length() - ".js".length());
+            // convert path to class-name
             name = name.replace("/", ".");
-            log.debug("Found plugin config class: {}", name);
             classNames.add(name);
           }
         }
