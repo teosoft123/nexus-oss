@@ -10,7 +10,6 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     'CapabilityType'
   ],
   views: [
-    'MasterDetail',
     'List',
     'Summary',
     'Settings',
@@ -18,10 +17,11 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     'About',
     'Edit'
   ],
+
   refs: [
     {
-      ref: 'masterDetail',
-      selector: 'capabilityMasterDetail'
+      ref: 'list',
+      selector: 'capabilityList'
     }
   ],
 
@@ -41,7 +41,19 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   },
 
   addToBrowser: function (featureBrowser) {
-    featureBrowser.add(this.getMasterDetailView());
+    featureBrowser.add(
+        {
+          xtype: 'nxMasterDetail',
+          title: 'Capability',
+          master: 'capabilityList',
+          details: [
+            { xtype: 'capabilitySummary' },
+            { xtype: 'capabilitySettings' },
+            { xtype: 'capabilityStatus' },
+            { xtype: 'capabilityAbout' }
+          ]
+        }
+    );
   },
 
   loadCapabilities: function () {
@@ -50,13 +62,13 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   },
 
   showDetails: function (selectionModel, selectedModels) {
-    var detail = this.getMasterDetail().down('nxDetail');
+    var detail = this.getList().up('nxMasterDetail').down('nxDetail');
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
-      detail.setTitle(selectedModels[0].data.typeName)
+      detail.setTitle(selectedModels[0].data.typeName);
       detail.getLayout().setActiveItem(1);
     }
     else {
-      detail.setTitle('Empty selection')
+      detail.setTitle('Empty selection');
       detail.getLayout().setActiveItem(0);
     }
   },

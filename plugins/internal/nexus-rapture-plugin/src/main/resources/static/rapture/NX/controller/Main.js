@@ -3,6 +3,7 @@ Ext.define('NX.controller.Main', {
 
   views: [
       'FeatureBrowser',
+      'MasterDetail',
       'Detail'
   ],
 
