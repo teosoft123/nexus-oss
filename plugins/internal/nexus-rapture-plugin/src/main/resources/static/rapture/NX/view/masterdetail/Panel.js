@@ -1,20 +1,20 @@
-Ext.define('NX.view.MasterDetail', {
+Ext.define('NX.view.masterdetail.Panel', {
   extend: 'Ext.panel.Panel',
-  alias: 'widget.nxMasterDetail',
+  alias: 'widget.nxMasterDetailPanel',
 
   layout: 'border',
 
   initComponent: function () {
     this.items = [
       {
-        xtype: this.master,
+        xtype: this.list,
         region: 'center',
         flex: 0.5
       },
       {
-        xtype: 'nxDetail',
+        xtype: 'nxMasterDetailTabs',
         modelName: this.modelName || this.title.toLowerCase(),
-        items: this.details
+        items: this.tabs
       }
     ];
 

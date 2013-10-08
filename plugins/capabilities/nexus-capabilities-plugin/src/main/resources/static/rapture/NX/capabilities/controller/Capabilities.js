@@ -43,10 +43,10 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   addToBrowser: function (featureBrowser) {
     featureBrowser.add(
         {
-          xtype: 'nxMasterDetail',
+          xtype: 'nxMasterDetailPanel',
           title: 'Capability',
-          master: 'capabilityList',
-          details: [
+          list: 'capabilityList',
+          tabs: [
             { xtype: 'capabilitySummary' },
             { xtype: 'capabilitySettings' },
             { xtype: 'capabilityStatus' },
@@ -62,7 +62,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   },
 
   showDetails: function (selectionModel, selectedModels) {
-    var detail = this.getList().up('nxMasterDetail').down('nxDetail');
+    var detail = this.getList().up('nxMasterDetailPanel').down('nxMasterDetailTabs');
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
       detail.setTitle(selectedModels[0].data.typeName);
       detail.getLayout().setActiveItem(1);

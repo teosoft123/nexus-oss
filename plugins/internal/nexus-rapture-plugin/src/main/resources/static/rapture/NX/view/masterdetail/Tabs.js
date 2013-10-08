@@ -1,6 +1,6 @@
-Ext.define('NX.view.Detail', {
+Ext.define('NX.view.masterdetail.Tabs', {
   extend: 'Ext.panel.Panel',
-  alias: 'widget.nxDetail',
+  alias: 'widget.nxMasterDetailTabs',
 
   title: 'Empty Selection',
 
