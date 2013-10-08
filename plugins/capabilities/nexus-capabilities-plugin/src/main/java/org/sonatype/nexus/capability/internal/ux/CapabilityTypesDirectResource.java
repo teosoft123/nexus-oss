@@ -36,7 +36,7 @@ import com.softwarementors.extjs.djn.config.annotations.DirectAction;
 import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
 
 import static org.sonatype.nexus.rapture.direct.Responses.error;
-import static org.sonatype.nexus.rapture.direct.Responses.list;
+import static org.sonatype.nexus.rapture.direct.Responses.success;
 
 /**
  * Capabilities Types Ext.Direct resource.
@@ -62,7 +62,7 @@ public class CapabilityTypesDirectResource
    * Retrieve a list of capability types available.
    */
   @DirectMethod
-  public Response get() {
+  public Response list() {
     try {
       final List<CapabilityTypeXO> types = Lists.newArrayList();
       final CapabilityDescriptor[] descriptors = capabilityDescriptorRegistry.getAll();
@@ -116,7 +116,7 @@ public class CapabilityTypesDirectResource
         }
       }
 
-      return list(types);
+      return success(types);
     }
     catch (Exception e) {
       return error(e);

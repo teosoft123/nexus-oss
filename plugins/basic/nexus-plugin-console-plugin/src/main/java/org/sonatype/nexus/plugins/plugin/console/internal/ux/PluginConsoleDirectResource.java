@@ -26,7 +26,7 @@ import com.softwarementors.extjs.djn.config.annotations.DirectAction;
 import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
 
 import static org.sonatype.nexus.rapture.direct.Responses.error;
-import static org.sonatype.nexus.rapture.direct.Responses.list;
+import static org.sonatype.nexus.rapture.direct.Responses.success;
 
 /**
  * Plugin Console Ext.Direct resource.
@@ -52,9 +52,9 @@ public class PluginConsoleDirectResource
    * Retrieve a list of plugins available.
    */
   @DirectMethod
-  public Response listPluginInfos() {
+  public Response list() {
     try {
-      return list(pluginConsoleManager.listPluginInfo());
+      return success(pluginConsoleManager.listPluginInfo());
     }
     catch (Exception e) {
       return error(e);

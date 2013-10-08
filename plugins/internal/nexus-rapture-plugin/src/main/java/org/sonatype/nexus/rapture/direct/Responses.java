@@ -46,7 +46,7 @@ public class Responses
     return new IdResponse<>(id);
   }
 
-  public static <E> ListResponse<E> list(List<E> entities) {
+  public static <E> ListResponse<E> success(List<E> entities) {
     return new ListResponse<>(entities);
   }
 

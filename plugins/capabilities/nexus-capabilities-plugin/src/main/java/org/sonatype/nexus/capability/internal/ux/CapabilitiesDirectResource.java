@@ -43,7 +43,7 @@ import static org.sonatype.nexus.plugins.capabilities.CapabilityType.capabilityT
 import static org.sonatype.nexus.rapture.direct.Responses.error;
 import static org.sonatype.nexus.rapture.direct.Responses.id;
 import static org.sonatype.nexus.rapture.direct.Responses.invalid;
-import static org.sonatype.nexus.rapture.direct.Responses.list;
+import static org.sonatype.nexus.rapture.direct.Responses.success;
 import static org.sonatype.nexus.rapture.direct.Responses.success;
 
 /**
@@ -69,12 +69,12 @@ public class CapabilitiesDirectResource
    * Retrieve a list of all capabilities currently configured in nexus.
    */
   @DirectMethod
-  public Response get() {
+  public Response list() {
     try {
       final Collection<? extends CapabilityReference> references = capabilityRegistry.get(
           CapabilityReferenceFilterBuilder.capabilities()
       );
-      return list(
+      return success(
           Lists.transform(Lists.newArrayList(references), new Function<CapabilityReference, CapabilityStatusXO>()
           {
             @Nullable
