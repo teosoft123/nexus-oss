@@ -1,3 +1,9 @@
+#!/bin/sh
+basedir=`dirname $0`
+basedir=`cd $basedir && pwd`
+
+cd "$basedir"
+
 sencha ant clean
 
 # generate non-debug
