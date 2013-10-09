@@ -19,3 +19,22 @@
 .nx-red-marker td {
   color:  #D04437;
 }
+
+.nx-masterdetail-warning {
+  padding-top: 10px;
+}
+
+.nx-masterdetail-warning img {
+  vertical-align: bottom;
+  padding-right: 5px;
+}
+
+.nx-masterdetail-warning div {
+  padding: 8px;
+
+  color: black;
+  background-color: #FFF8F7;
+  border: solid 1px #D04437;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+}

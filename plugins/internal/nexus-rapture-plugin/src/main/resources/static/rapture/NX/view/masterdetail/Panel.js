@@ -34,8 +34,16 @@ Ext.define('NX.view.masterdetail.Panel', {
     this.down(this.list).un('selectionchange', this.selectionChange);
   },
 
-  setDescription: function (title) {
-    this.down('nx-masterdetail-tabs').setTitle(title);
+  setDescription: function (description) {
+    this.down('nx-masterdetail-tabs').setDescription(description);
+  },
+
+  showWarning: function (message) {
+    this.down('nx-masterdetail-tabs').showWarning(message);
+  },
+
+  clearWarning: function () {
+    this.down('nx-masterdetail-tabs').clearWarning();
   }
 
 });

@@ -71,29 +71,38 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   showDetails: function (selectionModel, selectedModels) {
     var me = this,
         masterdetail = me.getList().up('nx-masterdetail-panel'),
-        status, info, summary, capabilityModel, capabilityTypeModel;
+        status, info, summary,
+        capabilityStatusModel, capabilityModel, capabilityTypeModel;
 
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
-      status = selectedModels[0].data;
-      masterdetail.setDescription(status.typeName);
-      info = {
-        'Type': status.typeName,
-        'Description': status.description
+      capabilityStatusModel = selectedModels[0];
+
+      masterdetail.setDescription(capabilityStatusModel.get('typeName'));
+      if (capabilityStatusModel.get('enabled') && !capabilityStatusModel.get('active')) {
+        masterdetail.showWarning(capabilityStatusModel.get('stateDescription'));
       }
-      if (Ext.isDefined(status.tags)) {
-        Ext.each(status.tags, function (tag) {
+      else {
+        masterdetail.clearWarning();
+      }
+
+      info = {
+        'Type': capabilityStatusModel.get('typeName'),
+        'Description': capabilityStatusModel.get('description')
+      }
+      if (Ext.isDefined(capabilityStatusModel.get('tags'))) {
+        Ext.each(capabilityStatusModel.get('tags'), function (tag) {
           info[tag.key] = tag.value;
         });
       }
       summary = me.getSummary();
       summary.showInfo(info);
 
-      capabilityModel = me.getCapabilityStore().getById(status.id);
+      capabilityModel = me.getCapabilityStore().getById(capabilityStatusModel.get('id'));
       summary.down('form').loadRecord(capabilityModel);
 
-      capabilityTypeModel = me.getCapabilityTypeStore().getById(status.typeId);
+      capabilityTypeModel = me.getCapabilityTypeStore().getById(capabilityStatusModel.get('typeId'));
       me.getAbout().showAbout(capabilityTypeModel.get('about'));
-      me.getStatus().showStatus(status.status);
+      me.getStatus().showStatus(capabilityStatusModel.get('status'));
     }
 
   },
@@ -105,7 +114,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
 
     capabilityModel.set(values);
     this.getCapabilityStore().sync({
-      callback: function(){
+      callback: function () {
         this.reloadStores();
       },
       scope: this

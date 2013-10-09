@@ -11,6 +11,15 @@ Ext.define('NX.view.masterdetail.Tabs', {
   flex: 0.5,
   activeItem: 0,
 
+  warningTpl: new Ext.XTemplate(
+      '<div class="nx-masterdetail-warning">',
+      '  <div>{icon}{text}</div>',
+      '</div>',
+      {
+        compiled: true
+      }
+  ),
+
   initComponent: function () {
     var text = this.emptyText,
         content = this.items;
@@ -36,7 +45,35 @@ Ext.define('NX.view.masterdetail.Tabs', {
       content
     ];
 
+    this.description = this.title;
+
     this.callParent(arguments);
+  },
+
+  setDescription: function (description) {
+    this.description = description;
+    this.showTitle();
+  },
+
+  showWarning: function (message) {
+    this.warning = message;
+    this.showTitle();
+  },
+
+  clearWarning: function () {
+    this.warning = undefined;
+    this.showTitle();
+  },
+
+  showTitle: function () {
+    var title = this.description;
+    if (Ext.isDefined(this.warning)) {
+      // TODO icon
+      title += this.warningTpl.apply({
+        text: this.warning
+      });
+    }
+    this.setTitle(title);
   }
 
 });

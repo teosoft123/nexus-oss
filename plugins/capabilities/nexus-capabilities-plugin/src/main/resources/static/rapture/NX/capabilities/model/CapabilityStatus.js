@@ -7,6 +7,7 @@ Ext.define('NX.capabilities.model.CapabilityStatus', {
     'typeName',
     'description',
     'status',
+    'stateDescription',
     'notes',
     'tags'
   ]
