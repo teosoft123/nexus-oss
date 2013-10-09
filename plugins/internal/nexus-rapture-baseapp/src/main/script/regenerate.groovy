@@ -10,8 +10,10 @@ ant.exec(executable: 'sencha', failonerror: true) {
   arg(line: 'which')
 }
 
+// generate files for production and testing
 [ 'production', 'testing' ].each { flavor ->
-  println "Regenerating: $flavor"
+  println ''
+  println "Generating: $flavor"
 
   // run 'app build' for each flavor
   ant.mkdir(dir: "target/$flavor")
@@ -23,11 +25,12 @@ ant.exec(executable: 'sencha', failonerror: true) {
 println ''
 println 'Installing:'
 
-// outdir is under src/main
-def outdir = new File('../resources/static/rapture').canonicalFile
+def outdir = new File('src/main/resources/static/rapture').canonicalFile
 println "Output directory: $outdir"
 
+// rebuild/clean output structure
 ant.mkdir(dir: outdir)
+ant.delete(dir: outdir)
 ant.mkdir(dir: "$outdir/resources")
 ant.mkdir(dir: "$outdir/resources/images")
 
@@ -48,6 +51,7 @@ ant.copy(todir: "$outdir/resources/images", overwrite: true) {
 
 println ''
 println 'Changes:'
+
 ant.exec(executable: 'git') {
   arg(line: 'status -s .')
 }
