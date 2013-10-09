@@ -39,6 +39,9 @@ Ext.define('NX.capabilities.controller.Capabilities', {
       'nx-capability-list button[action=new]': {
         click: this.showAddWindow
       },
+      'nx-capability-list button[action=delete]': {
+        click: this.deleteCapability
+      },
       'nx-capability-summary button[action=save]': {
         click: this.updateCapability
       },
@@ -103,7 +106,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   showTitle: function (capabilityStatusModel) {
     var masterdetail = this.getList().up('nx-masterdetail-panel');
 
-    masterdetail.setDescription(capabilityStatusModel.get('typeName'));
+    masterdetail.setDescription(this.describeCapability(capabilityStatusModel));
     if (capabilityStatusModel.get('enabled') && !capabilityStatusModel.get('active')) {
       masterdetail.showWarning(capabilityStatusModel.get('stateDescription'));
     }
@@ -172,13 +175,13 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     NX.direct.Capability.create(capabilityModel.data, function (response, status) {
       if (!me.showExceptionIfPresent(response, status, 'Capability could not be created')) {
         if (Ext.isDefined(response)) {
+          if (response.shouldRefresh) {
+            me.getCapabilityStatusStore().on('load', function (store) {
+              me.getList().getSelectionModel().select(store.getById(response.id));
+            }, me, {single: true});
+            me.loadStores();
+          }
           if (response.success) {
-            if (response.shouldRefresh) {
-              me.getCapabilityStatusStore().on('load', function (store) {
-                me.getList().getSelectionModel().select(store.getById(response.id));
-              }, me, {single: true});
-              me.loadStores();
-            }
             win.close();
           }
           else {
@@ -186,7 +189,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
               me.showMessage(form.markInvalid(response.validationMessages))
             }
             else {
-              me.showMessage(response.message)
+              me.showMessage(response.message, 'Capability could not be created')
             }
           }
         }
@@ -205,22 +208,64 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     NX.direct.Capability.update(capabilityModel.data, function (response, status) {
       if (!me.showExceptionIfPresent(response, status, 'Capability could not be saved')) {
         if (Ext.isDefined(response)) {
-          if (response.success) {
+          if (!response.success) {
             if (response.shouldRefresh) {
               me.loadStores();
             }
-          }
-          else {
             if (Ext.isDefined(response.validationMessages)) {
               me.showMessage(form.markInvalid(response.validationMessages))
             }
             else {
-              me.showMessage(response.message)
+              me.showMessage(response.message, 'Capability could not be saved')
             }
           }
         }
       }
     });
+  },
+
+  deleteCapability: function (button) {
+    var me = this,
+        selection = me.getList().getSelectionModel().getSelection();
+
+    if (Ext.isDefined(selection) && selection.length > 0) {
+      Ext.Msg.show({
+        title: 'Confirm deletion?',
+        msg: me.describeCapability(selection[0]),
+        buttons: Ext.Msg.YESNO,
+        animEl: button.getEl(),
+        icon: Ext.MessageBox.QUESTION,
+        closeable: false,
+        scope: self,
+        fn: function (buttonName) {
+          if (buttonName === 'yes' || buttonName === 'ok') {
+            NX.direct.Capability.delete(selection[0].get('id'), function (response, status) {
+              if (!me.showExceptionIfPresent(response, status, 'Capability could not be deleted')) {
+                if (Ext.isDefined(response)) {
+                  if (response.shouldRefresh) {
+                    me.loadStores();
+                  }
+                  if (!response.success) {
+                    me.showMessage(response.message, 'Capability could not be deleted')
+                  }
+                }
+              }
+            });
+          }
+        }
+      });
+    }
+  },
+
+  /**
+   * Returns a description of capability suitable to be displayed.
+   */
+  describeCapability: function (capabilityStatusModel) {
+    var description = capabilityStatusModel.get('typeName');
+    if (capabilityStatusModel.get('description')) {
+      description += ' - ' + capabilityStatusModel.get('description');
+    }
+    return description;
   },
 
   showExceptionIfPresent: function (response, status, title) {

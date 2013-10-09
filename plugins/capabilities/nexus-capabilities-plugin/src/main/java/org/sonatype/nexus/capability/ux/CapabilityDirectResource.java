@@ -193,7 +193,7 @@ public class CapabilityDirectResource
   public Response delete(final String id) {
     try {
       capabilityRegistry.remove(capabilityIdentity(id));
-      return success();
+      return success().shouldRefresh();
     }
     catch (CapabilityNotFoundException e) {
       return error(e).shouldRefresh();
@@ -210,7 +210,7 @@ public class CapabilityDirectResource
   public Response enable(final String id) {
     try {
       capabilityRegistry.enable(capabilityIdentity(id));
-      return success();
+      return success().shouldRefresh();
     }
     catch (CapabilityNotFoundException e) {
       return error(e).shouldRefresh();
@@ -227,7 +227,7 @@ public class CapabilityDirectResource
   public Response disable(final String id) {
     try {
       capabilityRegistry.disable(capabilityIdentity(id));
-      return success();
+      return success().shouldRefresh();
     }
     catch (CapabilityNotFoundException e) {
       return error(e).shouldRefresh();
