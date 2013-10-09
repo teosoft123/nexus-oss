@@ -71,7 +71,7 @@ NX.define('Nexus.capabilities.CapabilitiesGridStore', {
 
     self.constructor.superclass.constructor.call(self, config);
 
-    self.loadStores();
+    self.loadCapabilities();
   },
 
   /**
