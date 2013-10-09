@@ -35,7 +35,7 @@ Ext.define('NX.capabilities.view.Add', {
             mode: 'local',
             triggerAction: 'all',
             emptyText: 'Select...',
-            selectOnFocus: true,
+            selectOnFocus: false,
             allowBlank: false,
             anchor: '96%'
           }

@@ -55,7 +55,7 @@ Ext.define('NX.capabilities.view.factory.ComboFactory', {
           queryMode: 'local',
           triggerAction: 'all',
           emptyText: 'Select...',
-          selectOnFocus: true,
+          selectOnFocus: false,
           allowBlank: formField.required ? false : true,
           anchor: '96%'
         });
