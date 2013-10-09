@@ -4,6 +4,7 @@ basedir=`cd $basedir && pwd`
 
 cd "$basedir"
 
+rm -rf build/
 sencha ant clean
 
 # generate non-debug

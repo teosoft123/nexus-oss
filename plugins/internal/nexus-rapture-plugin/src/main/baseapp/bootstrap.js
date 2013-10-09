@@ -12,9 +12,6 @@ Ext.Loader.addClassPathMappings({
 });
 Ext.ClassManager.addNameAlternateMappings({
   "BaseApp.Application": [],
-  "BaseApp.controller.Main": [],
-  "BaseApp.view.Main": [],
-  "BaseApp.view.Viewport": [],
   "Ext.AbstractComponent": [],
   "Ext.AbstractManager": [],
   "Ext.AbstractPlugin": [],
@@ -863,11 +860,6 @@ Ext.ClassManager.addNameAlternateMappings({
 });
 Ext.ClassManager.addNameAliasMappings({
   "BaseApp.Application": [],
-  "BaseApp.controller.Main": [],
-  "BaseApp.view.Main": [
-    "widget.app-main"
-  ],
-  "BaseApp.view.Viewport": [],
   "Ext.AbstractComponent": [],
   "Ext.AbstractManager": [],
   "Ext.AbstractPlugin": [],
