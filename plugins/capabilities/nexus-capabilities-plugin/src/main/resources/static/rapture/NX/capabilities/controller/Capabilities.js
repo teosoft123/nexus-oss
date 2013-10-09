@@ -208,10 +208,10 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     NX.direct.Capability.update(capabilityModel.data, function (response, status) {
       if (!me.showExceptionIfPresent(response, status, 'Capability could not be saved')) {
         if (Ext.isDefined(response)) {
+          if (response.shouldRefresh) {
+            me.loadStores();
+          }
           if (!response.success) {
-            if (response.shouldRefresh) {
-              me.loadStores();
-            }
             if (Ext.isDefined(response.validationMessages)) {
               me.showMessage(form.markInvalid(response.validationMessages))
             }
