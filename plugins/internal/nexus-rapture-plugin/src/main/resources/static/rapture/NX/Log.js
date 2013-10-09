@@ -17,37 +17,32 @@ Ext.define('NX.Log', {
     }
 
     Ext.log(config);
-
-    //switch (level) {
-    //  case 'debug':
-    //    console.log(msg);
-    //    break;
-    //  case 'info':
-    //    console.info(msg);
-    //    break;
-    //  case 'warn':
-    //    console.warn(msg);
-    //    break;
-    //  case 'error':
-    //    console.error(msg);
-    //    break;
-    //  default:
-    //    Ext.Error.raise('Invalid log level: ' + level);
-    //}
   },
 
+  /**
+   * @public
+   */
   debug: function () {
     this.log('debug', Array.prototype.slice.call(arguments));
   },
 
+  /**
+   * @public
+   */
   info: function () {
     this.log('info', Array.prototype.slice.call(arguments));
   },
 
+  /**
+   * @public
+   */
   warn: function () {
     this.log('warn', Array.prototype.slice.call(arguments));
   },
 
+  /**
+   * @public
+   */
   error: function () {
     this.log('error', Array.prototype.slice.call(arguments));
   }
