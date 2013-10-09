@@ -65,20 +65,22 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
       };
       if (Ext.isDefined(pluginInfo.documentation)) {
         Ext.each(pluginInfo.documentation, function (doc) {
-          info['Documentation'] = me.asLink(doc.url, doc.label);
+          if (!Ext.isEmpty(doc.url)) {
+            info['Documentation'] = me.asLink(doc.url, doc.label);
+          }
         });
       }
       masterdetail.down("nx-info-panel").showInfo(info);
     }
   },
 
+  /**
+   * @private
+   */
   asLink: function (url, text) {
-    if (!Ext.isEmpty(url)) {
-      if (Ext.isEmpty(text)) {
-        text = url;
-      }
-      return '<a href=\'' + url + '\'>' + text + '</a>'
+    if (Ext.isEmpty(text)) {
+      text = url;
     }
+    return '<a href="' + url + '" target="_blank">' + text + '</a>'
   }
-
 });
