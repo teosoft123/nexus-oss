@@ -8,7 +8,7 @@ Ext.define('NX.LogAware', {
    * @param {Array} args
    */
   log: function (level, args) {
-    args.unshift(Ext.getClassName(this) + ':');
+    args.unshift('[' + Ext.getClassName(this) + ']');
     NX.Log.log(level, args);
   },
 

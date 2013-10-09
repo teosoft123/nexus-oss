@@ -6,26 +6,34 @@ Ext.define('NX.Log', {
    * @param {Array} args
    */
   log: function (level, args) {
-    var msg;
-    args.unshift('[' + level.toUpperCase() + ']');
-    msg = args.join(' ');
+    var config = {
+      level: level,
+      msg: args.join(' ')
+    };
 
-    switch (level) {
-      case 'debug':
-        console.log(msg);
-        break;
-      case 'info':
-        console.info(msg);
-        break;
-      case 'warn':
-        console.warn(msg);
-        break;
-      case 'error':
-        console.error(msg);
-        break;
-      default:
-        Ext.Error.raise('Invalid log level: ' + level);
+    // translate debug -> log for Ext.log
+    if (level === 'debug') {
+      config.level = 'log';
     }
+
+    Ext.log(config);
+
+    //switch (level) {
+    //  case 'debug':
+    //    console.log(msg);
+    //    break;
+    //  case 'info':
+    //    console.info(msg);
+    //    break;
+    //  case 'warn':
+    //    console.warn(msg);
+    //    break;
+    //  case 'error':
+    //    console.error(msg);
+    //    break;
+    //  default:
+    //    Ext.Error.raise('Invalid log level: ' + level);
+    //}
   },
 
   debug: function () {
