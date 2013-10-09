@@ -26,4 +26,30 @@
   <artifactId>nexus-rapture-baseapp</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
 
+  <profiles>
+    <profile>
+      <id>regenerate</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>gmaven-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <classpathIncludes>none</classpathIncludes>
+                  <source>file:${project.basedir}/src/main/script/regenerate.groovy</source>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
