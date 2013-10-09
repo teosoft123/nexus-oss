@@ -8,11 +8,17 @@
   <meta name="description" content="Sonatype Nexus"/>
 
   <link rel="icon" type="image/png" href="favicon.png"/>
-  <!--[if IE]><link rel="SHORTCUT ICON" href="favicon.ico"/><![endif]-->
+  <!--[if IE]>
+  <link rel="SHORTCUT ICON" href="favicon.ico"/>
+  <![endif]-->
 
-  <link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all.css">
-  <link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all-neptune.css">
-  <link rel="stylesheet" type="text/css" href="resources/css/rapture.css">
+  <!--<link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all.css">-->
+  <!--<link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all-neptune.css">-->
+
+  <!--<link rel="stylesheet" type="text/css" href="resources/baseapp.css">-->
+  <link rel="stylesheet" type="text/css" href="resources/baseapp-debug.css">
+
+  <link rel="stylesheet" type="text/css" href="resources/rapture.css">
 
   <style type="text/css">
     #loading-mask {
@@ -55,12 +61,21 @@
     }
   </style>
 
-  <script type="text/javascript" src="extjs/ext-all-debug.js"></script>
-  <script type="text/javascript" src="extjs/ext-theme-neptune.js"></script>
-  <script type="text/javascript" src="directjngine-2.2/djn-remote-call-support.js"></script>
-  <script type="text/javascript" src="directjngine-2.2/ejn-assert.js"></script>
-  <script type="text/javascript" src="app-direct-debug.js"></script>
-  <script type="text/javascript" src="app.js"></script>
+  <!--
+  TODO: Sort out if we really want to do this, or do the loading + message muck, the later may be better for slower links to show progress?
+  -->
+
+  <!--<script type="text/javascript" src="extjs/ext-all-debug.js"></script>-->
+  <!--<script type="text/javascript" src="extjs/ext-theme-neptune.js"></script>-->
+
+  <!--<script type="text/javascript" src="baseapp.js"></script>-->
+  <!--<script type="text/javascript" src="baseapp-debug.js"></script>-->
+
+  <!--<script type="text/javascript" src="directjngine-2.2/djn-remote-call-support.js"></script>-->
+  <!--<script type="text/javascript" src="directjngine-2.2/ejn-assert.js"></script>-->
+
+  <!--<script type="text/javascript" src="app-direct-debug.js"></script>-->
+  <!--<script type="text/javascript" src="app.js"></script>-->
 </head>
 <body class="x-border-box">
 
@@ -70,6 +85,19 @@
     <img id="loading-image" src="resources/images/loading.gif"/>
     Nexus Rapture
     <br/><span id="loading-msg">Loading...</span>
+  </div>
+  <div id="code-load" style="display:none;">
+    <script type="text/javascript">document.getElementById('loading-msg').innerHTML = 'Loading baseapp...';</script>
+    <!--<script type="text/javascript" src="baseapp.js"></script>-->
+    <script type="text/javascript" src="baseapp-debug.js"></script>
+
+    <script type="text/javascript">document.getElementById('loading-msg').innerHTML = 'Loading libraries...';</script>
+    <script type="text/javascript" src="directjngine-2.2/djn-remote-call-support.js"></script>
+    <script type="text/javascript" src="directjngine-2.2/ejn-assert.js"></script>
+
+    <script type="text/javascript">document.getElementById('loading-msg').innerHTML = 'Initializing...';</script>
+    <script type="text/javascript" src="app-direct-debug.js"></script>
+    <script type="text/javascript" src="app.js"></script>
   </div>
 </div>
 
