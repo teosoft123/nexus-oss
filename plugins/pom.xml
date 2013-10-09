@@ -414,7 +414,7 @@
 
       <dependency>
         <groupId>org.sonatype.nexus.plugins</groupId>
-        <artifactId>nexus-rapture-baseap</artifactId>
+        <artifactId>nexus-rapture-baseapp</artifactId>
         <version>2.7.0-SNAPSHOT</version>
       </dependency>
 
