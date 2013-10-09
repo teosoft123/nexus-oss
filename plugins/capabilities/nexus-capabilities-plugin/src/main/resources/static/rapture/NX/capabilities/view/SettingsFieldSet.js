@@ -198,6 +198,8 @@ Ext.define('NX.capabilities.view.SettingsFieldSet', {
     if (remainingMessages.length > 0) {
       return remainingMessages.join('\n');
     }
+
+    return undefined;
   },
 
   /**

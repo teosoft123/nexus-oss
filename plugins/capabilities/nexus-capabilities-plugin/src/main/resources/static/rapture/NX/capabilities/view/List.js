@@ -16,6 +16,10 @@ Ext.define('NX.capabilities.view.List', {
         return 'nx-red-marker';
       }
     }
-  }
+  },
+
+  tbar: [
+    { xtype: 'button', text: 'New', action: 'new' }
+  ]
 
 });
