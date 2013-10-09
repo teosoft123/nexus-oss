@@ -18,8 +18,12 @@ Ext.define('NX.capabilities.view.Settings', {
     }
   ],
 
-  getValues: function(){
+  getValues: function () {
     return this.down('nx-capability-settings-fieldset').exportCapability(this.getForm())
+  },
+
+  markInvalid: function (validationMessages) {
+    return this.down('nx-capability-settings-fieldset').markInvalid(this.getForm(), validationMessages)
   }
 
 });

@@ -143,12 +143,53 @@ Ext.define('NX.capabilities.controller.Capabilities', {
         values = form.getValues();
 
     capabilityModel.set(values);
-    this.getCapabilityStore().sync({
-      callback: function () {
-        me.loadStores();
-      },
-      scope: this
+
+    NX.direct.Capability.update(capabilityModel.data, function (response, status) {
+      if (!me.showExceptionIfPresent(response, status, 'Capability could not be saved')) {
+        if (Ext.isDefined(response)) {
+          if (response.success) {
+            if (response.shouldRefresh) {
+              me.loadStores();
+            }
+          }
+          else {
+            if (Ext.isDefined(response.validationMessages)) {
+              me.showMessage(form.markInvalid(response.validationMessages))
+            }
+            else {
+              me.showMessage(response.message)
+            }
+          }
+        }
+      }
     });
+  },
+
+  showExceptionIfPresent: function (response, status, title) {
+    if (Ext.isDefined(status.serverException)) {
+      this.showMessage(
+          Ext.isDefined(response) && Ext.isDefined(response.exceptionMessage)
+              ? response.exceptionMessage
+              : status.serverException.exception.message,
+          title
+      );
+      return true;
+    }
+    return false;
+  },
+
+  showMessage: function (message, title) {
+    if (Ext.isDefined(message)) {
+      Ext.Msg.show({
+        title: title || 'Operation failed',
+        msg: message,
+        buttons: Ext.Msg.OK,
+        icon: Ext.MessageBox.ERROR,
+        closeable: false
+      });
+      return true;
+    }
+    return false;
   }
 
 });
