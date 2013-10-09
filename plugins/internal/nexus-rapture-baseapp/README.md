@@ -13,7 +13,7 @@ May completely revisit this solution later.
 
     mvn clean install -Pregenerate
 
-If the content has changed, then the result needs to be commited:
+If the content has changed, then the result needs to be committed:
 
     git commit . -m "regenerated baseapp"
 
