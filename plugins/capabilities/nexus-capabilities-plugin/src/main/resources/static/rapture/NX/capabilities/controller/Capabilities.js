@@ -69,12 +69,6 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     this.getCapabilityTypeStore().load();
   },
 
-  reloadStores: function () {
-    this.getCapabilityStore().reload();
-    this.getCapabilityStatusStore().reload();
-    this.getCapabilityTypeStore().reload();
-  },
-
   onCapabilityStatusStoreLoad: function () {
     var sm = this.getList().getSelectionModel();
     this.showDetails(sm, sm.getSelection());
@@ -143,14 +137,15 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   },
 
   updateCapability: function (button) {
-    var form = button.up('form'),
+    var me = this,
+        form = button.up('form'),
         capabilityModel = form.getRecord(),
         values = form.getValues();
 
     capabilityModel.set(values);
     this.getCapabilityStore().sync({
       callback: function () {
-        this.reloadStores();
+        me.loadStores();
       },
       scope: this
     });
