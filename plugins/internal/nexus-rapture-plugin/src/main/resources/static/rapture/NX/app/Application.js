@@ -7,7 +7,7 @@ Ext.define('NX.app.Application', {
   ],
 
   mixins: {
-      logAware: 'NX.LogAware'
+    logAware: 'NX.LogAware'
   },
 
   name: 'NX',

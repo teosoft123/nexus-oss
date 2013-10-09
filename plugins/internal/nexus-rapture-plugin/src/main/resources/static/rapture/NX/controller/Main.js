@@ -2,9 +2,9 @@ Ext.define('NX.controller.Main', {
   extend: 'Ext.app.Controller',
 
   views: [
-      'FeatureBrowser',
-      'Info',
-      'InfoPanel'
+    'FeatureBrowser',
+    'Info',
+    'InfoPanel'
   ],
 
   init: function () {

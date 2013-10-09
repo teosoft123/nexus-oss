@@ -1,6 +1,6 @@
 Ext.define('NX.LogAware', {
   requires: [
-      'NX.Log'
+    'NX.Log'
   ],
 
   /**
