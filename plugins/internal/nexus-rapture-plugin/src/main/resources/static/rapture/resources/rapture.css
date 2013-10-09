@@ -1,11 +1,6 @@
 /*
-FIXME: Replace core theme changes with sass in baseapp
 FIXME: Sort out how to use sass for ratpure and plugins
 */
-
-.x-panel-default div {
-  font: normal 11px arial, tahoma, verdana, helvetica;
-}
 
 .nx-info-entry td {
   padding-bottom: 4px;
