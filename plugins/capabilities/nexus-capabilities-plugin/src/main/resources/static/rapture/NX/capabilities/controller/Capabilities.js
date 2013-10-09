@@ -82,49 +82,64 @@ Ext.define('NX.capabilities.controller.Capabilities', {
 
   showDetails: function (selectionModel, selectedModels) {
     var me = this,
-        masterdetail = me.getList().up('nx-masterdetail-panel'),
-        status, info, summary, settings, settingsFieldSet,
         capabilityStatusModel, capabilityModel, capabilityTypeModel;
-
-    console.log(selectedModels[0]);
 
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
       capabilityStatusModel = selectedModels[0];
-
-      masterdetail.setDescription(capabilityStatusModel.get('typeName'));
-      if (capabilityStatusModel.get('enabled') && !capabilityStatusModel.get('active')) {
-        masterdetail.showWarning(capabilityStatusModel.get('stateDescription'));
-      }
-      else {
-        masterdetail.clearWarning();
-      }
-
-      info = {
-        'Type': capabilityStatusModel.get('typeName'),
-        'Description': capabilityStatusModel.get('description')
-      }
-      if (Ext.isDefined(capabilityStatusModel.get('tags'))) {
-        Ext.each(capabilityStatusModel.get('tags'), function (tag) {
-          info[tag.key] = tag.value;
-        });
-      }
-      summary = me.getSummary();
-      summary.showInfo(info);
-
       capabilityModel = me.getCapabilityStore().getById(capabilityStatusModel.get('id'));
-      summary.down('form').loadRecord(capabilityModel);
-
       capabilityTypeModel = me.getCapabilityTypeStore().getById(capabilityStatusModel.get('typeId'));
 
-      settings = me.getSettings();
-      settings.loadRecord(capabilityModel);
-      settingsFieldSet = settings.down('nx-capability-settings-fieldset');
-      settingsFieldSet.importCapability(settings.getForm(), capabilityModel, capabilityTypeModel);
+      me.showTitle(capabilityStatusModel);
+      me.showSummary(capabilityStatusModel, capabilityModel);
+      me.showSettings(capabilityModel, capabilityTypeModel);
+      me.showAbout(capabilityTypeModel);
+      me.showStatus(capabilityStatusModel);
+    }
+  },
 
-      me.getAbout().showAbout(capabilityTypeModel.get('about'));
-      me.getStatus().showStatus(capabilityStatusModel.get('status'));
+  showTitle: function (capabilityStatusModel) {
+    var masterdetail = this.getList().up('nx-masterdetail-panel');
+
+    masterdetail.setDescription(capabilityStatusModel.get('typeName'));
+    if (capabilityStatusModel.get('enabled') && !capabilityStatusModel.get('active')) {
+      masterdetail.showWarning(capabilityStatusModel.get('stateDescription'));
+    }
+    else {
+      masterdetail.clearWarning();
+    }
+  },
+
+  showSummary: function (capabilityStatusModel, capabilityModel) {
+    var summary = this.getSummary(),
+        info = {
+          'Type': capabilityStatusModel.get('typeName'),
+          'Description': capabilityStatusModel.get('description')
+        };
+
+    if (Ext.isDefined(capabilityStatusModel.get('tags'))) {
+      Ext.each(capabilityStatusModel.get('tags'), function (tag) {
+        info[tag.key] = tag.value;
+      });
     }
 
+    summary.showInfo(info);
+    summary.down('form').loadRecord(capabilityModel);
+  },
+
+  showSettings: function (capabilityModel, capabilityTypeModel) {
+    var settings = this.getSettings(),
+        settingsFieldSet = settings.down('nx-capability-settings-fieldset');
+
+    settings.loadRecord(capabilityModel);
+    settingsFieldSet.importCapability(settings.getForm(), capabilityModel, capabilityTypeModel);
+  },
+
+  showStatus: function (capabilityStatusModel) {
+    this.getStatus().showStatus(capabilityStatusModel.get('status'));
+  },
+
+  showAbout: function (capabilityTypeModel) {
+    this.getAbout().showAbout(capabilityTypeModel.get('about'));
   },
 
   updateCapability: function (button) {
