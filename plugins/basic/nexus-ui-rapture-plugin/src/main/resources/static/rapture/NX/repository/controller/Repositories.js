@@ -1,6 +1,10 @@
 Ext.define('NX.repository.controller.Repositories', {
   extend: 'Ext.app.Controller',
 
+  requires: [
+      'NX.util.Url'
+  ],
+
   stores: [
     'RepositoryInfo'
   ],
@@ -59,7 +63,7 @@ Ext.define('NX.repository.controller.Repositories', {
         'Local status': me.getLocalStatus(repositoryInfoModel),
         'Proxy mode': me.getProxyMode(repositoryInfoModel),
         'Remote status': me.getRemoteStatus(repositoryInfoModel),
-        'Url': me.asLink(repositoryInfoModel.get('url'))
+        'Url': NX.util.Url.asLink(repositoryInfoModel.get('url'))
       };
       masterdetail.down('nx-info-panel').showInfo(info);
     }
@@ -106,16 +110,6 @@ Ext.define('NX.repository.controller.Repositories', {
       return 'Unavailable' + (remoteStatusReason ? ' due to ' + remoteStatusReason : '');
     }
     return remoteStatus;
-  },
-
-  /**
-   * @private
-   */
-  asLink: function (url, text) {
-    if (Ext.isEmpty(text)) {
-      text = url;
-    }
-    return '<a href="' + url + '" target="_blank">' + text + '</a>'
   }
 
 });

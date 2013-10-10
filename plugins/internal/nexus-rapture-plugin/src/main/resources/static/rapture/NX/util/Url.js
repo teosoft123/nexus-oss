@@ -21,6 +21,14 @@ Ext.define('NX.util.Url', {
       return baseUrl + path;
     }
     return this.baseUrl;
+  },
+
+  asLink: function (url, text, target) {
+    target = target || '_blank';
+    if (Ext.isEmpty(text)) {
+      text = url;
+    }
+    return '<a href="' + url + '" target="' + target + '">' + text + '</a>';
   }
 
 });

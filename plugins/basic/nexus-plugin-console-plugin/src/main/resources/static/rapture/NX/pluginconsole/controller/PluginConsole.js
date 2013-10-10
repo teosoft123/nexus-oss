@@ -1,6 +1,10 @@
 Ext.define('NX.pluginconsole.controller.PluginConsole', {
   extend: 'Ext.app.Controller',
 
+  requires: [
+    'NX.util.Url'
+  ],
+
   stores: [
     'PluginInfos'
   ],
@@ -61,26 +65,17 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
         'Description': pluginInfo.description,
         'SCM Version': pluginInfo.scmVersion,
         'SCM Timestamp': pluginInfo.scmTimestamp,
-        'Site': me.asLink(pluginInfo.site)
+        'Site': NX.util.Url.asLink(pluginInfo.site)
       };
       if (Ext.isDefined(pluginInfo.documentation)) {
         Ext.each(pluginInfo.documentation, function (doc) {
           if (!Ext.isEmpty(doc.url)) {
-            info['Documentation'] = me.asLink(doc.url, doc.label);
+            info['Documentation'] = NX.util.Url.asLink(doc.url, doc.label);
           }
         });
       }
       masterdetail.down("nx-info-panel").showInfo(info);
     }
-  },
-
-  /**
-   * @private
-   */
-  asLink: function (url, text) {
-    if (Ext.isEmpty(text)) {
-      text = url;
-    }
-    return '<a href="' + url + '" target="_blank">' + text + '</a>'
   }
+
 });
