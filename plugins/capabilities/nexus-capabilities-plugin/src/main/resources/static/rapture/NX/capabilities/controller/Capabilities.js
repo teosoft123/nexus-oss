@@ -63,6 +63,8 @@ Ext.define('NX.capabilities.controller.Capabilities', {
 
     this.getCapabilityStatusStore().on('load', this.onCapabilityStatusStoreLoad, this);
     this.getCapabilityStatusStore().on('beforeload', this.onCapabilityStatusStoreBeforeLoad, this);
+    this.getCapabilityTypeStore().on('load', this.onCapabilityTypeStoreLoad, this);
+    this.getCapabilityTypeStore().on('beforeload', this.onCapabilityTypeStoreBeforeLoad, this);
   },
 
   addToBrowser: function (featureBrowser) {
@@ -85,6 +87,16 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     this.getCapabilityStore().load();
     this.getCapabilityStatusStore().load();
     this.getCapabilityTypeStore().load();
+  },
+
+  onCapabilityTypeStoreBeforeLoad: function () {
+    this.getList().down('button[action=new]').disable();
+  },
+
+  onCapabilityTypeStoreLoad: function (store, records) {
+    if (records.length > 0) {
+      this.getList().down('button[action=new]').enable();
+    }
   },
 
   onCapabilityStatusStoreBeforeLoad: function () {

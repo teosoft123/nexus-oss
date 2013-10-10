@@ -19,7 +19,7 @@ Ext.define('NX.capabilities.view.List', {
   },
 
   tbar: [
-    { xtype: 'button', text: 'New', action: 'new' },
+    { xtype: 'button', text: 'New', action: 'new', disabled: true },
     { xtype: 'button', text: 'Delete', action: 'delete', disabled: true }
   ]
 
