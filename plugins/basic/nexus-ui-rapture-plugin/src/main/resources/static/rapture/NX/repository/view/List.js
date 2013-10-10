@@ -8,6 +8,10 @@ Ext.define('NX.repository.view.List', {
     {header: 'Name', dataIndex: 'name', flex: 1},
     {header: 'Type', dataIndex: 'type', flex: 1},
     {header: 'Format', dataIndex: 'format', flex: 1}
+  ],
+
+  tbar: [
+    { xtype: 'button', text: 'Delete', action: 'delete' }
   ]
 
 });

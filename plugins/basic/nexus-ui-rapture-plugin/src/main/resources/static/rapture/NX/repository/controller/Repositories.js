@@ -2,7 +2,9 @@ Ext.define('NX.repository.controller.Repositories', {
   extend: 'Ext.app.Controller',
 
   requires: [
-    'NX.util.Url'
+    'NX.util.Url',
+    'NX.util.Msg',
+    'NX.util.ExtDirect'
   ],
 
   stores: [
@@ -27,6 +29,9 @@ Ext.define('NX.repository.controller.Repositories', {
       'nx-repository-list': {
         beforerender: this.loadStores,
         selectionchange: this.onSelectionChange
+      },
+      'nx-repository-list button[action=delete]': {
+        click: this.deleteRepository
       }
     });
 
@@ -81,6 +86,32 @@ Ext.define('NX.repository.controller.Repositories', {
       };
       masterdetail.down('nx-info-panel').showInfo(info);
     }
+  },
+
+  deleteRepository: function (button) {
+    var me = this,
+        selection = me.getList().getSelectionModel().getSelection();
+
+    if (Ext.isDefined(selection) && selection.length > 0) {
+      NX.util.Msg.askConfirmation('Confirm deletion?', me.describeRepository(selection[0]), function () {
+        NX.direct.Repository.delete(selection[0].getId(), function (response, status) {
+          if (!NX.util.ExtDirect.showExceptionIfPresent('Repository could not be deleted', response, status)) {
+            if (Ext.isDefined(response)) {
+              if (response.shouldRefresh) {
+                me.loadStores();
+              }
+              if (!response.success) {
+                NX.util.Msg.showError('Repository could not be deleted', response.message, {animEl: button.getEl()});
+              }
+            }
+          }
+        });
+      }, {scope: me, animEl: button.getEl()});
+    }
+  },
+
+  describeRepository: function (repositoryInfoModel) {
+    return repositoryInfoModel.get('name');
   },
 
   getLocalStatus: function (repositoryInfoModel) {

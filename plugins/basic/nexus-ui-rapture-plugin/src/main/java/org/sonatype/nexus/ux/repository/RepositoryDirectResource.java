@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.sonatype.nexus.proxy.NoSuchRepositoryException;
 import org.sonatype.nexus.proxy.ResourceStoreRequest;
 import org.sonatype.nexus.proxy.item.RepositoryItemUid;
 import org.sonatype.nexus.proxy.registry.RepositoryRegistry;
@@ -95,6 +96,20 @@ public class RepositoryDirectResource
           return info;
         }
       }));
+    }
+    catch (Exception e) {
+      return error(e);
+    }
+  }
+
+  @DirectMethod
+  public Response delete(final String id) {
+    try {
+      repositoryRegistry.removeRepository(id);
+      return success().shouldRefresh();
+    }
+    catch (NoSuchRepositoryException e) {
+      return error(e).shouldRefresh();
     }
     catch (Exception e) {
       return error(e);
