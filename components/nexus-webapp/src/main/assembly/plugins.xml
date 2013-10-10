@@ -53,6 +53,7 @@
 
         <!-- rapture -->
         <include>*:nexus-rapture-plugin</include>
+        <include>*:nexus-ui-rapture-plugin</include>
       </includes>
     </dependencySet>
   </dependencySets>
