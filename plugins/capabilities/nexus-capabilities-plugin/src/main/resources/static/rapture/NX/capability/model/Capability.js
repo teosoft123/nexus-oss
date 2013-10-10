@@ -1,4 +1,4 @@
-Ext.define('NX.capabilities.model.Capability', {
+Ext.define('NX.capability.model.Capability', {
   extend: 'Ext.data.Model',
   fields: [
     'id',

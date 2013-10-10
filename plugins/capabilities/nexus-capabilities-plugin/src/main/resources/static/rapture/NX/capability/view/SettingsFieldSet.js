@@ -17,17 +17,17 @@
  *
  * @since 2.7
  */
-Ext.define('NX.capabilities.view.SettingsFieldSet', {
+Ext.define('NX.capability.view.SettingsFieldSet', {
   extend: 'Ext.form.FieldSet',
   alias: 'widget.nx-capability-settings-fieldset',
 
   requires: [
-    'NX.capabilities.view.factory.CheckboxFactory',
-    'NX.capabilities.view.factory.ComboFactory',
-    'NX.capabilities.view.factory.DateFieldFactory',
-    'NX.capabilities.view.factory.NumberFieldFactory',
-    'NX.capabilities.view.factory.TextAreaFactory',
-    'NX.capabilities.view.factory.TextFieldFactory'
+    'NX.capability.view.factory.CheckboxFactory',
+    'NX.capability.view.factory.ComboFactory',
+    'NX.capability.view.factory.DateFieldFactory',
+    'NX.capability.view.factory.NumberFieldFactory',
+    'NX.capability.view.factory.TextAreaFactory',
+    'NX.capability.view.factory.TextFieldFactory'
   ],
 
   /**
@@ -49,12 +49,12 @@ Ext.define('NX.capabilities.view.SettingsFieldSet', {
 
     me.factories = Ext.create('Ext.util.MixedCollection');
 
-    me.addFactory(NX.capabilities.view.factory.CheckboxFactory);
-    me.addFactory(NX.capabilities.view.factory.ComboFactory);
-    me.addFactory(NX.capabilities.view.factory.DateFieldFactory);
-    me.addFactory(NX.capabilities.view.factory.NumberFieldFactory);
-    me.addFactory(NX.capabilities.view.factory.TextAreaFactory);
-    me.addFactory(NX.capabilities.view.factory.TextFieldFactory);
+    me.addFactory(NX.capability.view.factory.CheckboxFactory);
+    me.addFactory(NX.capability.view.factory.ComboFactory);
+    me.addFactory(NX.capability.view.factory.DateFieldFactory);
+    me.addFactory(NX.capability.view.factory.NumberFieldFactory);
+    me.addFactory(NX.capability.view.factory.TextAreaFactory);
+    me.addFactory(NX.capability.view.factory.TextFieldFactory);
   },
 
   /**
@@ -149,8 +149,8 @@ Ext.define('NX.capabilities.view.SettingsFieldSet', {
   /**
    * Imports capability into a form.
    * @param form to set values into
-   * @param {NX.capabilities.model.Capability} capabilityModel to import
-   * @param {NX.capabilities.model.CapabilityType} capabilityTypeModel
+   * @param {NX.capability.model.Capability} capabilityModel to import
+   * @param {NX.capability.model.CapabilityType} capabilityTypeModel
    */
   importCapability: function (form, capabilityModel, capabilityTypeModel) {
     var me = this,

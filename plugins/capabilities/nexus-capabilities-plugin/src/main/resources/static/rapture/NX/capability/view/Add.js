@@ -1,4 +1,4 @@
-Ext.define('NX.capabilities.view.Add', {
+Ext.define('NX.capability.view.Add', {
   extend: 'Ext.window.Window',
   alias: 'widget.nx-capability-add',
 

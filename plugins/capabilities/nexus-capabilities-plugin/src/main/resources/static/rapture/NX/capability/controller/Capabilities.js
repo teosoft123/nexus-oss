@@ -1,4 +1,4 @@
-Ext.define('NX.capabilities.controller.Capabilities', {
+Ext.define('NX.capability.controller.Capabilities', {
   extend: 'Ext.app.Controller',
 
   requires: [

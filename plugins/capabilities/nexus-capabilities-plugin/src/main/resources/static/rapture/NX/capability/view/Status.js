@@ -1,4 +1,4 @@
-Ext.define('NX.capabilities.view.Status', {
+Ext.define('NX.capability.view.Status', {
   extend: 'Ext.panel.Panel',
   alias: 'widget.nx-capability-status',
 

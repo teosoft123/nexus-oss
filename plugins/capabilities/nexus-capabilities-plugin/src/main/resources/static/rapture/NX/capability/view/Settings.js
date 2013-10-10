@@ -1,4 +1,4 @@
-Ext.define('NX.capabilities.view.Settings', {
+Ext.define('NX.capability.view.Settings', {
   extend: 'Ext.form.Panel',
   alias: 'widget.nx-capability-settings',
 

@@ -1,12 +1,12 @@
-Ext.define('NX.capabilities.store.CapabilityStatus', {
+Ext.define('NX.capability.store.CapabilityType', {
   extend: 'Ext.data.Store',
-  model: 'NX.capabilities.model.CapabilityStatus',
+  model: 'NX.capability.model.CapabilityType',
 
   proxy: {
     type: 'direct',
     paramsAsHash: false,
     api: {
-      read: NX.direct.Capability.readStatus,
+      read: NX.direct.CapabilityType.read
     },
 
     reader: {
@@ -18,6 +18,6 @@ Ext.define('NX.capabilities.store.CapabilityStatus', {
   },
 
   sortOnLoad: true,
-  sorters: { property: 'typeName', direction: 'ASC' }
+  sorters: { property: 'name', direction: 'ASC' }
 
 });

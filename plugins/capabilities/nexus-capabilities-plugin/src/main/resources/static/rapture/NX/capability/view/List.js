@@ -1,4 +1,4 @@
-Ext.define('NX.capabilities.view.List', {
+Ext.define('NX.capability.view.List', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.nx-capability-list',
 

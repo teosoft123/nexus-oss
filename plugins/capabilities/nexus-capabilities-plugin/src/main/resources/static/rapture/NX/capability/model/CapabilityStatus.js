@@ -1,4 +1,4 @@
-Ext.define('NX.capabilities.model.CapabilityStatus', {
+Ext.define('NX.capability.model.CapabilityStatus', {
   extend: 'Ext.data.Model',
   fields: [
     'enabled',
