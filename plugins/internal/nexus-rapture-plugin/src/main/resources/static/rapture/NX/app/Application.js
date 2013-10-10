@@ -2,6 +2,11 @@ Ext.define('NX.app.Application', {
   extend: 'Ext.app.Application',
 
   requires: [
+    'Ext.Direct',
+    'Ext.state.Manager',
+    'Ext.state.CookieProvider',
+    'Ext.state.LocalStorageProvider',
+    'Ext.util.LocalStorage',
     'NX.view.Viewport'
   ],
 
@@ -24,10 +29,6 @@ Ext.define('NX.app.Application', {
 
   constructor: function (config) {
     var self = this, custom, keys;
-
-    Ext.Direct.addProvider(
-        NX.direct.api.REMOTING_API
-    );
 
     // only these customizations will be allowed
     custom = {
@@ -87,7 +88,38 @@ Ext.define('NX.app.Application', {
     self.callParent(arguments);
   },
 
-  launch: function () {
+  init: function (app) {
+    app.initDirect();
+    app.initState();
+  },
+
+  initDirect: function () {
+    Ext.Direct.addProvider(NX.direct.api.REMOTING_API);
+    this.logDebug('Configured direct');
+  },
+
+  initState: function () {
+    var self = this, provider;
+
+    // prefer local storage if its supported
+    if (Ext.util.LocalStorage.supported) {
+      provider = Ext.create('Ext.state.LocalStorageProvider');
+      this.logDebug('Using state provider: local');
+    }
+    else {
+      provider = Ext.create('Ext.state.CookieProvider');
+      this.logDebug('Using state provider: cookie');
+    }
+
+    // HACK: for debugging
+    provider.on('statechange', function (provider, key, value, opts) {
+      self.logDebug('State changed: ' + key + '=' + value);
+    });
+
+    Ext.state.Manager.setProvider(provider);
+  },
+
+  launch: function (profile) {
     Ext.create('NX.view.Viewport');
 
     // hide the loading mask after we have loaded
