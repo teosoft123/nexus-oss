@@ -2,7 +2,8 @@ Ext.define('NX.capabilities.controller.Capabilities', {
   extend: 'Ext.app.Controller',
 
   requires: [
-    'NX.util.Msg'
+    'NX.util.Msg',
+    'NX.util.ExtDirect'
   ],
 
   stores: [
@@ -184,7 +185,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     capabilityModel.set(values);
 
     NX.direct.Capability.create(capabilityModel.data, function (response, status) {
-      if (!me.showExceptionIfPresent('Capability could not be created', response, status)) {
+      if (!NX.util.ExtDirect.showExceptionIfPresent('Capability could not be created', response, status)) {
         if (Ext.isDefined(response)) {
           if (response.shouldRefresh) {
             me.getCapabilityStatusStore().on('load', function (store) {
@@ -225,7 +226,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     capabilityModel.set(values);
 
     NX.direct.Capability.update(capabilityModel.data, function (response, status) {
-      if (!me.showExceptionIfPresent('Capability could not be saved', response, status)) {
+      if (!NX.util.ExtDirect.showExceptionIfPresent('Capability could not be saved', response, status)) {
         if (Ext.isDefined(response)) {
           if (response.shouldRefresh) {
             me.loadStores();
@@ -258,7 +259,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     if (Ext.isDefined(selection) && selection.length > 0) {
       NX.util.Msg.askConfirmation('Confirm deletion?', me.describeCapability(selection[0]), function () {
         NX.direct.Capability.delete(selection[0].getId(), function (response, status) {
-          if (!me.showExceptionIfPresent('Capability could not be deleted', response, status)) {
+          if (!NX.util.ExtDirect.showExceptionIfPresent('Capability could not be deleted', response, status)) {
             if (Ext.isDefined(response)) {
               if (response.shouldRefresh) {
                 me.loadStores();
@@ -285,19 +286,6 @@ Ext.define('NX.capabilities.controller.Capabilities', {
       description += ' - ' + capabilityStatusModel.get('description');
     }
     return description;
-  },
-
-  showExceptionIfPresent: function (title, response, status) {
-    if (Ext.isDefined(status.serverException)) {
-      NX.util.Msg.showError(
-          Ext.isDefined(response) && Ext.isDefined(response.exceptionMessage)
-              ? response.exceptionMessage
-              : status.serverException.exception.message,
-          title
-      );
-      return true;
-    }
-    return false;
   }
 
 });
