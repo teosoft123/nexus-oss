@@ -1,11 +1,13 @@
-Ext.define('NX.pluginconsole.store.PluginInfos', {
+Ext.define('NX.pluginconsole.store.PluginInfo', {
   extend: 'Ext.data.Store',
   model: 'NX.pluginconsole.model.PluginInfo',
 
   proxy: {
     type: 'direct',
     paramsAsHash: false,
-    directFn: NX.direct.PluginConsole.list,
+    api: {
+      read: NX.direct.PluginConsole.read
+    },
 
     reader: {
       type: 'json',

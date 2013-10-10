@@ -11,7 +11,7 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.plugins.plugin.console.internal.ux;
+package org.sonatype.nexus.plugins.plugin.console.ux;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,11 +48,8 @@ public class PluginConsoleDirectResource
     this.pluginConsoleManager = pluginConsoleManager;
   }
 
-  /**
-   * Retrieve a list of plugins available.
-   */
   @DirectMethod
-  public Response list() {
+  public Response read() {
     try {
       return success(pluginConsoleManager.listPluginInfo());
     }

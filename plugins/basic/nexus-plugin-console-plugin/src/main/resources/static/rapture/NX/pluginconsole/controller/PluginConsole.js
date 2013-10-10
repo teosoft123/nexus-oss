@@ -6,9 +6,6 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
   ],
 
   stores: [
-    'PluginInfos'
-  ],
-  models: [
     'PluginInfo'
   ],
   views: [
@@ -47,7 +44,7 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
   },
 
   loadPlugins: function () {
-    this.getPluginInfosStore().load();
+    this.getPluginInfoStore().load();
   },
 
   showDetails: function (selectionModel, selectedModels) {
