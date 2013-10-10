@@ -1,4 +1,4 @@
-Ext.define('NX.Util', {
+Ext.define('NX.util.Url', {
   singleton: true,
 
   baseUrl: window.location.protocol

@@ -2,8 +2,7 @@ Ext.define('NX.app.Application', {
   extend: 'Ext.app.Application',
 
   requires: [
-    'NX.view.Viewport',
-    'NX.Util'
+    'NX.view.Viewport'
   ],
 
   mixins: {

@@ -25,6 +25,10 @@ Ext.define('NX.capabilities.view.factory.ComboFactory', {
     logAware: 'NX.LogAware'
   },
 
+  requires: [
+    'NX.util.Url'
+  ],
+
   supports: ['combo', 'combobox', 'repo', 'repo-or-group', 'repo-target'],
 
   /**
@@ -70,7 +74,7 @@ Ext.define('NX.capabilities.view.factory.ComboFactory', {
 
           proxy: {
             type: 'ajax',
-            url: NX.Util.urlOf(formField.storePath),
+            url: NX.util.Url.urlOf(formField.storePath),
             headers: {
               'accept': 'application/json'
             },
