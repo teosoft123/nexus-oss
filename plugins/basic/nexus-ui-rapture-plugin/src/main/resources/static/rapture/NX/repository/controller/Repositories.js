@@ -36,6 +36,7 @@ Ext.define('NX.repository.controller.Repositories', {
     });
 
     this.getRepositoryInfoStore().on('load', this.onRepositoryInfoStoreLoad, this);
+    this.getRepositoryInfoStore().on('beforeload', this.onRepositoryInfoStoreBeforeLoad, this);
   },
 
   addToBrowser: function (featureBrowser) {
@@ -54,15 +55,21 @@ Ext.define('NX.repository.controller.Repositories', {
     this.getRepositoryInfoStore().load();
   },
 
+  onRepositoryInfoStoreBeforeLoad: function () {
+    this.getList().down('button[action=delete]').disable();
+  },
+
   onRepositoryInfoStoreLoad: function (store) {
     var selectedModels = this.getList().getSelectionModel().getSelection();
     if (selectedModels.length > 0) {
+      this.getList().down('button[action=delete]').enable();
       this.showDetails(store.getById(selectedModels[0].getId()));
     }
   },
 
   onSelectionChange: function (selectionModel, selectedModels) {
     if (selectedModels.length > 0) {
+      this.getList().down('button[action=delete]').enable();
       this.showDetails(selectedModels[0]);
     }
   },

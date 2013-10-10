@@ -62,6 +62,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     });
 
     this.getCapabilityStatusStore().on('load', this.onCapabilityStatusStoreLoad, this);
+    this.getCapabilityStatusStore().on('beforeload', this.onCapabilityStatusStoreBeforeLoad, this);
   },
 
   addToBrowser: function (featureBrowser) {
@@ -86,15 +87,21 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     this.getCapabilityTypeStore().load();
   },
 
+  onCapabilityStatusStoreBeforeLoad: function () {
+    this.getList().down('button[action=delete]').disable();
+  },
+
   onCapabilityStatusStoreLoad: function (store) {
     var selectedModels = this.getList().getSelectionModel().getSelection();
     if (selectedModels.length > 0) {
+      this.getList().down('button[action=delete]').enable();
       this.showDetails(store.getById(selectedModels[0].getId()));
     }
   },
 
   onSelectionChange: function (selectionModel, selectedModels) {
     if (selectedModels.length > 0) {
+      this.getList().down('button[action=delete]').enable();
       this.showDetails(selectedModels[0]);
     }
   },
