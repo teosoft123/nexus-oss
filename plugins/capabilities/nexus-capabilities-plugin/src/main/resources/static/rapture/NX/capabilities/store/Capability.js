@@ -6,8 +6,7 @@ Ext.define('NX.capabilities.store.Capability', {
     type: 'direct',
     paramsAsHash: false,
     api: {
-      read: NX.direct.Capability.read,
-      update: NX.direct.Capability.update
+      read: NX.direct.Capability.read
     },
 
     reader: {

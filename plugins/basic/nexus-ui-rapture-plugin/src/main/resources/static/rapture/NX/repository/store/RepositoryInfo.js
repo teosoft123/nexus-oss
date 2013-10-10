@@ -5,7 +5,9 @@ Ext.define('NX.repository.store.RepositoryInfo', {
   proxy: {
     type: 'direct',
     paramsAsHash: false,
-    directFn: NX.direct.Repository.readInfo,
+    api: {
+      read: NX.direct.Repository.readInfo
+    },
 
     reader: {
       type: 'json',
