@@ -43,7 +43,7 @@ Ext.define('NX.util.DateFormat', {
 
     // if no format, complain and return the full ISO-8601 format
     if (!name) {
-      this.logWarn('Missing named format:' + name);
+      this.logWarn('Missing named format: ' + name);
       return 'c';
     }
 
