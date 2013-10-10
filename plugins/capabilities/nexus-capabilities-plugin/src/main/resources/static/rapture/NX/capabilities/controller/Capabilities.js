@@ -1,6 +1,10 @@
 Ext.define('NX.capabilities.controller.Capabilities', {
   extend: 'Ext.app.Controller',
 
+  requires: [
+    'NX.util.Msg'
+  ],
+
   stores: [
     'Capability',
     'CapabilityStatus',
@@ -180,7 +184,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     capabilityModel.set(values);
 
     NX.direct.Capability.create(capabilityModel.data, function (response, status) {
-      if (!me.showExceptionIfPresent(response, status, 'Capability could not be created')) {
+      if (!me.showExceptionIfPresent('Capability could not be created', response, status)) {
         if (Ext.isDefined(response)) {
           if (response.shouldRefresh) {
             me.getCapabilityStatusStore().on('load', function (store) {
@@ -193,10 +197,18 @@ Ext.define('NX.capabilities.controller.Capabilities', {
           }
           else {
             if (Ext.isDefined(response.validationMessages)) {
-              me.showMessage(form.markInvalid(response.validationMessages))
+              NX.util.Msg.showError(
+                  'Capability could not be created',
+                  form.markInvalid(response.validationMessages),
+                  {animEl: button.getEl()}
+              );
             }
             else {
-              me.showMessage(response.message, 'Capability could not be created')
+              NX.util.Msg.showError(
+                  'Capability could not be created',
+                  response.message,
+                  {animEl: button.getEl()}
+              );
             }
           }
         }
@@ -213,17 +225,25 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     capabilityModel.set(values);
 
     NX.direct.Capability.update(capabilityModel.data, function (response, status) {
-      if (!me.showExceptionIfPresent(response, status, 'Capability could not be saved')) {
+      if (!me.showExceptionIfPresent('Capability could not be saved', response, status)) {
         if (Ext.isDefined(response)) {
           if (response.shouldRefresh) {
             me.loadStores();
           }
           if (!response.success) {
             if (Ext.isDefined(response.validationMessages)) {
-              me.showMessage(form.markInvalid(response.validationMessages))
+              NX.util.Msg.showError(
+                  'Capability could not be saved',
+                  form.markInvalid(response.validationMessages),
+                  {animEl: button.getEl()}
+              );
             }
             else {
-              me.showMessage(response.message, 'Capability could not be saved')
+              NX.util.Msg.showError(
+                  'Capability could not be saved',
+                  response.message,
+                  {animEl: button.getEl()}
+              );
             }
           }
         }
@@ -236,31 +256,23 @@ Ext.define('NX.capabilities.controller.Capabilities', {
         selection = me.getList().getSelectionModel().getSelection();
 
     if (Ext.isDefined(selection) && selection.length > 0) {
-      Ext.Msg.show({
-        title: 'Confirm deletion?',
-        msg: me.describeCapability(selection[0]),
-        buttons: Ext.Msg.YESNO,
-        animEl: button.getEl(),
-        icon: Ext.MessageBox.QUESTION,
-        closeable: false,
-        scope: self,
-        fn: function (buttonName) {
-          if (buttonName === 'yes' || buttonName === 'ok') {
-            NX.direct.Capability.delete(selection[0].get('id'), function (response, status) {
-              if (!me.showExceptionIfPresent(response, status, 'Capability could not be deleted')) {
-                if (Ext.isDefined(response)) {
-                  if (response.shouldRefresh) {
-                    me.loadStores();
-                  }
-                  if (!response.success) {
-                    me.showMessage(response.message, 'Capability could not be deleted')
-                  }
-                }
+      NX.util.Msg.askConfirmation('Confirm deletion?', me.describeCapability(selection[0]), function () {
+        NX.direct.Capability.delete(selection[0].getId(), function (response, status) {
+          if (!me.showExceptionIfPresent('Capability could not be deleted', response, status)) {
+            if (Ext.isDefined(response)) {
+              if (response.shouldRefresh) {
+                me.loadStores();
               }
-            });
+              if (!response.success) {
+                NX.util.Msg.showError(
+                    'Capability could not be deleted',
+                    response.message
+                );
+              }
+            }
           }
-        }
-      });
+        });
+      }, {scope: me, animEl: button.getEl()});
     }
   },
 
@@ -275,28 +287,14 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     return description;
   },
 
-  showExceptionIfPresent: function (response, status, title) {
+  showExceptionIfPresent: function (title, response, status) {
     if (Ext.isDefined(status.serverException)) {
-      this.showMessage(
+      NX.util.Msg.showError(
           Ext.isDefined(response) && Ext.isDefined(response.exceptionMessage)
               ? response.exceptionMessage
               : status.serverException.exception.message,
           title
       );
-      return true;
-    }
-    return false;
-  },
-
-  showMessage: function (message, title) {
-    if (Ext.isDefined(message)) {
-      Ext.Msg.show({
-        title: title || 'Operation failed',
-        msg: message,
-        buttons: Ext.Msg.OK,
-        icon: Ext.MessageBox.ERROR,
-        closeable: false
-      });
       return true;
     }
     return false;
