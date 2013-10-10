@@ -2,13 +2,12 @@ Ext.define('NX.repository.view.List', {
   extend: 'Ext.grid.Panel',
   alias: 'widget.nx-repository-list',
 
-  store: 'Repository',
+  store: 'RepositoryInfo',
 
-  initComponent: function () {
-    this.columns = [
-      {header: 'Name', dataIndex: 'name', flex: 1}
-    ];
+  columns: [
+    {header: 'Name', dataIndex: 'name', flex: 1},
+    {header: 'Type', dataIndex: 'type', flex: 1},
+    {header: 'Format', dataIndex: 'format', flex: 1}
+  ]
 
-    this.callParent(arguments);
-  }
 });

@@ -1,11 +1,11 @@
-Ext.define('NX.repository.store.Repository', {
+Ext.define('NX.repository.store.RepositoryInfo', {
   extend: 'Ext.data.Store',
-  model: 'NX.repository.model.Repository',
+  model: 'NX.repository.model.RepositoryInfo',
 
   proxy: {
     type: 'direct',
     paramsAsHash: false,
-    directFn: NX.direct.Repository.read,
+    directFn: NX.direct.Repository.readInfo,
 
     reader: {
       type: 'json',

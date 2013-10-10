@@ -2,10 +2,7 @@ Ext.define('NX.repository.controller.Repositories', {
   extend: 'Ext.app.Controller',
 
   stores: [
-    'Repository'
-  ],
-  models: [
-    'Repository'
+    'RepositoryInfo'
   ],
   views: [
     'List'
@@ -43,23 +40,72 @@ Ext.define('NX.repository.controller.Repositories', {
   },
 
   loadStores: function () {
-    this.getRepositoryStore().load();
+    this.getRepositoryInfoStore().load();
   },
 
   showDetails: function (selectionModel, selectedModels) {
     var me = this,
         masterdetail = me.getList().up('nx-masterdetail-panel'),
-        repositoryModel, info;
+        repositoryInfoModel, info;
 
     if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
-      repositoryModel = selectedModels[0];
-      masterdetail.setDescription(repositoryModel.get('name'));
+      repositoryInfoModel = selectedModels[0];
+      masterdetail.setDescription(repositoryInfoModel.get('name'));
       info = {
-        'Id': repositoryModel.get('id'),
-        'Name': repositoryModel.get('name')
+        'Id': repositoryInfoModel.get('id'),
+        'Name': repositoryInfoModel.get('name'),
+        'type': repositoryInfoModel.get('type'),
+        'Format': repositoryInfoModel.get('format'),
+        'Local status': me.getLocalStatus(repositoryInfoModel),
+        'Proxy mode': me.getProxyMode(repositoryInfoModel),
+        'Remote status': me.getRemoteStatus(repositoryInfoModel),
+        'Url': me.asLink(repositoryInfoModel.get('url'))
       };
-      masterdetail.down("nx-info-panel").showInfo(info);
+      masterdetail.down('nx-info-panel').showInfo(info);
     }
+  },
+
+  getLocalStatus: function (repositoryInfoModel) {
+    var localStatus = repositoryInfoModel.get('localStatus');
+
+    if (localStatus === 'IN_SERVICE') {
+      return 'In Service';
+    }
+    else if (localStatus === 'OUT_OF_SERVICE') {
+      return 'Out Of Service';
+    }
+    return localStatus;
+  },
+
+  getProxyMode: function (repositoryInfoModel) {
+    var proxyMode = repositoryInfoModel.get('proxyMode');
+
+    if (proxyMode === 'ALLOW') {
+      return 'Allowed';
+    }
+    else if (proxyMode === 'BLOCKED_MANUAL') {
+      return 'Manually blocked';
+    }
+    else if (proxyMode === 'BLOCKED_AUTO') {
+      return 'Automatically blocked';
+    }
+    return proxyMode;
+  },
+
+  getRemoteStatus: function (repositoryInfoModel) {
+    var remoteStatus = repositoryInfoModel.get('remoteStatus'),
+        remoteStatusReason = repositoryInfoModel.get('remoteStatusReason');
+
+    if (remoteStatus === 'UNKNOWN') {
+      return 'Unknown';
+    }
+    else if (remoteStatus === 'AVAILABLE') {
+      return 'Available';
+    }
+    else if (remoteStatus === 'UNAVAILABLE') {
+      return 'Unavailable' + (remoteStatusReason ? ' due to ' + remoteStatusReason : '');
+    }
+    return remoteStatus;
   },
 
   /**
@@ -71,4 +117,5 @@ Ext.define('NX.repository.controller.Repositories', {
     }
     return '<a href="' + url + '" target="_blank">' + text + '</a>'
   }
+
 });

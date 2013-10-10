@@ -17,11 +17,19 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.sonatype.nexus.proxy.ResourceStoreRequest;
+import org.sonatype.nexus.proxy.item.RepositoryItemUid;
 import org.sonatype.nexus.proxy.registry.RepositoryRegistry;
+import org.sonatype.nexus.proxy.repository.GroupRepository;
+import org.sonatype.nexus.proxy.repository.HostedRepository;
+import org.sonatype.nexus.proxy.repository.ProxyRepository;
+import org.sonatype.nexus.proxy.repository.RemoteStatus;
 import org.sonatype.nexus.proxy.repository.Repository;
+import org.sonatype.nexus.proxy.repository.ShadowRepository;
 import org.sonatype.nexus.rapture.direct.DirectResource;
 import org.sonatype.nexus.rapture.direct.Response;
-import org.sonatype.nexus.ux.model.RepositoryUX;
+import org.sonatype.nexus.rest.RepositoryURLBuilder;
+import org.sonatype.nexus.ux.model.RepositoryInfoUX;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -45,30 +53,68 @@ public class RepositoryDirectResource
 
   private final RepositoryRegistry repositoryRegistry;
 
+  private final RepositoryURLBuilder repositoryURLBuilder;
+
   @Inject
-  public RepositoryDirectResource(final RepositoryRegistry repositoryRegistry) {
+  public RepositoryDirectResource(final RepositoryRegistry repositoryRegistry,
+                                  final RepositoryURLBuilder repositoryURLBuilder)
+  {
     this.repositoryRegistry = repositoryRegistry;
+    this.repositoryURLBuilder = repositoryURLBuilder;
   }
 
   /**
-   * Retrieve a list of available repositories.
+   * Retrieve a list of available repositories info.
    */
   @DirectMethod
-  public Response read() {
+  public Response readInfo() {
     try {
-      return success(Lists.transform(repositoryRegistry.getRepositories(), new Function<Repository, RepositoryUX>()
+      return success(Lists.transform(repositoryRegistry.getRepositories(), new Function<Repository, RepositoryInfoUX>()
       {
         @Override
-        public RepositoryUX apply(final Repository input) {
-          return new RepositoryUX()
+        public RepositoryInfoUX apply(final Repository input) {
+          RepositoryInfoUX info = new RepositoryInfoUX()
               .withId(input.getId())
-              .withName(input.getName());
+              .withName(input.getName())
+              .withType(getRepositoryType(input))
+              .withFormat(input.getProviderHint())
+              .withLocalStatus(input.getLocalStatus().toString())
+              .withUrl(repositoryURLBuilder.getExposedRepositoryContentUrl(input));
+
+          ProxyRepository proxyRepository = input.adaptToFacet(ProxyRepository.class);
+          if (proxyRepository != null) {
+            RemoteStatus remoteStatus = proxyRepository.getRemoteStatus(
+                new ResourceStoreRequest(RepositoryItemUid.PATH_ROOT), false
+            );
+            info
+                .withProxyMode(proxyRepository.getProxyMode().toString())
+                .withRemoteStatus(remoteStatus.toString())
+                .withRemoteStatusReason(remoteStatus.getReason());
+          }
+
+          return info;
         }
       }));
     }
     catch (Exception e) {
       return error(e);
     }
+  }
+
+  private String getRepositoryType(final Repository repository) {
+    if (repository.getRepositoryKind().isFacetAvailable(ProxyRepository.class)) {
+      return "Proxy";
+    }
+    else if (repository.getRepositoryKind().isFacetAvailable(HostedRepository.class)) {
+      return "Hosted";
+    }
+    else if (repository.getRepositoryKind().isFacetAvailable(ShadowRepository.class)) {
+      return "Virtual";
+    }
+    else if (repository.getRepositoryKind().isFacetAvailable(GroupRepository.class)) {
+      return "Group";
+    }
+    return null;
   }
 
 }
