@@ -198,18 +198,10 @@ Ext.define('NX.capabilities.controller.Capabilities', {
           }
           else {
             if (Ext.isDefined(response.validationMessages)) {
-              NX.util.Msg.showError(
-                  'Capability could not be created',
-                  form.markInvalid(response.validationMessages),
-                  {animEl: button.getEl()}
-              );
+              NX.util.Msg.showError('Capability could not be created', form.markInvalid(response.validationMessages));
             }
             else {
-              NX.util.Msg.showError(
-                  'Capability could not be created',
-                  response.message,
-                  {animEl: button.getEl()}
-              );
+              NX.util.Msg.showError('Capability could not be created', response.message);
             }
           }
         }
@@ -233,18 +225,10 @@ Ext.define('NX.capabilities.controller.Capabilities', {
           }
           if (!response.success) {
             if (Ext.isDefined(response.validationMessages)) {
-              NX.util.Msg.showError(
-                  'Capability could not be saved',
-                  form.markInvalid(response.validationMessages),
-                  {animEl: button.getEl()}
-              );
+              NX.util.Msg.showError('Capability could not be saved', form.markInvalid(response.validationMessages));
             }
             else {
-              NX.util.Msg.showError(
-                  'Capability could not be saved',
-                  response.message,
-                  {animEl: button.getEl()}
-              );
+              NX.util.Msg.showError('Capability could not be saved', response.message);
             }
           }
         }
@@ -273,7 +257,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
             }
           }
         });
-      }, {scope: me, animEl: button.getEl()});
+      }, {scope: me});
     }
   },
 

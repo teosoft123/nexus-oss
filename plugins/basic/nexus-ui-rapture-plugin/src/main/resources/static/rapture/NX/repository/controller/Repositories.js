@@ -101,12 +101,12 @@ Ext.define('NX.repository.controller.Repositories', {
                 me.loadStores();
               }
               if (!response.success) {
-                NX.util.Msg.showError('Repository could not be deleted', response.message, {animEl: button.getEl()});
+                NX.util.Msg.showError('Repository could not be deleted', response.message);
               }
             }
           }
         });
-      }, {scope: me, animEl: button.getEl()});
+      }, {scope: me});
     }
   },
 
