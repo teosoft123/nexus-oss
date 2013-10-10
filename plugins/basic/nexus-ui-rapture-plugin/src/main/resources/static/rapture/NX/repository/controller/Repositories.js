@@ -2,7 +2,7 @@ Ext.define('NX.repository.controller.Repositories', {
   extend: 'Ext.app.Controller',
 
   requires: [
-      'NX.util.Url'
+    'NX.util.Url'
   ],
 
   stores: [
@@ -26,9 +26,11 @@ Ext.define('NX.repository.controller.Repositories', {
       },
       'nx-repository-list': {
         beforerender: this.loadStores,
-        selectionchange: this.showDetails
+        selectionchange: this.onSelectionChange
       }
     });
+
+    this.getRepositoryInfoStore().on('load', this.onRepositoryInfoStoreLoad, this);
   },
 
   addToBrowser: function (featureBrowser) {
@@ -47,13 +49,25 @@ Ext.define('NX.repository.controller.Repositories', {
     this.getRepositoryInfoStore().load();
   },
 
-  showDetails: function (selectionModel, selectedModels) {
+  onRepositoryInfoStoreLoad: function (store) {
+    var selectedModels = this.getList().getSelectionModel().getSelection();
+    if (selectedModels.length > 0) {
+      this.showDetails(store.getById(selectedModels[0].getId()));
+    }
+  },
+
+  onSelectionChange: function (selectionModel, selectedModels) {
+    if (selectedModels.length > 0) {
+      this.showDetails(selectedModels[0]);
+    }
+  },
+
+  showDetails: function (repositoryInfoModel) {
     var me = this,
         masterdetail = me.getList().up('nx-masterdetail-panel'),
-        repositoryInfoModel, info;
+        info;
 
-    if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
-      repositoryInfoModel = selectedModels[0];
+    if (Ext.isDefined(repositoryInfoModel)) {
       masterdetail.setDescription(repositoryInfoModel.get('name'));
       info = {
         'Id': repositoryInfoModel.get('id'),

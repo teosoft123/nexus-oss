@@ -34,7 +34,7 @@ Ext.define('NX.capabilities.controller.Capabilities', {
       },
       'nx-capability-list': {
         beforerender: this.loadStores,
-        selectionchange: this.showDetails
+        selectionchange: this.onSelectionChange
       },
       'nx-capability-list button[action=new]': {
         click: this.showAddWindow
@@ -81,17 +81,24 @@ Ext.define('NX.capabilities.controller.Capabilities', {
     this.getCapabilityTypeStore().load();
   },
 
-  onCapabilityStatusStoreLoad: function () {
-    var sm = this.getList().getSelectionModel();
-    this.showDetails(sm, sm.getSelection());
+  onCapabilityStatusStoreLoad: function (store) {
+    var selectedModels = this.getList().getSelectionModel().getSelection();
+    if (selectedModels.length > 0) {
+      this.showDetails(store.getById(selectedModels[0].getId()));
+    }
   },
 
-  showDetails: function (selectionModel, selectedModels) {
-    var me = this,
-        capabilityStatusModel, capabilityModel, capabilityTypeModel;
+  onSelectionChange: function (selectionModel, selectedModels) {
+    if (selectedModels.length > 0) {
+      this.showDetails(selectedModels[0]);
+    }
+  },
 
-    if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
-      capabilityStatusModel = selectedModels[0];
+  showDetails: function (capabilityStatusModel) {
+    var me = this,
+        capabilityModel, capabilityTypeModel;
+
+    if (Ext.isDefined(capabilityStatusModel)) {
       capabilityModel = me.getCapabilityStore().getById(capabilityStatusModel.get('id'));
       capabilityTypeModel = me.getCapabilityTypeStore().getById(capabilityStatusModel.get('typeId'));
 

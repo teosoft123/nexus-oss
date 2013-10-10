@@ -25,10 +25,12 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
         beforerender: this.addToBrowser
       },
       'nx-pluginconsole-list': {
-        beforerender: this.loadPlugins,
-        selectionchange: this.showDetails
+        beforerender: this.loadStores,
+        selectionchange: this.onSelectionChange
       }
     });
+
+    this.getPluginInfoStore().on('load', this.onPluginInfoStoreLoad, this);
   },
 
   addToBrowser: function (featureBrowser) {
@@ -43,29 +45,41 @@ Ext.define('NX.pluginconsole.controller.PluginConsole', {
     );
   },
 
-  loadPlugins: function () {
+  loadStores: function () {
     this.getPluginInfoStore().load();
   },
 
-  showDetails: function (selectionModel, selectedModels) {
+  onPluginInfoStoreLoad: function (store) {
+    var selectedModels = this.getList().getSelectionModel().getSelection();
+    if (selectedModels.length > 0) {
+      this.showDetails(store.getById(selectedModels[0].getId()));
+    }
+  },
+
+  onSelectionChange: function (selectionModel, selectedModels) {
+    if (selectedModels.length > 0) {
+      this.showDetails(selectedModels[0]);
+    }
+  },
+
+  showDetails: function (pluginInfoModel) {
     var me = this,
         masterdetail = me.getList().up('nx-masterdetail-panel'),
-        pluginInfo, info;
+        info;
 
-    if (Ext.isDefined(selectedModels) && selectedModels.length > 0) {
-      pluginInfo = selectedModels[0].data;
-      masterdetail.setDescription(pluginInfo.name);
+    if (Ext.isDefined(pluginInfoModel)) {
+      masterdetail.setDescription(pluginInfoModel.get('name'));
       info = {
-        'Name': pluginInfo.name,
-        'Version': pluginInfo.version,
-        'Status': pluginInfo.status,
-        'Description': pluginInfo.description,
-        'SCM Version': pluginInfo.scmVersion,
-        'SCM Timestamp': pluginInfo.scmTimestamp,
-        'Site': NX.util.Url.asLink(pluginInfo.site)
+        'Name': pluginInfoModel.get('name'),
+        'Version': pluginInfoModel.get('version'),
+        'Status': pluginInfoModel.get('status'),
+        'Description': pluginInfoModel.get('description'),
+        'SCM Version': pluginInfoModel.get('scmVersion'),
+        'SCM Timestamp': pluginInfoModel.get('scmTimestamp'),
+        'Site': NX.util.Url.asLink(pluginInfoModel.get('site'))
       };
-      if (Ext.isDefined(pluginInfo.documentation)) {
-        Ext.each(pluginInfo.documentation, function (doc) {
+      if (Ext.isDefined(pluginInfoModel.get('documentation'))) {
+        Ext.each(pluginInfoModel.get('documentation'), function (doc) {
           if (!Ext.isEmpty(doc.url)) {
             info['Documentation'] = NX.util.Url.asLink(doc.url, doc.label);
           }
