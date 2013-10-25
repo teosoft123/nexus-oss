@@ -101,12 +101,12 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.cometd.javascript</groupId>
-      <artifactId>cometd-javascript-jquery</artifactId>
-      <type>war</type>
-      <scope>provided</scope>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.cometd.javascript</groupId>-->
+      <!--<artifactId>cometd-javascript-jquery</artifactId>-->
+      <!--<type>war</type>-->
+      <!--<scope>provided</scope>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>org.sonatype.nexus</groupId>
