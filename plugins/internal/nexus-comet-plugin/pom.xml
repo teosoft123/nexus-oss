@@ -45,14 +45,26 @@
     </dependency>
 
     <dependency>
-      <groupId>org.cometd.javascript</groupId>
-      <artifactId>cometd-javascript-jquery</artifactId>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
       <groupId>org.cometd.java</groupId>
       <artifactId>cometd-java-server</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <!--<exclusion>-->
+          <!--<groupId>org.eclipse.jetty</groupId>-->
+          <!--<artifactId>jetty-continuation</artifactId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+          <!--<groupId>org.eclipse.jetty</groupId>-->
+          <!--<artifactId>jetty-util</artifactId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+          <!--<groupId>org.eclipse.jetty</groupId>-->
+          <!--<artifactId>jetty-jmx</artifactId>-->
+        <!--</exclusion>-->
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -60,10 +72,40 @@
       <artifactId>cometd-websocket-jetty</artifactId>
       <exclusions>
         <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <!--<exclusion>-->
+          <!--<groupId>org.eclipse.jetty</groupId>-->
+          <!--<artifactId>jetty-websocket</artifactId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+          <!--<groupId>org.eclipse.jetty</groupId>-->
+          <!--<artifactId>jetty-io</artifactId>-->
+        <!--</exclusion>-->
+        <!--<exclusion>-->
+          <!--<groupId>org.eclipse.jetty</groupId>-->
+          <!--<artifactId>jetty-http</artifactId>-->
+        <!--</exclusion>-->
+        <exclusion>
           <groupId>org.cometd.java</groupId>
           <artifactId>cometd-java-client</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.cometd.javascript</groupId>
+      <artifactId>cometd-javascript-common</artifactId>
+      <type>war</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.cometd.javascript</groupId>
+      <artifactId>cometd-javascript-jquery</artifactId>
+      <type>war</type>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -78,6 +120,13 @@
       <plugin>
         <groupId>org.sonatype.nexus</groupId>
         <artifactId>nexus-plugin-bundle-maven-plugin</artifactId>
+        <configuration>
+          <sharedDependencies>
+            <sharedDependency>org.cometd.java:bayeux-api</sharedDependency>
+            <sharedDependency>org.cometd.java:cometd-java-server</sharedDependency>
+            <sharedDependency>org.cometd.java:cometd-websocket-jetty</sharedDependency>
+          </sharedDependencies>
+        </configuration>
       </plugin>
     </plugins>
   </build>

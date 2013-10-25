@@ -41,13 +41,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.cometd.javascript</groupId>
-        <artifactId>cometd-javascript-jquery</artifactId>
-        <version>${cometd.version}</version>
-        <type>war</type>
-      </dependency>
-
-      <dependency>
         <groupId>org.cometd.java</groupId>
         <artifactId>cometd-java-server</artifactId>
         <version>${cometd.version}</version>
@@ -69,6 +62,20 @@
         <groupId>org.cometd.java</groupId>
         <artifactId>cometd-java-client</artifactId>
         <version>${cometd.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.cometd.javascript</groupId>
+        <artifactId>cometd-javascript-common</artifactId>
+        <version>${cometd.version}</version>
+        <type>war</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.cometd.javascript</groupId>
+        <artifactId>cometd-javascript-jquery</artifactId>
+        <version>${cometd.version}</version>
+        <type>war</type>
       </dependency>
 
     </dependencies>
