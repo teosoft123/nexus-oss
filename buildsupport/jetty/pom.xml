@@ -129,6 +129,12 @@
         <version>${eclipse-jetty.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-websocket</artifactId>
+        <version>${eclipse-jetty.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
