@@ -10,45 +10,29 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
+
 package org.sonatype.nexus.comet.internal;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.servlet.ServletException;
 
-import org.cometd.server.BayeuxServerImpl;
-import org.cometd.server.CometdServlet;
-import org.cometd.server.ext.AcknowledgedMessagesExtension;
+import org.sonatype.nexus.comet.CometPlugin;
+import org.sonatype.nexus.plugins.ui.contribution.UiContributor;
+import org.sonatype.nexus.plugins.ui.contribution.UiContributorSupport;
 
 /**
- * {@link CometdServlet} extensions.
+ * Comet {@link UiContributor}.
  *
  * @since 2.7
  */
 @Named
 @Singleton
-public class CometdServletImpl
-  extends CometdServlet
+public class UiContributorImpl
+    extends UiContributorSupport
 {
-  // TODO: Register JMX mbeans
-
-  @Override
-  public void init() throws ServletException {
-    // wrap with our classloader so transport impl can be loaded
-    final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-    try {
-      super.init();
-    }
-    finally {
-      Thread.currentThread().setContextClassLoader(cl);
-    }
-  }
-
-  @Override
-  protected BayeuxServerImpl newBayeuxServer() {
-    BayeuxServerImpl server = new BayeuxServerImpl();
-    server.addExtension(new AcknowledgedMessagesExtension());
-    return server;
+  @Inject
+  public UiContributorImpl(final CometPlugin owner) {
+    super(owner);
   }
 }

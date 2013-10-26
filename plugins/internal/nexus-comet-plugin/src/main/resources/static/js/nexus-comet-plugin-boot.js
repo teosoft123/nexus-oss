@@ -10,30 +10,14 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.comet.internal;
-
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.sonatype.nexus.log.LogConfigurationCustomizer;
-import org.sonatype.sisu.goodies.common.ComponentSupport;
-
-import static org.sonatype.nexus.log.LoggerLevel.DEFAULT;
-
-/**
- * Comet {@link LogConfigurationCustomizer}.
- *
- * @since 2.7
- */
-@Named
-@Singleton
-class LogConfigurationCustomizerImpl
-extends ComponentSupport
-implements LogConfigurationCustomizer
-{
-  @Override
-  public void customize(final Configuration configuration) {
-    configuration.setLoggerLevel("org.sonatype.nexus.comet", DEFAULT);
-    configuration.setLoggerLevel("org.cometd", DEFAULT);
-  }
-}
+/*global define,NX*/
+define('nexus-comet-plugin-boot', [
+  'org/cometd',
+  'org/cometd/AckExtension',
+  'org/cometd/ReloadExtension',
+  'org/cometd/TimeStampExtension',
+  'org/cometd/TimeSyncExtension'
+],
+function () {
+  NX.log.debug('Module loaded: nexus-comet-plugin-boot');
+});

@@ -40,6 +40,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.sonatype.nexus.plugins</groupId>
+      <artifactId>nexus-ui-extjs3-plugin</artifactId>
+      <type>${nexus-plugin.type}</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.cometd.java</groupId>
       <artifactId>bayeux-api</artifactId>
     </dependency>
@@ -57,16 +64,16 @@
           <artifactId>slf4j-api</artifactId>
         </exclusion>
         <!--<exclusion>-->
-          <!--<groupId>org.eclipse.jetty</groupId>-->
-          <!--<artifactId>jetty-continuation</artifactId>-->
+        <!--<groupId>org.eclipse.jetty</groupId>-->
+        <!--<artifactId>jetty-continuation</artifactId>-->
         <!--</exclusion>-->
         <!--<exclusion>-->
-          <!--<groupId>org.eclipse.jetty</groupId>-->
-          <!--<artifactId>jetty-util</artifactId>-->
+        <!--<groupId>org.eclipse.jetty</groupId>-->
+        <!--<artifactId>jetty-util</artifactId>-->
         <!--</exclusion>-->
         <!--<exclusion>-->
-          <!--<groupId>org.eclipse.jetty</groupId>-->
-          <!--<artifactId>jetty-jmx</artifactId>-->
+        <!--<groupId>org.eclipse.jetty</groupId>-->
+        <!--<artifactId>jetty-jmx</artifactId>-->
         <!--</exclusion>-->
       </exclusions>
     </dependency>
@@ -80,16 +87,16 @@
           <artifactId>slf4j-api</artifactId>
         </exclusion>
         <!--<exclusion>-->
-          <!--<groupId>org.eclipse.jetty</groupId>-->
-          <!--<artifactId>jetty-websocket</artifactId>-->
+        <!--<groupId>org.eclipse.jetty</groupId>-->
+        <!--<artifactId>jetty-websocket</artifactId>-->
         <!--</exclusion>-->
         <!--<exclusion>-->
-          <!--<groupId>org.eclipse.jetty</groupId>-->
-          <!--<artifactId>jetty-io</artifactId>-->
+        <!--<groupId>org.eclipse.jetty</groupId>-->
+        <!--<artifactId>jetty-io</artifactId>-->
         <!--</exclusion>-->
         <!--<exclusion>-->
-          <!--<groupId>org.eclipse.jetty</groupId>-->
-          <!--<artifactId>jetty-http</artifactId>-->
+        <!--<groupId>org.eclipse.jetty</groupId>-->
+        <!--<artifactId>jetty-http</artifactId>-->
         <!--</exclusion>-->
         <exclusion>
           <groupId>org.cometd.java</groupId>
@@ -99,17 +106,17 @@
     </dependency>
 
     <!--<dependency>-->
-      <!--<groupId>org.cometd.javascript</groupId>-->
-      <!--<artifactId>cometd-javascript-common</artifactId>-->
-      <!--<type>war</type>-->
-      <!--<scope>provided</scope>-->
+    <!--<groupId>org.cometd.javascript</groupId>-->
+    <!--<artifactId>cometd-javascript-common</artifactId>-->
+    <!--<type>war</type>-->
+    <!--<scope>provided</scope>-->
     <!--</dependency>-->
 
     <!--<dependency>-->
-      <!--<groupId>org.cometd.javascript</groupId>-->
-      <!--<artifactId>cometd-javascript-jquery</artifactId>-->
-      <!--<type>war</type>-->
-      <!--<scope>provided</scope>-->
+    <!--<groupId>org.cometd.javascript</groupId>-->
+    <!--<artifactId>cometd-javascript-jquery</artifactId>-->
+    <!--<type>war</type>-->
+    <!--<scope>provided</scope>-->
     <!--</dependency>-->
 
     <dependency>
