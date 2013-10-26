@@ -12,32 +12,40 @@
  */
 package org.sonatype.nexus.comet.internal;
 
+import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
-import javax.servlet.ServletException;
 
-import org.cometd.server.CometdServlet;
+import org.sonatype.sisu.goodies.common.ComponentSupport;
+
+import org.cometd.bayeux.server.BayeuxServer;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
- * {@link CometdServlet} extensions.
+ * {@link BayeuxServer} provider.
  *
  * @since 2.7
  */
 @Named
 @Singleton
-public class CometdServletImpl
-  extends CometdServlet
+public class BayeuxServerProvider
+  extends ComponentSupport
+  implements Provider<BayeuxServer>
 {
+  private final CometdServletImpl cometdServlet;
+
+  @Inject
+  public BayeuxServerProvider(final CometdServletImpl cometdServlet) {
+    this.cometdServlet = checkNotNull(cometdServlet);
+  }
+
   @Override
-  public void init() throws ServletException {
-    // wrap with our classloader so transport impl can be loaded
-    final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-    try {
-      super.init();
-    }
-    finally {
-      Thread.currentThread().setContextClassLoader(cl);
-    }
+  public BayeuxServer get() {
+    BayeuxServer server = cometdServlet.getBayeux();
+    checkState(server != null);
+    return server;
   }
 }

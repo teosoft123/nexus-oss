@@ -1,4 +1,4 @@
-/*
+/**
  * Sonatype Nexus (TM) Open Source Version
  * Copyright (c) 2007-2013 Sonatype, Inc.
  * All rights reserved. Includes the third-party code listed at http://links.sonatype.com/products/nexus/oss/attributions.
@@ -10,34 +10,31 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
+
 package org.sonatype.nexus.comet.internal;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.servlet.ServletException;
 
-import org.cometd.server.CometdServlet;
+import org.sonatype.nexus.log.LogConfigurationCustomizer;
+import org.sonatype.sisu.goodies.common.ComponentSupport;
+
+import static org.sonatype.nexus.log.LoggerLevel.DEFAULT;
 
 /**
- * {@link CometdServlet} extensions.
+ * Comet {@link LogConfigurationCustomizer}.
  *
  * @since 2.7
  */
 @Named
 @Singleton
-public class CometdServletImpl
-  extends CometdServlet
+class LogConfigurationCustomizerImpl
+extends ComponentSupport
+implements LogConfigurationCustomizer
 {
   @Override
-  public void init() throws ServletException {
-    // wrap with our classloader so transport impl can be loaded
-    final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-    try {
-      super.init();
-    }
-    finally {
-      Thread.currentThread().setContextClassLoader(cl);
-    }
+  public void customize(final Configuration configuration) {
+    configuration.setLoggerLevel("org.sonatype.nexus.comet", DEFAULT);
+    configuration.setLoggerLevel("org.cometd", DEFAULT);
   }
 }
