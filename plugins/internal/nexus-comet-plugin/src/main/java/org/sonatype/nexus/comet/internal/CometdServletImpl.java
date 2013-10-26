@@ -10,12 +10,20 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
+
 package org.sonatype.nexus.comet.internal;
 
+import java.io.IOException;
+
+import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
+import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.CometdServlet;
 import org.cometd.server.ext.AcknowledgedMessagesExtension;
@@ -28,17 +36,39 @@ import org.cometd.server.ext.AcknowledgedMessagesExtension;
 @Named
 @Singleton
 public class CometdServletImpl
-  extends CometdServlet
+    extends CometdServlet
+    implements Provider<BayeuxServer>
 {
+  // FIXME: Having lots of classloading problems just trying uber here if it helps
+  private final ClassLoader uberClassLoader;
+
+  @Inject
+  public CometdServletImpl(final @Named("nexus-uber") ClassLoader uberClassLoader) {
+    this.uberClassLoader = uberClassLoader;
+  }
+
   // TODO: Register JMX mbeans
 
   @Override
   public void init() throws ServletException {
-    // wrap with our classloader so transport impl can be loaded
     final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+    Thread.currentThread().setContextClassLoader(uberClassLoader);
     try {
       super.init();
+    }
+    finally {
+      Thread.currentThread().setContextClassLoader(cl);
+    }
+  }
+
+  @Override
+  public void service(final ServletRequest request, final ServletResponse response)
+      throws ServletException, IOException
+  {
+    final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader(uberClassLoader);
+    try {
+      super.service(request, response);
     }
     finally {
       Thread.currentThread().setContextClassLoader(cl);
@@ -50,5 +80,10 @@ public class CometdServletImpl
     BayeuxServerImpl server = new BayeuxServerImpl();
     server.addExtension(new AcknowledgedMessagesExtension());
     return server;
+  }
+
+  @Override
+  public BayeuxServer get() {
+    return getBayeux();
   }
 }

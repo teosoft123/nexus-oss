@@ -12,12 +12,9 @@
  */
 /*global define,NX*/
 define('nexus-comet-plugin-boot', [
-  'org/cometd',
-  'org/cometd/AckExtension',
-  'org/cometd/ReloadExtension',
-  'org/cometd/TimeStampExtension',
-  'org/cometd/TimeSyncExtension'
+  'Nexus/comet/Comet'
 ],
 function () {
   NX.log.debug('Module loaded: nexus-comet-plugin-boot');
+  Nexus.comet.Comet.init();
 });
