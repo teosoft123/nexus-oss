@@ -10,7 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.comet;
+package org.sonatype.nexus.cometd;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,20 +21,20 @@ import org.sonatype.nexus.plugin.PluginIdentity;
 import org.jetbrains.annotations.NonNls;
 
 /**
- * Comet plugin.
+ * CometD plugin.
  *
  * @since 2.7
  */
 @Named
 @EagerSingleton
-public class CometPlugin
+public class CometdPlugin
     extends PluginIdentity
 {
   /**
    * Prefix for ID-like things.
    */
   @NonNls
-  public static final String ID_PREFIX = "comet";
+  public static final String ID_PREFIX = "cometd";
 
   /**
    * Expected groupId for plugin artifact.
@@ -64,7 +64,7 @@ public class CometPlugin
   public static final String PERMISSION_PREFIX = "nexus:" + ID_PREFIX + ":";
 
   @Inject
-  public CometPlugin() throws Exception {
+  public CometdPlugin() throws Exception {
     super(GROUP_ID, ARTIFACT_ID);
   }
 }

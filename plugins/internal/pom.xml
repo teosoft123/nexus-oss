@@ -31,8 +31,8 @@
     <module>nexus-groovyremote-client</module>
     <module>nexus-groovyremote-plugin</module>
     <module>nexus-plexusplugin-plugin</module>
-    <module>nexus-comet-plugin</module>
-    <module>nexus-comet-client</module>
+    <module>nexus-cometd-plugin</module>
+    <module>nexus-cometd-client</module>
   </modules>
 
 </project>

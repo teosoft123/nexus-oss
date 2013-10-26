@@ -10,29 +10,10 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-
-package org.sonatype.nexus.comet.internal;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.sonatype.nexus.comet.CometPlugin;
-import org.sonatype.nexus.plugins.ui.contribution.UiContributor;
-import org.sonatype.nexus.plugins.ui.contribution.UiContributorSupport;
-
-/**
- * Comet {@link UiContributor}.
- *
- * @since 2.7
- */
-@Named
-@Singleton
-public class UiContributorImpl
-    extends UiContributorSupport
-{
-  @Inject
-  public UiContributorImpl(final CometPlugin owner) {
-    super(owner);
-  }
-}
+/*global define,NX*/
+define('nexus-cometd-plugin-boot', [
+  'Nexus/cometd/Cometd'
+],
+function () {
+  NX.log.debug('Module loaded: nexus-cometd-plugin-boot');
+});

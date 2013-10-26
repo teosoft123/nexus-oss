@@ -10,7 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.comet.internal;
+package org.sonatype.nexus.cometd.internal;
 
 import java.util.Map;
 
@@ -25,17 +25,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Comet Guice module.
+ * CometD Guice module.
  *
  * @since 2.7
  */
 @Named
-public class CometModule
+public class CometdModule
   extends AbstractModule
 {
-  private static final Logger log = LoggerFactory.getLogger(CometModule.class);
+  private static final Logger log = LoggerFactory.getLogger(CometdModule.class);
 
-  private static final String MOUNT_POINT = "/service/comet";
+  private static final String MOUNT_POINT = "/service/cometd";
 
   @Override
   protected void configure() {

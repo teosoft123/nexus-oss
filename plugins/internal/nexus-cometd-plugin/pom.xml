@@ -23,13 +23,13 @@
     <version>2.7.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>nexus-comet-plugin</artifactId>
+  <artifactId>nexus-cometd-plugin</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
   <packaging>nexus-plugin</packaging>
 
   <properties>
-    <pluginName>Nexus Comet Plugin</pluginName>
-    <pluginDescription>Support for use of Comet/bayeux protocol.</pluginDescription>
+    <pluginName>Nexus CometD Plugin</pluginName>
+    <pluginDescription>Support for use of CometD (bayeux protocol).</pluginDescription>
   </properties>
 
   <dependencies>

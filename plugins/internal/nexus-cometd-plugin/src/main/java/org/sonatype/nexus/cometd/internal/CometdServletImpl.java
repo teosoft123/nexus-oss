@@ -11,11 +11,10 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.comet.internal;
+package org.sonatype.nexus.cometd.internal;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -39,20 +38,12 @@ public class CometdServletImpl
     extends CometdServlet
     implements Provider<BayeuxServer>
 {
-  // FIXME: Having lots of classloading problems just trying uber here if it helps
-  private final ClassLoader uberClassLoader;
-
-  @Inject
-  public CometdServletImpl(final @Named("nexus-uber") ClassLoader uberClassLoader) {
-    this.uberClassLoader = uberClassLoader;
-  }
-
   // TODO: Register JMX mbeans
 
   @Override
   public void init() throws ServletException {
     final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(uberClassLoader);
+    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
     try {
       super.init();
     }
@@ -66,7 +57,7 @@ public class CometdServletImpl
       throws ServletException, IOException
   {
     final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    Thread.currentThread().setContextClassLoader(uberClassLoader);
+    Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
     try {
       super.service(request, response);
     }

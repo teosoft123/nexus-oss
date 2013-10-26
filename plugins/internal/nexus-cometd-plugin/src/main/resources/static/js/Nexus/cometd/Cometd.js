@@ -12,11 +12,11 @@
  */
 
 /**
- * ???
+ * Nexus CometD integration.
  *
  * @since 2.7
  */
-NX.define('Nexus.comet.Comet', {
+NX.define('Nexus.cometd.Cometd', {
   extend: 'org.cometd.Cometd',
   requireSuper: false,
   singleton: true,
@@ -49,7 +49,7 @@ NX.define('Nexus.comet.Comet', {
 
     me.constructor.superclass.constructor.call(me, 'default');
 
-    url = Sonatype.config.host + Sonatype.config.contextPath + '/service/comet/'; // trailing slash is important
+    url = Sonatype.config.host + Sonatype.config.contextPath + '/service/cometd/'; // trailing slash is important
     me.logDebug('URL: ' + url);
 
     Ext.ns('Ext.Cometd');
@@ -130,6 +130,7 @@ NX.define('Nexus.comet.Comet', {
       logLevel: 'debug'
     });
 
+    // HACK
     me.addListener('/meta/handshake', function (message)
     {
       if (message.successful) {
