@@ -16,7 +16,9 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
 
+import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.CometdServlet;
+import org.cometd.server.ext.AcknowledgedMessagesExtension;
 
 /**
  * {@link CometdServlet} extensions.
@@ -39,5 +41,12 @@ public class CometdServletImpl
     finally {
       Thread.currentThread().setContextClassLoader(cl);
     }
+  }
+
+  @Override
+  protected BayeuxServerImpl newBayeuxServer() {
+    BayeuxServerImpl server = new BayeuxServerImpl();
+    server.addExtension(new AcknowledgedMessagesExtension());
+    return server;
   }
 }
