@@ -132,39 +132,39 @@
     -->
 
     <!--<dependency>-->
-      <!--<groupId>org.eclipse.jetty</groupId>-->
-      <!--<artifactId>jetty-continuation</artifactId>-->
-      <!--<scope>provided</scope>-->
+    <!--<groupId>org.eclipse.jetty</groupId>-->
+    <!--<artifactId>jetty-continuation</artifactId>-->
+    <!--<scope>provided</scope>-->
     <!--</dependency>-->
 
     <!--<dependency>-->
-      <!--<groupId>org.eclipse.jetty</groupId>-->
-      <!--<artifactId>jetty-util</artifactId>-->
-      <!--<scope>provided</scope>-->
+    <!--<groupId>org.eclipse.jetty</groupId>-->
+    <!--<artifactId>jetty-util</artifactId>-->
+    <!--<scope>provided</scope>-->
     <!--</dependency>-->
 
     <!--<dependency>-->
-      <!--<groupId>org.eclipse.jetty</groupId>-->
-      <!--<artifactId>jetty-jmx</artifactId>-->
-      <!--<scope>provided</scope>-->
+    <!--<groupId>org.eclipse.jetty</groupId>-->
+    <!--<artifactId>jetty-jmx</artifactId>-->
+    <!--<scope>provided</scope>-->
     <!--</dependency>-->
 
     <!--<dependency>-->
-      <!--<groupId>org.eclipse.jetty</groupId>-->
-      <!--<artifactId>jetty-websocket</artifactId>-->
-      <!--<scope>provided</scope>-->
+    <!--<groupId>org.eclipse.jetty</groupId>-->
+    <!--<artifactId>jetty-websocket</artifactId>-->
+    <!--<scope>provided</scope>-->
     <!--</dependency>-->
 
     <!--<dependency>-->
-      <!--<groupId>org.eclipse.jetty</groupId>-->
-      <!--<artifactId>jetty-io</artifactId>-->
-      <!--<scope>provided</scope>-->
+    <!--<groupId>org.eclipse.jetty</groupId>-->
+    <!--<artifactId>jetty-io</artifactId>-->
+    <!--<scope>provided</scope>-->
     <!--</dependency>-->
 
     <!--<dependency>-->
-      <!--<groupId>org.eclipse.jetty</groupId>-->
-      <!--<artifactId>jetty-http</artifactId>-->
-      <!--<scope>provided</scope>-->
+    <!--<groupId>org.eclipse.jetty</groupId>-->
+    <!--<artifactId>jetty-http</artifactId>-->
+    <!--<scope>provided</scope>-->
     <!--</dependency>-->
 
     <dependency>
@@ -210,6 +210,11 @@
       <!--</execution>-->
       <!--</executions>-->
       <!--</plugin>-->
+
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>yuicompressor-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
 
