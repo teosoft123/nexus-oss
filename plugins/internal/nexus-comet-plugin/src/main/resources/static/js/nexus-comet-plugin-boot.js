@@ -16,5 +16,4 @@ define('nexus-comet-plugin-boot', [
 ],
 function () {
   NX.log.debug('Module loaded: nexus-comet-plugin-boot');
-  Nexus.comet.Comet.init();
 });

@@ -17,6 +17,8 @@
  * @since 2.7
  */
 NX.define('Nexus.comet.Comet', {
+  extend: 'org.cometd.Cometd',
+  requireSuper: false,
   singleton: true,
 
   requirejs: [
@@ -27,59 +29,120 @@ NX.define('Nexus.comet.Comet', {
     'org/cometd/TimeSyncExtension'
   ],
 
+  require: [
+      'Nexus.comet.LongPollingTransport'
+  ],
+
   mixins: [
     'Nexus.LogAwareMixin'
   ],
 
   /**
-   * @private
+   * @constructor
    */
-  cometd: undefined,
+  constructor: function () {
+    var me = this, url;
 
-  /**
-   * @public
-   */
-  init: function () {
-    var me = this,
-        url,
-        cometd;
+    // install extjs json codecs
+    org.cometd.JSON.toJSON = Ext.encode;
+    org.cometd.JSON.fromJSON = Ext.decode;
 
-    me.logDebug('Initializing');
+    me.constructor.superclass.constructor.call(me, 'default');
 
     url = Sonatype.config.host + Sonatype.config.contextPath + '/service/comet/'; // trailing slash is important
     me.logDebug('URL: ' + url);
 
-    cometd = new org.cometd.Cometd('default');
-    cometd.registerTransport('websocket', new org.cometd.WebSocketTransport());
+    Ext.ns('Ext.Cometd');
 
-    // TODO: Look into how to provide longpolling transports, IIUC needs some more integration
-    // TODO: https://code.google.com/p/ext-cometd/source/browse/trunk/src/main/webapp/js/ext-cometd/ext-cometd.js
-    //if (org.cometd.WebSocket) {
-    //  cometd.registerTransport('websocket', new org.cometd.WebSocketTransport());
-    //}
-    //cometd.registerTransport('long-polling', new org.cometd.LongPollingTransport());
-    //cometd.registerTransport('callback-polling', new org.cometd.CallbackPollingTransport());
+    // FIXME: copied from (asl2) https://code.google.com/p/ext-cometd/source/browse/trunk/src/main/webapp/js/ext-cometd/ext-cometd.js
+    // FIXME: adapt to proper classes, once we get the basics working
 
-    cometd.configure({
+    var ResponseTransformer = function (packet) {
+      return function (response, options) {
+        packet.onSuccess(response.responseText);
+      }
+    };
+
+    var XHRAborter = function (xhr) {
+      return {
+        abort: function () {
+          Ext.Ajax.abort(xhr);
+        }
+      }
+    };
+
+    Ext.Cometd.LongPollingTransport = function () {
+      this.xhrSend = function (packet) {
+        var xhr = Ext.Ajax.request({
+          url: packet.url,
+          method: 'POST',
+          headers: packet.headers,
+          jsonData: packet.body,
+          failure: packet.onError,
+          success: new ResponseTransformer(packet)
+        });
+
+        return new XHRAborter(xhr);
+      }
+    };
+    Ext.Cometd.LongPollingTransport.prototype = new org.cometd.LongPollingTransport();
+    Ext.Cometd.LongPollingTransport.prototype.constructor = Ext.Cometd.LongPollingTransport;
+
+    Ext.Cometd.CallbackPollingTransport = function () {
+      this.jsonpSend = function (packet) {
+        var xhr = Ext.Ajax.request({
+          url: packet.url,
+          method: 'GET',
+          headers: packet.headers,
+          jsonp: 'jsonp',
+          jsonData: {
+            message: packet.body
+          },
+          failure: packet.onError,
+          success: new ResponseTransformer(packet)
+        });
+
+        return new XHRAborter(xhr);
+      }
+    };
+    Ext.Cometd.CallbackPollingTransport.prototype = new org.cometd.CallbackPollingTransport();
+    Ext.Cometd.CallbackPollingTransport.prototype.constructor = Ext.Cometd.CallbackPollingTransport;
+
+    // NOTE: end copy ^^^^
+
+    // register transports
+    if (org.cometd.WebSocket) {
+      me.registerTransport('websocket', NX.create('org.cometd.WebSocketTransport'));
+      me.logDebug('Websocket support detected');
+    }
+    me.registerTransport('long-polling', NX.create('Ext.Cometd.LongPollingTransport'));
+    me.registerTransport('callback-polling', NX.create('Ext.Cometd.CallbackPollingTransport'));
+
+    // register extensions
+    me.registerExtension('ack', NX.create('org.cometd.AckExtension'));
+    me.registerExtension('reload', NX.create('org.cometd.ReloadExtension'));
+    me.registerExtension('timestamp', NX.create('org.cometd.TimeStampExtension'));
+    me.registerExtension('timesync', NX.create('org.cometd.TimeSyncExtension'));
+
+    // configure
+    me.configure({
       url: url,
       logLevel: 'debug'
     });
 
-    cometd.addListener('/meta/handshake', function (message)
+    me.addListener('/meta/handshake', function (message)
     {
       if (message.successful) {
-        me.logDebug('SUCCESS');
+        me.logError('SUCCESS');
       }
       else {
-        me.logDebug('FAILURE');
+        me.logError('FAILURE');
       }
     });
 
-    cometd.handshake({
-      // TODO: what goes here?
+    me.handshake({
+      // TODO
     });
-
-    me.cometd = cometd;
 
     me.logDebug('Initialized');
   }
