@@ -16,6 +16,7 @@ import java.util.Map;
 
 import javax.inject.Named;
 
+import org.sonatype.nexus.web.MdcUserContextFilter;
 import org.sonatype.security.web.guice.SecurityWebFilter;
 
 import com.google.common.collect.ImmutableMap;
@@ -50,6 +51,7 @@ public class CometdModule
         );
         serve(MOUNT_POINT + "/*").with(CometdServletImpl.class, params);
         filter(MOUNT_POINT + "/*").through(SecurityWebFilter.class);
+        filter(MOUNT_POINT + "/*").through(MdcUserContextFilter.class);
       }
     });
 
