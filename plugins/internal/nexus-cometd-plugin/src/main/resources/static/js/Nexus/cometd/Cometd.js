@@ -29,10 +29,6 @@ NX.define('Nexus.cometd.Cometd', {
     'org/cometd/TimeSyncExtension'
   ],
 
-  require: [
-      'Nexus.comet.LongPollingTransport'
-  ],
-
   mixins: [
     'Nexus.LogAwareMixin'
   ],
@@ -55,7 +51,7 @@ NX.define('Nexus.cometd.Cometd', {
     Ext.ns('Ext.Cometd');
 
     // FIXME: copied from (asl2) https://code.google.com/p/ext-cometd/source/browse/trunk/src/main/webapp/js/ext-cometd/ext-cometd.js
-    // FIXME: adapt to proper classes, once we get the basics working
+    // FIXME: adapt to proper classes, once we get the basics working ................................................
 
     var ResponseTransformer = function (packet) {
       return function (response, options) {
@@ -108,7 +104,7 @@ NX.define('Nexus.cometd.Cometd', {
     Ext.Cometd.CallbackPollingTransport.prototype = new org.cometd.CallbackPollingTransport();
     Ext.Cometd.CallbackPollingTransport.prototype.constructor = Ext.Cometd.CallbackPollingTransport;
 
-    // NOTE: end copy ^^^^
+    // FIXME: end copy ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     // register transports
     if (org.cometd.WebSocket) {

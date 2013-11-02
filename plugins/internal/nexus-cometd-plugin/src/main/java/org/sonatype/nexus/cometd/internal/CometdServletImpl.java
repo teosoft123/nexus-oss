@@ -38,6 +38,8 @@ public class CometdServletImpl
     extends CometdServlet
     implements Provider<BayeuxServer>
 {
+  // TODO: Adapt service registration via AnnotationCometdServlet
+
   // TODO: Register JMX mbeans
 
   @Override
@@ -69,6 +71,11 @@ public class CometdServletImpl
   @Override
   protected BayeuxServerImpl newBayeuxServer() {
     BayeuxServerImpl server = new BayeuxServerImpl();
+
+    // TODO: Install security policy
+    // TODO: See http://docs.cometd.org/reference/java_server.html#java_server_authorization
+    // TODO: See http://cometd.org/documentation/2.x/howtos/authentication
+
     server.addExtension(new AcknowledgedMessagesExtension());
     return server;
   }
