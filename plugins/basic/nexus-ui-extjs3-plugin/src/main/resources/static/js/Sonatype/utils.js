@@ -746,7 +746,7 @@ define('Sonatype/utils',['../extjs', 'Nexus/config', 'Nexus/util/Format', 'Sonat
           }
         },
         start : function() {
-          if (running === null) {
+          if (running === null && Sonatype.utils.settings.keepAlive) {
             running = Ext.TaskMgr.start(config);
           }
         }};
@@ -781,7 +781,7 @@ define('Sonatype/utils',['../extjs', 'Nexus/config', 'Nexus/util/Format', 'Sonat
               }
 
               var respObj = Ext.decode(response.responseText);
-              ns.loadNexusStatus(respObj.data.clientPermissions.loggedInUserSource);
+              ns.loadNexusSettings();
 
               Ext.namespace('Sonatype.utils').refreshTask.start();
             },
@@ -797,7 +797,7 @@ define('Sonatype/utils',['../extjs', 'Nexus/config', 'Nexus/util/Format', 'Sonat
               {
                 Sonatype.repoServer.RepoServer.loginForm.find('name', 'password')[0].focus(true);
               }
-              
+
               Ext.Ajax.request({
                   scope : this,
                   method : 'GET',
@@ -807,7 +807,7 @@ define('Sonatype/utils',['../extjs', 'Nexus/config', 'Nexus/util/Format', 'Sonat
                     Sonatype.view.justLoggedOut = true;
                   }
                 });
-              
+
             }
 
           });
@@ -817,11 +817,33 @@ define('Sonatype/utils',['../extjs', 'Nexus/config', 'Nexus/util/Format', 'Sonat
       return formattedAppName;
     },
 
-    loadNexusStatus : function(loggedInUserSource, versionOnly) {
-      if (!versionOnly)
-      {
-        Sonatype.user.curr = ns.cloneObj(Sonatype.user.anon);
-      }
+    /**
+     * Loads Nexus settings & status.
+     */
+    loadNexusSettings: function () {
+      Ext.Ajax.request({
+        method: 'GET',
+        suppressStatus: true,
+        url: Sonatype.config.contextPath + '/service/siesta/wonderland/settings',
+        callback: function (options, success, response) {
+          var respObj;
+
+          ns.settings = {};
+          if (success) {
+            respObj = Ext.decode(response.responseText);
+
+            Ext.each(respObj, function(entry){
+              ns.settings[entry.key] = entry.value;
+            });
+          }
+          ns.settings.keepAlive = ns.settings.keepAlive === 'true';
+          ns.loadNexusStatus();
+        }
+      });
+    },
+
+    loadNexusStatus : function() {
+      Sonatype.user.curr = ns.cloneObj(Sonatype.user.anon);
 
       Ext.Ajax.request({
             method : 'GET',
@@ -927,11 +949,11 @@ define('Sonatype/utils',['../extjs', 'Nexus/config', 'Nexus/util/Format', 'Sonat
       {
         token = window.location.hash.substring(1);
       }
-      
+
       Sonatype.view.historyDisabled = true;
       var eventResult = Sonatype.Events.fireEvent('historyChanged',token);
       Sonatype.view.historyDisabled = false;
-      
+
       //if event returns true, that means no event listener handled the data and stopped the process, so handle by default means
       if (token && Sonatype.user.curr.repoServer && Sonatype.user.curr.repoServer.length && eventResult)
       {
