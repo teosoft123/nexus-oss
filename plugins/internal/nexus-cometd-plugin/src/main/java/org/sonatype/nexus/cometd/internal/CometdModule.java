@@ -22,6 +22,7 @@ import org.sonatype.security.web.guice.SecurityWebFilter;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.servlet.ServletModule;
+import org.cometd.websocket.server.WebSocketTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public class CometdModule
       @Override
       protected void configureServlets() {
         Map<String,String> params = ImmutableMap.of(
-            "transports", "org.cometd.websocket.server.WebSocketTransport"
+            "transports", WebSocketTransport.class.getName()
         );
         serve(MOUNT_POINT + "/*").with(CometdServletImpl.class, params);
         filter(MOUNT_POINT + "/*").through(SecurityWebFilter.class);
