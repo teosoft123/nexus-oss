@@ -10,6 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
+
 package org.sonatype.nexus.cometd.internal;
 
 import java.util.Map;
@@ -33,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 @Named
 public class CometdModule
-  extends AbstractModule
+    extends AbstractModule
 {
   private static final Logger log = LoggerFactory.getLogger(CometdModule.class);
 
@@ -47,7 +48,7 @@ public class CometdModule
     {
       @Override
       protected void configureServlets() {
-        Map<String,String> params = ImmutableMap.of(
+        Map<String, String> params = ImmutableMap.of(
             "transports", WebSocketTransport.class.getName()
         );
         serve(MOUNT_POINT + "/*").with(CometdServletImpl.class, params);
@@ -56,6 +57,15 @@ public class CometdModule
       }
     });
 
-    log.info("Comet support configured: {}", MOUNT_POINT);
+    // FIXME: This has problems due to defaulting to have a no-session RealmSecurityManager ( see NexusWebModule ).
+    //install(new FilterChainModule()
+    //{
+    //  @Override
+    //  protected void configure() {
+    //    addFilterChain(MOUNT_POINT + "/**", "authcNxBasic");
+    //  }
+    //});
+
+    log.info("CometD support configured: {}", MOUNT_POINT);
   }
 }

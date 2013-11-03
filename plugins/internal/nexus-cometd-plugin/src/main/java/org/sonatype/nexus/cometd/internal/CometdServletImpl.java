@@ -26,6 +26,8 @@ import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.CometdServlet;
 import org.cometd.server.ext.AcknowledgedMessagesExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link CometdServlet} extensions.
@@ -38,6 +40,8 @@ public class CometdServletImpl
     extends CometdServlet
     implements Provider<BayeuxServer>
 {
+  private static final Logger log = LoggerFactory.getLogger(CometdServletImpl.class);
+
   // TODO: Adapt service registration via AnnotationCometdServlet
 
   // TODO: Register JMX mbeans
@@ -58,6 +62,8 @@ public class CometdServletImpl
   public void service(final ServletRequest request, final ServletResponse response)
       throws ServletException, IOException
   {
+    log.debug("service");
+
     final ClassLoader cl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
     try {
