@@ -22,9 +22,13 @@ public class AnalyticsModule
     install(new ServletModule() {
       @Override
       protected void configureServlets() {
+        // collection needs security filters applied first
         filter("/*").through(SecurityWebFilter.class);
         filter("/*").through(MdcUserContextFilter.class);
-        filter("/*").through(AnalyticsFilter.class);
+
+        // then capture rest api requests
+        filter("/service/local/*").through(RestRequestCollector.class);
+        filter("/service/siesta/*").through(RestRequestCollector.class);
       }
     });
   }
