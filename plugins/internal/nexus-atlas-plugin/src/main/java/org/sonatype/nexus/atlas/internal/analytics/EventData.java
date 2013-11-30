@@ -39,7 +39,7 @@ public class EventData
 
   private final String type;
 
-  private Map<String,Object> attributes = Maps.newHashMap();
+  private final Map<String,Object> attributes = Maps.newHashMap();
 
   public EventData(final String type) {
     this.type = type;
