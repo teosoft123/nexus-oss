@@ -12,32 +12,38 @@
  */
 package org.sonatype.nexus.analytics.internal;
 
-import java.util.Map;
+import java.util.UUID;
 
 import javax.inject.Named;
 
-import org.sonatype.nexus.capability.support.CapabilitySupport;
-import org.sonatype.nexus.plugins.capabilities.Condition;
+import org.sonatype.nexus.plugins.capabilities.CapabilityRegistry;
+import org.sonatype.nexus.plugins.capabilities.support.CapabilityBooterSupport;
+
+import com.google.common.collect.ImmutableMap;
+import org.eclipse.sisu.EagerSingleton;
 
 /**
- * Analytics reporting capability.
+ * Automatically creates bootstrap capabilities if needed on startup.
  *
  * @since 2.8
  */
-@Named(ReportingCapabilityDescriptor.TYPE_ID)
-public class ReportingCapability
-    extends CapabilitySupport<ReportingCapabilityConfiguration>
+@Named
+@EagerSingleton
+public class AnalyticsCapabilitiesBooter
+    extends CapabilityBooterSupport
 {
   @Override
-  protected ReportingCapabilityConfiguration createConfig(final Map<String, String> properties) throws Exception {
-    return new ReportingCapabilityConfiguration(properties);
+  protected void boot(final CapabilityRegistry registry) throws Exception {
+    // automatically add collection capability (disabled w/ random salt)
+    maybeAddCapability(registry, CollectionCapabilityDescriptor.TYPE, false, null,
+        ImmutableMap.of(CollectionCapabilityConfiguration.SALT, randomSalt()));
   }
 
-  @Override
-  public Condition activationCondition() {
-    return conditions().logical().and(
-        conditions().capabilities().capabilityOfTypeActive(CollectionCapabilityDescriptor.TYPE),
-        conditions().capabilities().passivateCapabilityDuringUpdate()
-    );
+  /**
+   * Generate a new random salt.
+   */
+  private String randomSalt() {
+    // TODO: sort out if this is random enough
+    return UUID.randomUUID().toString();
   }
 }

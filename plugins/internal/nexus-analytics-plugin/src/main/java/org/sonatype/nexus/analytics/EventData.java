@@ -40,9 +40,9 @@ public class EventData
 
   private final long sequence = nextSequence();
 
-  private final String userId;
+  private final Object principal;
 
-  private final String sessionId;
+  private final Object sessionId;
 
   private final String type;
 
@@ -51,31 +51,30 @@ public class EventData
   public EventData(final String type) {
     this.type = checkNotNull(type);
 
-    String userId = null;
-    String sessionId = null;
+    // capture in native format to avoid premature string conversion
+    Object principal = null;
+    Object sessionId = null;
 
     // capture the user and session ids if we can
     Subject subject = SecurityUtils.getSubject();
     if (subject != null) {
-      Object principal = subject.getPrincipal();
-      if (principal != null) {
-        userId = principal.toString();
-      }
+      principal = subject.getPrincipal();
+
       Session session = subject.getSession(false);
       if (session != null) {
-        sessionId = session.getId().toString();
+        sessionId = session.getId();
       }
     }
 
-    this.userId = userId;
+    this.principal = principal;
     this.sessionId = sessionId;
   }
 
-  public String getUserId() {
-    return userId;
+  public Object getPrincipal() {
+    return principal;
   }
 
-  public String getSessionId() {
+  public Object getSessionId() {
     return sessionId;
   }
 
@@ -107,8 +106,8 @@ public class EventData
     return "EventData{" +
         "timestamp=" + timestamp +
         ", sequence=" + sequence +
-        ", userId='" + userId + '\'' +
-        ", sessionId='" + sessionId + '\'' +
+        ", principal=" + principal +
+        ", sessionId=" + sessionId +
         ", type='" + type + '\'' +
         ", attributes=" + attributes +
         '}';

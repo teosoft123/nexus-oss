@@ -16,6 +16,8 @@ import java.util.Map;
 
 import org.sonatype.nexus.capability.support.CapabilityConfigurationSupport;
 
+import com.google.common.collect.Maps;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -26,7 +28,25 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class CollectionCapabilityConfiguration
   extends CapabilityConfigurationSupport
 {
+  public static final String SALT = "salt";
+
+  private String salt;
+
   public CollectionCapabilityConfiguration(final Map<String, String> properties) {
     checkNotNull(properties);
+    this.salt = properties.get(SALT);
+  }
+
+  public Map<String,String> asMap() {
+    Map<String, String> props = Maps.newHashMap();
+    props.put(SALT, salt);
+    return props;
+  }
+
+  @Override
+  public String toString() {
+    return "CollectionCapabilityConfiguration{" +
+        "salt='" + salt + '\'' +
+        '}';
   }
 }
