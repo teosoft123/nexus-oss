@@ -16,11 +16,14 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.google.common.collect.Maps;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Container for analytics event data.
- *
- * This does not include user/session/etc details those are applied by framework.
  *
  * @since 2.8
  */
@@ -37,12 +40,46 @@ public class EventData
 
   private final long sequence = nextSequence();
 
+  private final String userId;
+
+  private final String sessionId;
+
   private final String type;
 
   private final Map<String,Object> attributes = Maps.newHashMap();
 
   public EventData(final String type) {
-    this.type = type;
+    this.type = checkNotNull(type);
+
+    String userId = null;
+    String sessionId = null;
+
+    Subject subject = SecurityUtils.getSubject();
+    if (subject == null) {
+      userId = null;
+      sessionId = null;
+    }
+    else {
+      Object principal = subject.getPrincipal();
+      if (principal != null) {
+        userId = principal.toString();
+      }
+      Session session = subject.getSession(false);
+      if (session != null) {
+        sessionId = session.getId().toString();
+      }
+    }
+
+    this.userId = userId;
+    this.sessionId = sessionId;
+  }
+
+  public String getUserId() {
+    return userId;
+  }
+
+  public String getSessionId() {
+    return sessionId;
   }
 
   public long getTimestamp() {
@@ -57,7 +94,21 @@ public class EventData
     return type;
   }
 
+  @Override
+  public String toString() {
+    return "EventData{" +
+        "timestamp=" + timestamp +
+        ", sequence=" + sequence +
+        ", userId='" + userId + '\'' +
+        ", sessionId='" + sessionId + '\'' +
+        ", type='" + type + '\'' +
+        ", attributes=" + attributes +
+        '}';
+  }
+
   public EventData set(final String name, final Object value) {
+    checkNotNull(name);
+    checkNotNull(value);
     attributes.put(name, value);
     return this;
   }
@@ -66,13 +117,4 @@ public class EventData
     return attributes;
   }
 
-  @Override
-  public String toString() {
-    return "EventData{" +
-        "timestamp=" + timestamp +
-        ", sequence=" + sequence +
-        ", type='" + type + '\'' +
-        ", attributes=" + attributes +
-        '}';
-  }
 }
