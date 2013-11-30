@@ -10,25 +10,14 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.atlas.internal;
-
-import javax.inject.Named;
-
-import org.sonatype.nexus.atlas.internal.analytics.AnalyticsModule;
-
-import com.google.inject.AbstractModule;
+package org.sonatype.nexus.atlas.internal.analytics;
 
 /**
- * Atlas guice module.
+ * Analytics event data recorder.
  *
  * @since 2.8
  */
-@Named
-public class AtlasModule
-  extends AbstractModule
+public interface EventRecorder
 {
-  @Override
-  protected void configure() {
-    install(new AnalyticsModule());
-  }
+  void record(EventData data);
 }
