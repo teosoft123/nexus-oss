@@ -54,6 +54,7 @@ public class EventData
     String userId = null;
     String sessionId = null;
 
+    // capture the user and session ids if we can
     Subject subject = SecurityUtils.getSubject();
     if (subject != null) {
       Object principal = subject.getPrincipal();
@@ -90,18 +91,6 @@ public class EventData
     return type;
   }
 
-  @Override
-  public String toString() {
-    return "EventData{" +
-        "timestamp=" + timestamp +
-        ", sequence=" + sequence +
-        ", userId='" + userId + '\'' +
-        ", sessionId='" + sessionId + '\'' +
-        ", type='" + type + '\'' +
-        ", attributes=" + attributes +
-        '}';
-  }
-
   public EventData set(final String name, final Object value) {
     checkNotNull(name);
     checkNotNull(value);
@@ -113,4 +102,15 @@ public class EventData
     return attributes;
   }
 
+  @Override
+  public String toString() {
+    return "EventData{" +
+        "timestamp=" + timestamp +
+        ", sequence=" + sequence +
+        ", userId='" + userId + '\'' +
+        ", sessionId='" + sessionId + '\'' +
+        ", type='" + type + '\'' +
+        ", attributes=" + attributes +
+        '}';
+  }
 }
