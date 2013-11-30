@@ -32,9 +32,16 @@ public class EventRecorderImpl
   extends ComponentSupport
   implements EventRecorder
 {
+  private volatile boolean enabled = false;
+
+  public void setEnabled(final boolean enabled) {
+    this.enabled = enabled;
+    log.info("Enabled: {}", enabled);
+  }
+
   @Override
   public boolean isEnabled() {
-    return true;
+    return enabled;
   }
 
   @Override
@@ -47,6 +54,7 @@ public class EventRecorderImpl
       return;
     }
 
+    // TODO:
     log.info("Record: {}", data);
   }
 }

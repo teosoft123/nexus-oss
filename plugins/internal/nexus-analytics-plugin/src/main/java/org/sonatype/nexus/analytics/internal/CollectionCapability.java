@@ -14,10 +14,13 @@ package org.sonatype.nexus.analytics.internal;
 
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.sonatype.nexus.capability.support.CapabilitySupport;
 import org.sonatype.nexus.plugins.capabilities.Condition;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Analytics collection capability.
@@ -28,6 +31,13 @@ import org.sonatype.nexus.plugins.capabilities.Condition;
 public class CollectionCapability
     extends CapabilitySupport<CollectionCapabilityConfiguration>
 {
+  private final EventRecorderImpl recorder;
+
+  @Inject
+  public CollectionCapability(final EventRecorderImpl recorder) {
+    this.recorder = checkNotNull(recorder);
+  }
+
   @Override
   protected CollectionCapabilityConfiguration createConfig(final Map<String, String> properties) throws Exception {
     return new CollectionCapabilityConfiguration(properties);
@@ -36,5 +46,15 @@ public class CollectionCapability
   @Override
   public Condition activationCondition() {
     return conditions().capabilities().passivateCapabilityDuringUpdate();
+  }
+
+  @Override
+  protected void onActivate(final CollectionCapabilityConfiguration config) throws Exception {
+    recorder.setEnabled(true);
+  }
+
+  @Override
+  protected void onPassivate(final CollectionCapabilityConfiguration config) throws Exception {
+    recorder.setEnabled(false);
   }
 }
