@@ -11,7 +11,7 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.atlas.internal.analytics;
+package org.sonatype.nexus.analytics.internal;
 
 import java.io.IOException;
 
@@ -27,6 +27,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sonatype.nexus.analytics.EventData;
+import org.sonatype.nexus.analytics.EventRecorder;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
 
 import static com.google.common.base.Preconditions.checkNotNull;
