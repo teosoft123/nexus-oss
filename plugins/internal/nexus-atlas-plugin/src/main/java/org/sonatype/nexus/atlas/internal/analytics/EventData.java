@@ -55,11 +55,7 @@ public class EventData
     String sessionId = null;
 
     Subject subject = SecurityUtils.getSubject();
-    if (subject == null) {
-      userId = null;
-      sessionId = null;
-    }
-    else {
+    if (subject != null) {
       Object principal = subject.getPrincipal();
       if (principal != null) {
         userId = principal.toString();
