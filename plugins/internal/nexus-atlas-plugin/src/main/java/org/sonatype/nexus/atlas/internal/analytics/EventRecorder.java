@@ -19,5 +19,7 @@ package org.sonatype.nexus.atlas.internal.analytics;
  */
 public interface EventRecorder
 {
+  boolean isEnabled();
+
   void record(EventData data);
 }

@@ -31,6 +31,11 @@ public class EventRecorderImpl
   implements EventRecorder
 {
   @Override
+  public boolean isEnabled() {
+    return true;
+  }
+
+  @Override
   public void record(final EventData data) {
     checkNotNull(data);
 

@@ -10,6 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
+
 package org.sonatype.nexus.atlas.internal.analytics;
 
 import java.io.IOException;
@@ -64,20 +65,25 @@ public class RestRequestCollector
   {
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     HttpServletResponse httpResponse = (HttpServletResponse) response;
+    EventData data = null;
 
-    EventData data = new EventData("REST")
-        .set("method", httpRequest.getMethod())
-        .set("path", getPath(httpRequest))
-        .set("userAgent", httpRequest.getHeader("User-Agent"));
+    // only attempt to record details if collection is enabled
+    if (recorder.isEnabled()) {
+      data = new EventData("REST")
+          .set("method", httpRequest.getMethod())
+          .set("path", getPath(httpRequest))
+          .set("userAgent", httpRequest.getHeader("User-Agent"));
+    }
 
     try {
       chain.doFilter(request, response);
     }
     finally {
-      data.set("status", httpResponse.getStatus());
-      data.set("duration", System.currentTimeMillis() - data.getTimestamp());
-
-      recorder.record(data);
+      if (data != null) {
+        data.set("status", httpResponse.getStatus());
+        data.set("duration", System.currentTimeMillis() - data.getTimestamp());
+        recorder.record(data);
+      }
     }
   }
 
