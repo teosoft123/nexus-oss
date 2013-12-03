@@ -26,21 +26,20 @@ import java.util.zip.ZipFile;
 import javax.inject.Inject;
 
 import org.sonatype.nexus.mime.MimeSupport;
+import org.sonatype.sisu.goodies.common.ComponentSupport;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public abstract class AbstractDocumentationNexusResourceBundle
+    extends ComponentSupport
     implements NexusDocumentationBundle
 {
-  private final Logger logger = LoggerFactory.getLogger(getClass());
-
   private MimeSupport mimeSupport;
 
   protected AbstractDocumentationNexusResourceBundle() {
+    // empty
   }
 
   @VisibleForTesting
@@ -80,24 +79,24 @@ public abstract class AbstractDocumentationNexusResourceBundle
           // to lessen clash possibilities, this way only within single plugin may be clashes, but one
           // plugin is usually developed by one team or one user so this is okay
           // system-wide clashes are much harder to resolve
-          String path = "/" + getPluginId() + "/" + getUrlSnippet() + name;
+          String path = "/" + getPluginId() + "/" + getPathPrefix() + name;
 
           resources.add(new DefaultStaticResource(url, path, mimeSupport.guessMimeTypeFromPath(name)));
         }
 
-        if (logger.isTraceEnabled()) {
-          logger.trace("Discovered documentation for: {}", getPluginId());
+        if (log.isTraceEnabled()) {
+          log.trace("Discovered documentation for: {}", getPluginId());
           for (StaticResource resource : resources) {
-            logger.trace("  {}", resource);
+            log.trace("  {}", resource);
           }
         }
       }
       else {
-        logger.debug("No documentation discovered for: {}", getPluginId());
+        log.debug("No documentation discovered for: {}", getPluginId());
       }
     }
     catch (IOException e) {
-      logger.error("Error discovering plugin documentation {}", getPluginId(), e);
+      log.error("Error discovering plugin documentation {}", getPluginId(), e);
     }
     finally {
       if (zip != null) {
@@ -105,7 +104,7 @@ public abstract class AbstractDocumentationNexusResourceBundle
           zip.close();
         }
         catch (IOException e) {
-          logger.debug(e.getMessage(), e);
+          log.debug(e.getMessage(), e);
         }
       }
     }
@@ -114,22 +113,12 @@ public abstract class AbstractDocumentationNexusResourceBundle
   }
 
   public String getPathPrefix() {
-    return getUrlSnippet();
+    return "default";
   }
 
   public abstract String getDescription();
 
   public abstract String getPluginId();
-
-  /**
-   * Deprecated, but left in place because old plugins still rely on this.
-   *
-   * @deprecated use getPathPrefix() method.
-   */
-  @Deprecated
-  protected String getUrlSnippet() {
-    return "default";
-  }
 
   protected ZipFile getZipFile()
       throws IOException

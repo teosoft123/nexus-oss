@@ -10,8 +10,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.ServletConfig;
 
-import org.sonatype.guice.bean.locators.BeanLocator;
-import org.sonatype.inject.BeanEntry;
 import org.sonatype.nexus.configuration.application.ApplicationConfiguration;
 import org.sonatype.nexus.rapture.direct.DirectResource;
 
@@ -24,6 +22,8 @@ import com.softwarementors.extjs.djn.config.ApiConfiguration;
 import com.softwarementors.extjs.djn.router.dispatcher.Dispatcher;
 import com.softwarementors.extjs.djn.servlet.DirectJNgineServlet;
 import com.softwarementors.extjs.djn.servlet.ssm.SsmDispatcher;
+import org.eclipse.sisu.BeanEntry;
+import org.eclipse.sisu.inject.BeanLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,8 @@ public class DirectServlet
       final ServletConfig configuration)
   {
     File apiFile = new File(applicationConfiguration.getTemporaryDirectory(), "djn/Nexus.js");
-    final Iterable<BeanEntry<Annotation, DirectResource>> entries = beanLocator.locate(Key.get(DirectResource.class));
+    Iterable<? extends BeanEntry<Annotation, DirectResource>> entries = beanLocator
+        .locate(Key.get(DirectResource.class));
     List<Class<?>> apiClasses = Lists.newArrayList(
         Iterables.transform(entries, new Function<BeanEntry<Annotation, DirectResource>, Class<?>>()
         {
