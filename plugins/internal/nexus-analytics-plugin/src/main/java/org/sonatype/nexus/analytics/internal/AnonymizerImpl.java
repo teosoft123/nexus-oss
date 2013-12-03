@@ -27,6 +27,7 @@ import com.google.common.base.Throwables;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Default {@link Anonymizer} implementation.
@@ -56,6 +57,7 @@ public class AnonymizerImpl
   public byte[] anonymize(final byte[] data) {
     checkNotNull(data);
     checkArgument(data.length != 0);
+    checkState(salt != null, "Missing salt");
     MessageDigest digest = createDigest();
     digest.update(salt);
     digest.update(data);
