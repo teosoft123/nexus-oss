@@ -64,6 +64,11 @@ public class AnalyticsPlugin
    */
   public static final String PERMISSION_PREFIX = "nexus:" + ID_PREFIX + ":";
 
+  /**
+   * Capabilities tag.
+   */
+  public static final String CAPABILITY_TAG = "Analytics";
+
   @Inject
   public AnalyticsPlugin() throws Exception {
     super(GROUP_ID, ARTIFACT_ID);

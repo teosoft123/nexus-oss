@@ -109,7 +109,7 @@ public class CollectionCapabilityDescriptor
 
   @Override
   public Set<Tag> getTags() {
-    return tags(categoryTag("Analytics"));
+    return tags(categoryTag(AnalyticsPlugin.CAPABILITY_TAG));
   }
 
 }
