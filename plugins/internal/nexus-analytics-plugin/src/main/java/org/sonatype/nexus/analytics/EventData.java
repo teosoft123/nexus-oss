@@ -13,7 +13,8 @@
 package org.sonatype.nexus.analytics;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
+
+import org.sonatype.nexus.analytics.internal.SequenceCounter;
 
 import com.google.common.collect.Maps;
 import org.apache.shiro.SecurityUtils;
@@ -31,14 +32,9 @@ public class EventData
 {
   private final long timestamp = System.currentTimeMillis();
 
-  private static final AtomicLong counter = new AtomicLong(0);
+  private static final SequenceCounter counter = new SequenceCounter();
 
-  private static long nextSequence() {
-    // FIXME: Replace with a rollover counter
-    return counter.getAndIncrement();
-  }
-
-  private final long sequence = nextSequence();
+  private final long sequence = counter.next();
 
   private final Object principal;
 
