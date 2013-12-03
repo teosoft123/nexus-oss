@@ -36,6 +36,7 @@ public class ReportingCapability
   @Override
   public Condition activationCondition() {
     return conditions().logical().and(
+        // collection capability must be active
         conditions().capabilities().capabilityOfTypeActive(CollectionCapabilityDescriptor.TYPE),
         conditions().capabilities().passivateCapabilityDuringUpdate()
     );
