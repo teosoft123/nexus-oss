@@ -40,7 +40,7 @@ public class CollectionCapabilityConfiguration
   }
 
   public String getSalt() {
-    return SALT;
+    return salt;
   }
 
   public byte[] getSaltBytes() {
