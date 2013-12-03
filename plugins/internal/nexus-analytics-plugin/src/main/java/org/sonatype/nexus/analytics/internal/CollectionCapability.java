@@ -33,9 +33,14 @@ public class CollectionCapability
 {
   private final EventRecorderImpl recorder;
 
+  private final AnonymizerImpl anonymizer;
+
   @Inject
-  public CollectionCapability(final EventRecorderImpl recorder) {
+  public CollectionCapability(final EventRecorderImpl recorder,
+                              final AnonymizerImpl anonymizer)
+  {
     this.recorder = checkNotNull(recorder);
+    this.anonymizer = checkNotNull(anonymizer);
   }
 
   @Override
@@ -50,6 +55,7 @@ public class CollectionCapability
 
   @Override
   protected void onActivate(final CollectionCapabilityConfiguration config) throws Exception {
+    anonymizer.setSalt(config.getSaltBytes());
     recorder.setEnabled(true);
   }
 

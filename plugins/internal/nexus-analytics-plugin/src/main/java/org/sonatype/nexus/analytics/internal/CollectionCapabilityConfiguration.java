@@ -16,9 +16,11 @@ import java.util.Map;
 
 import org.sonatype.nexus.capability.support.CapabilityConfigurationSupport;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * {@link CollectionCapability} configuration.
@@ -35,6 +37,15 @@ public class CollectionCapabilityConfiguration
   public CollectionCapabilityConfiguration(final Map<String, String> properties) {
     checkNotNull(properties);
     this.salt = properties.get(SALT);
+  }
+
+  public String getSalt() {
+    return SALT;
+  }
+
+  public byte[] getSaltBytes() {
+    checkState(salt != null);
+    return salt.getBytes(Charsets.UTF_8);
   }
 
   public Map<String,String> asMap() {
