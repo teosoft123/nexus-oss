@@ -48,7 +48,7 @@ public class EventRecorderImpl
   public void record(final EventData data) {
     checkNotNull(data);
 
-    if (!isEnabled()) {
+    if (!enabled) {
       // bitch as this may be impacting performance, callers should guard before building event data
       log.warn("Attempting to record analytics data when collection is disabled; ignoring");
       return;
