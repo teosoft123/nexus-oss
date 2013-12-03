@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
 
     Sonatype Nexus (TM) Open Source Version
@@ -13,17 +13,17 @@
     Eclipse Foundation. All other trademarks are the property of their respective owners.
 
 -->
-<assembly>
-  <advices>
-
-    <advice>
-      <generateAsItIs />
-      <unit>
-        <provides>
-          <provided namespace='org.apache.maven.artifact.type' name='nexus-plugin' version='1.0.0' />
-        </provides>
-      </unit>
-    </advice>
-
-  </advices>
-</assembly>  
+<configuration>
+  <appender name="request.logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>${nexus-work}/logs/request.log</File>
+    <Append>true</Append>
+    <encoder>
+      <pattern>common</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>request.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+      <maxHistory>90</maxHistory>
+    </rollingPolicy>
+  </appender>
+  <appender-ref ref="request.logfile" />
+</configuration>
