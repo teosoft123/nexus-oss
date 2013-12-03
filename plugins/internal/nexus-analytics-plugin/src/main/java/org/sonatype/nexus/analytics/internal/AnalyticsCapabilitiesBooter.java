@@ -12,15 +12,18 @@
  */
 package org.sonatype.nexus.analytics.internal;
 
-import java.util.UUID;
-
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.sonatype.nexus.plugins.capabilities.CapabilityRegistry;
 import org.sonatype.nexus.plugins.capabilities.support.CapabilityBooterSupport;
+import org.sonatype.nexus.util.Tokens;
+import org.sonatype.sisu.goodies.crypto.RandomBytesGenerator;
 
 import com.google.common.collect.ImmutableMap;
 import org.eclipse.sisu.EagerSingleton;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Automatically creates bootstrap capabilities if needed on startup.
@@ -32,6 +35,13 @@ import org.eclipse.sisu.EagerSingleton;
 public class AnalyticsCapabilitiesBooter
     extends CapabilityBooterSupport
 {
+  private final RandomBytesGenerator randomBytesGenerator;
+
+  @Inject
+  public AnalyticsCapabilitiesBooter(final RandomBytesGenerator randomBytesGenerator) {
+    this.randomBytesGenerator = checkNotNull(randomBytesGenerator);
+  }
+
   @Override
   protected void boot(final CapabilityRegistry registry) throws Exception {
     // automatically add collection capability (disabled w/ random salt)
@@ -43,7 +53,7 @@ public class AnalyticsCapabilitiesBooter
    * Generate a new random salt.
    */
   private String randomSalt() {
-    // TODO: sort out if this is random enough
-    return UUID.randomUUID().toString();
+    // 264 bit salt (256 would leave base64 padding)
+    return Tokens.encodeBase64String(randomBytesGenerator.generate(33));
   }
 }
