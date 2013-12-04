@@ -14,6 +14,8 @@ package org.sonatype.nexus.analytics;
 
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.sonatype.nexus.analytics.internal.SequenceCounter;
 
 import com.google.common.collect.Maps;
@@ -30,17 +32,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class EventData
 {
+  private final String type;
+
   private final long timestamp = System.currentTimeMillis();
 
   private static final SequenceCounter counter = new SequenceCounter();
 
   private final long sequence = counter.next();
 
+  // TODO: hostId, orgId... these may be sent in surrounding data as these will always be the same?
+
   private final Object principal;
 
   private final Object sessionId;
-
-  private final String type;
 
   private final Map<String,Object> attributes = Maps.newHashMap();
 
@@ -66,12 +70,8 @@ public class EventData
     this.sessionId = sessionId;
   }
 
-  public Object getPrincipal() {
-    return principal;
-  }
-
-  public Object getSessionId() {
-    return sessionId;
+  public String getType() {
+    return type;
   }
 
   public long getTimestamp() {
@@ -82,8 +82,14 @@ public class EventData
     return sequence;
   }
 
-  public String getType() {
-    return type;
+  @Nullable
+  public Object getPrincipal() {
+    return principal;
+  }
+
+  @Nullable
+  public Object getSessionId() {
+    return sessionId;
   }
 
   public EventData set(final String name, final Object value) {
