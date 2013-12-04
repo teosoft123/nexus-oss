@@ -67,7 +67,7 @@ public class AnalyticsPlugin
   /**
    * Capabilities tag.
    */
-  public static final String CAPABILITY_TAG = "Analytics";
+  public static final String CAPABILITY_CATEGORY_TAG = "Analytics";
 
   @Inject
   public AnalyticsPlugin() throws Exception {
