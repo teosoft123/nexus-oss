@@ -31,14 +31,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class CollectionCapability
     extends CapabilitySupport<CollectionCapabilityConfiguration>
 {
+  private final EventStoreImpl store;
+
   private final EventRecorderImpl recorder;
 
   private final AnonymizerImpl anonymizer;
 
   @Inject
-  public CollectionCapability(final EventRecorderImpl recorder,
+  public CollectionCapability(final EventStoreImpl store,
+                              final EventRecorderImpl recorder,
                               final AnonymizerImpl anonymizer)
   {
+    this.store = checkNotNull(store);
     this.recorder = checkNotNull(recorder);
     this.anonymizer = checkNotNull(anonymizer);
   }
@@ -55,6 +59,7 @@ public class CollectionCapability
 
   @Override
   protected void onActivate(final CollectionCapabilityConfiguration config) throws Exception {
+    store.start();
     anonymizer.setSalt(config.getSaltBytes());
     recorder.setEnabled(true);
   }
@@ -62,5 +67,6 @@ public class CollectionCapability
   @Override
   protected void onPassivate(final CollectionCapabilityConfiguration config) throws Exception {
     recorder.setEnabled(false);
+    store.stop();
   }
 }

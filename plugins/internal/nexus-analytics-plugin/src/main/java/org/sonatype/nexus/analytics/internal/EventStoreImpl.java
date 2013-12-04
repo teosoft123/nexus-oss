@@ -12,58 +12,53 @@
  */
 package org.sonatype.nexus.analytics.internal;
 
-import javax.inject.Inject;
+import java.util.Iterator;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.sonatype.nexus.analytics.EventData;
-import org.sonatype.nexus.analytics.EventRecorder;
 import org.sonatype.nexus.analytics.EventStore;
-import org.sonatype.sisu.goodies.common.ComponentSupport;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.sonatype.sisu.goodies.lifecycle.LifecycleSupport;
 
 /**
- * Default {@link EventRecorder}.
+ * Default {@link EventStore} implementation.
  *
  * @since 2.8
  */
 @Named
 @Singleton
-public class EventRecorderImpl
-  extends ComponentSupport
-  implements EventRecorder
+public class EventStoreImpl
+  extends LifecycleSupport
+  implements EventStore
 {
-  private final EventStore store;
+  @Override
+  protected void doStart() throws Exception {
 
-  private volatile boolean enabled = false;
-
-  @Inject
-  public EventRecorderImpl(final EventStore store) {
-    this.store = checkNotNull(store);
-  }
-
-  public void setEnabled(final boolean enabled) {
-    this.enabled = enabled;
-    log.info("Enabled: {}", enabled);
   }
 
   @Override
-  public boolean isEnabled() {
-    return enabled;
+  protected void doStop() throws Exception {
+
   }
 
   @Override
-  public void record(final EventData data) {
-    checkNotNull(data);
+  public void add(final EventData data) {
 
-    if (!enabled) {
-      // bitch as this may be impacting performance, callers should guard before building event data
-      log.warn("Attempting to record analytics data when collection is disabled; ignoring");
-      return;
-    }
+  }
 
-    log.debug("Record: {}", data);
-    store.add(data);
+  @Override
+  public void clear() {
+
+  }
+
+  @Override
+  public long size() {
+    return 0;
+  }
+
+  @Override
+  public Iterator<EventData> iterator() {
+    return null;
   }
 }

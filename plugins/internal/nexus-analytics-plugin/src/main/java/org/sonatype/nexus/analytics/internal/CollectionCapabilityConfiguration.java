@@ -30,13 +30,30 @@ import static com.google.common.base.Preconditions.checkState;
 public class CollectionCapabilityConfiguration
   extends CapabilityConfigurationSupport
 {
+  public static final String HOST_ID = "hostId";
+
   public static final String SALT = "salt";
+
+  private String hostId;
 
   private String salt;
 
   public CollectionCapabilityConfiguration(final Map<String, String> properties) {
     checkNotNull(properties);
+    this.hostId = properties.get(HOST_ID);
     this.salt = properties.get(SALT);
+  }
+
+  @Override
+  public String toString() {
+    return "CollectionCapabilityConfiguration{" +
+        "hostId='" + hostId + '\'' +
+        ", salt='" + salt + '\'' +
+        '}';
+  }
+
+  public static String getHostId() {
+    return HOST_ID;
   }
 
   public String getSalt() {
@@ -50,14 +67,9 @@ public class CollectionCapabilityConfiguration
 
   public Map<String,String> asMap() {
     Map<String, String> props = Maps.newHashMap();
+    props.put(HOST_ID, hostId);
     props.put(SALT, salt);
     return props;
   }
 
-  @Override
-  public String toString() {
-    return "CollectionCapabilityConfiguration{" +
-        "salt='" + salt + '\'' +
-        '}';
-  }
 }

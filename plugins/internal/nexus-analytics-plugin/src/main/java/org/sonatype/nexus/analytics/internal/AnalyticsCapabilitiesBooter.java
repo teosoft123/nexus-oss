@@ -12,6 +12,8 @@
  */
 package org.sonatype.nexus.analytics.internal;
 
+import java.util.UUID;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -46,7 +48,18 @@ public class AnalyticsCapabilitiesBooter
   protected void boot(final CapabilityRegistry registry) throws Exception {
     // automatically add collection capability (disabled w/ random salt)
     maybeAddCapability(registry, CollectionCapabilityDescriptor.TYPE, false, null,
-        ImmutableMap.of(CollectionCapabilityConfiguration.SALT, randomSalt()));
+        ImmutableMap.of(
+            CollectionCapabilityConfiguration.HOST_ID, randomHostId(),
+            CollectionCapabilityConfiguration.SALT, randomSalt()
+        )
+    );
+  }
+
+  /**
+   * Generate a new random host-id.
+   */
+  private String randomHostId() {
+    return UUID.randomUUID().toString();
   }
 
   /**

@@ -59,6 +59,12 @@ public class CollectionCapabilityDescriptor
     @DefaultMessage("Analytics: Collection")
     String name();
 
+    @DefaultMessage("Host Identifier")
+    String hostIdLabel();
+
+    @DefaultMessage("Random identifier to group analytics event data for a specific host.")
+    String hostIdHelp();
+
     @DefaultMessage("Anonymization Salt")
     String saltLabel();
 
@@ -68,9 +74,18 @@ public class CollectionCapabilityDescriptor
 
   private static final Messages messages = I18N.create(Messages.class);
 
+  private final FormField hostId;
+
   private final FormField salt;
 
   public CollectionCapabilityDescriptor() {
+    this.hostId = new StringTextFormField(
+        CollectionCapabilityConfiguration.HOST_ID,
+        messages.hostIdLabel(),
+        messages.hostIdHelp(),
+        FormField.MANDATORY
+    );
+
     this.salt = new StringTextFormField(
         CollectionCapabilityConfiguration.SALT,
         messages.saltLabel(),
@@ -92,6 +107,7 @@ public class CollectionCapabilityDescriptor
   @Override
   public List<FormField> formFields() {
     return Arrays.asList(
+        hostId,
         salt
     );
   }
