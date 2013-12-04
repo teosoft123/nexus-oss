@@ -44,6 +44,9 @@ public class AnalyticsModule
         // then capture rest api requests
         filter("/service/local/*").through(RestRequestCollector.class);
         filter("/service/siesta/*").through(RestRequestCollector.class);
+
+        // capture internal/metrics requests
+        filter("/internal/*").through(RestRequestCollector.class);
       }
     });
   }
