@@ -21,10 +21,18 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class SequenceCounter
 {
+  private static final long MAX_VALUE = 999999999999999999L;
+
   private static final AtomicLong value = new AtomicLong(0);
 
   public static long next() {
-    // TODO: rollover so we only ever have positive values
-    return value.getAndIncrement();
+    // FIXME: Sort out if there is a better way to do this w/o a sync block
+    synchronized (value) {
+      long result = value.getAndIncrement();
+      if (result == MAX_VALUE) {
+        value.set(0);
+      }
+      return result;
+    }
   }
 }
