@@ -10,6 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
+
 package org.sonatype.nexus.analytics.internal;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -17,33 +18,38 @@ import java.util.concurrent.atomic.AtomicLong;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Rolling counter.
+ * Cyclic counter.
  *
  * @since 2.8
  */
-public class RollingCounter
+public class CyclicCounter
 {
-  private final long initial;
-
   private final long max;
 
   private final AtomicLong value;
 
-  public RollingCounter(final long initial, final long max) {
-    this.initial = initial;
+  public CyclicCounter(final long max) {
     this.max = max;
-    checkArgument(max > initial);
-    this.value = new AtomicLong(initial);
+    checkArgument(max > 0, "max (%s) must be > 0", max);
+    this.value = new AtomicLong(0);
+  }
+
+  public long get() {
+    return value.get();
   }
 
   public long next() {
-    // FIXME: Sort out if there is a better way to do this w/o a sync block
-    synchronized (value) {
-      long result = value.getAndIncrement();
-      if (result == max) {
-        value.set(initial);
-      }
-      return result;
+    long current, next;
+    do {
+      current = value.get();
+      next = (current + 1) % max;
     }
+    while (!value.compareAndSet(current, next));
+    return next;
+  }
+
+  @Override
+  public String toString() {
+    return value.toString();
   }
 }

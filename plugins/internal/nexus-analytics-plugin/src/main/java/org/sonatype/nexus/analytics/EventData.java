@@ -16,7 +16,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import org.sonatype.nexus.analytics.internal.RollingCounter;
+import org.sonatype.nexus.analytics.internal.CyclicCounter;
 
 import com.google.common.collect.Maps;
 import org.apache.shiro.SecurityUtils;
@@ -36,7 +36,7 @@ public class EventData
 
   private final long timestamp = System.currentTimeMillis();
 
-  private static final RollingCounter counter = new RollingCounter(0, 999999999999999999L);
+  private static final CyclicCounter counter = new CyclicCounter(999999999999999999L);
 
   private final long sequence = counter.next();
 
