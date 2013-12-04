@@ -14,6 +14,8 @@ package org.sonatype.nexus.analytics.internal;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * Rolling counter.
  *
@@ -30,6 +32,7 @@ public class RollingCounter
   public RollingCounter(final long initial, final long max) {
     this.initial = initial;
     this.max = max;
+    checkArgument(max > initial);
     this.value = new AtomicLong(initial);
   }
 
