@@ -15,22 +15,30 @@ package org.sonatype.nexus.analytics.internal;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Event sequence counter.
+ * Rolling counter.
  *
  * @since 2.8
  */
-public class SequenceCounter
+public class RollingCounter
 {
-  private static final long MAX_VALUE = 999999999999999999L;
+  private final long initial;
 
-  private static final AtomicLong value = new AtomicLong(0);
+  private final long max;
 
-  public static long next() {
+  private final AtomicLong value;
+
+  public RollingCounter(final long initial, final long max) {
+    this.initial = initial;
+    this.max = max;
+    this.value = new AtomicLong(initial);
+  }
+
+  public long next() {
     // FIXME: Sort out if there is a better way to do this w/o a sync block
     synchronized (value) {
       long result = value.getAndIncrement();
-      if (result == MAX_VALUE) {
-        value.set(0);
+      if (result == max) {
+        value.set(initial);
       }
       return result;
     }
