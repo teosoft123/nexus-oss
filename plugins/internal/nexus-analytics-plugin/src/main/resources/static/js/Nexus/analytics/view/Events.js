@@ -54,6 +54,38 @@ NX.define('Nexus.analytics.view.Events', {
             }
           ]
         }
+      ],
+      
+      tbar: [
+        {
+          xtype: 'button',
+          id: 'nx-analytics-view-events-button-refresh',
+          text: 'Refresh',
+          tooltip: 'Refresh event data',
+          iconCls: icons.get('refresh').cls
+        },
+        {
+          xtype: 'button',
+          id: 'nx-analytics-view-events-button-clear',
+          text: 'Clear',
+          tooltip: 'Clear all event data',
+          iconCls: icons.get('clear').cls
+        },
+        {
+          xtype: 'button',
+          id: 'nx-analytics-view-events-button-export',
+          text: 'Export',
+          tooltip: 'Export and download event data',
+          iconCls: icons.get('export').cls
+        },
+        '-',
+        {
+          xtype: 'button',
+          id: 'nx-analytics-view-events-button-submit',
+          text: 'Submit',
+          tooltip: 'Submit event data to Sonatype',
+          iconCls: icons.get('submit').cls
+        }
       ]
     });
 

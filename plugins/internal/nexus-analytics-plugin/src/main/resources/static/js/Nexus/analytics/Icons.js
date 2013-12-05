@@ -31,9 +31,9 @@ NX.define('Nexus.analytics.Icons', {
     function iconConfig(fileName, variants) {
       var config = {};
       if (variants === undefined) {
-        variants = [ 'x32', 'x16' ]
+        variants = ['x32', 'x16']
       }
-      Ext.each(variants, function(variant) {
+      Ext.each(variants, function (variant) {
         config[variant] = variant + '/' + fileName;
       });
       return config;
@@ -43,9 +43,17 @@ NX.define('Nexus.analytics.Icons', {
       stylePrefix: 'nx-analytics-icon-',
 
       icons: {
-        arrow_refresh:      'arrow_refresh.png',
-        action_log:         iconConfig('action_log.png'),
-        analytics:          '@action_log'
+        arrow_refresh: 'arrow_refresh.png',
+        action_log: iconConfig('action_log.png'),
+        delete: iconConfig('delete.png'),
+        download: iconConfig('download.png'),
+        external: iconConfig('external.png'),
+
+        refresh: '@arrow_refresh',
+        analytics: '@action_log',
+        clear: '@delete',
+        export: '@download',
+        submit: '@external'
       }
     });
   }
