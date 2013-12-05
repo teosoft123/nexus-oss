@@ -129,7 +129,7 @@ NX.define('Nexus.analytics.controller.Analytics', {
    * @private
    */
   exportEvents: function(button) {
-    // TODO
+    // TODO: show options dialog ([_] clear after, [_] anonymize)
   },
 
   /**
@@ -138,6 +138,6 @@ NX.define('Nexus.analytics.controller.Analytics', {
    * @private
    */
   submitEvents: function(button) {
-    // TODO
+    // TODO: show options dialog ([_] clear after)
   }
 });
