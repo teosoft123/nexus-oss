@@ -12,11 +12,11 @@
  */
 
 /**
- * Analytics panel.
+ * Settings panel.
  *
  * @since 2.8
  */
-NX.define('Nexus.analytics.view.Panel', {
+NX.define('Nexus.analytics.view.Settings', {
   extend: 'Ext.Panel',
 
   mixins: [
@@ -24,50 +24,35 @@ NX.define('Nexus.analytics.view.Panel', {
   ],
 
   requires: [
-    'Nexus.analytics.Icons',
-    'Nexus.analytics.view.Settings',
-    'Nexus.analytics.view.Events'
+    'Nexus.analytics.Icons'
   ],
 
-  xtype: 'nx-analytics-view-panel',
-  title: 'Analytics',
-  cls: 'nx-analytics-view-panel',
+  xtype: 'nx-analytics-view-settings',
+  title: 'Settings',
+  id: 'nx-analytics-view-settings',
+  cls: 'nx-analytics-view-settings',
 
   border: false,
-  layout: {
-    type: 'vbox',
-    align: 'stretch'
-  },
+  layout: 'fit',
 
   /**
    * @override
    */
-  initComponent: function() {
+  initComponent: function () {
     var me = this,
         icons = Nexus.analytics.Icons;
 
     Ext.apply(me, {
       items: [
         {
-          xtype: 'panel',
-          cls: 'nx-analytics-view-panel-description',
-          border: false,
-          html: icons.get('analytics').variant('x32').img +
-              '<div>Analytics helps Sonatype make Nexus better by capturing key anonymous usage details and metrics.</div>',
-          height: 60,
-          flex: 0
-        },
-        {
-          xtype: 'tabpanel',
-          flex: 1,
-          border: false,
-          plain: true,
-          layoutOnTabChange: true,
+          xtype: 'container',
           items: [
-            { xtype: 'nx-analytics-view-settings' },
-            { xtype: 'nx-analytics-view-events' }
-          ],
-          activeTab: 0
+            {
+              cls: 'nx-analytics-view-settings-description',
+              border: false,
+              html: 'TODO'
+            }
+          ]
         }
       ]
     });
