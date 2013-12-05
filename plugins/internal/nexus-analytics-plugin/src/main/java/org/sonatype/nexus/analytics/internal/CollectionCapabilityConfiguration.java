@@ -44,14 +44,6 @@ public class CollectionCapabilityConfiguration
     this.salt = properties.get(SALT);
   }
 
-  @Override
-  public String toString() {
-    return "CollectionCapabilityConfiguration{" +
-        "hostId='" + hostId + '\'' +
-        ", salt='" + salt + '\'' +
-        '}';
-  }
-
   public static String getHostId() {
     return HOST_ID;
   }
@@ -72,4 +64,11 @@ public class CollectionCapabilityConfiguration
     return props;
   }
 
+  @Override
+  public String toString() {
+    return "CollectionCapabilityConfiguration{" +
+        "hostId='" + hostId + '\'' +
+        ", salt='" + salt + '\'' +
+        '}';
+  }
 }
