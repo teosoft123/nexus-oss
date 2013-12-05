@@ -36,7 +36,7 @@ public class EventData
 
   private final long timestamp = System.currentTimeMillis();
 
-  private static final CyclicCounter counter = new CyclicCounter(999999999999999999L); // 999,999,999,999,999,999
+  private static final CyclicCounter counter = new CyclicCounter(999_999_999_999_999_999L);
 
   private final long sequence = counter.next();
 
