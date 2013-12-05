@@ -22,12 +22,28 @@ NX.define('Nexus.analytics.controller.Analytics', {
 
   requires: [
     'Nexus.siesta',
+    'Nexus.analytics.Icons',
     'Nexus.analytics.view.Panel',
     'Nexus.util.DownloadHelper'
   ],
 
   init: function() {
     var me = this;
+
+    me.control({
+      '#nx-analytics-view-events-button-refresh': {
+        'click': me.refreshEvents
+      },
+      '#nx-analytics-view-events-button-clear': {
+        'click': me.clearEvents
+      },
+      '#nx-analytics-view-events-button-export': {
+        'click': me.exportEvents
+      },
+      '#nx-analytics-view-events-button-submit': {
+        'click': me.submitEvents
+      }
+    });
 
     me.addNavigationMenu();
   },
@@ -51,5 +67,77 @@ NX.define('Nexus.analytics.controller.Analytics', {
         }
       });
     });
+  },
+
+  /**
+   * Helper to show Analytics message.
+   *
+   * @private
+   */
+  showMessage: function(message) {
+    Nexus.messages.show('Analytics', message);
+  },
+
+  /**
+   * Refresh events panel.
+   *
+   * @private
+   */
+  refreshEvents: function(button) {
+    // TODO
+  },
+
+  /**
+   * Clear all events.
+   *
+   * @private
+   */
+  clearEvents: function(button) {
+    var me = this,
+        icons = Nexus.analytics.Icons;
+
+    Ext.Msg.show({
+      title: 'Clear all events',
+      msg: 'Clear all analytics event data?',
+      buttons: Ext.Msg.OKCANCEL,
+      icon: icons.get('clear').variant('x32').cls,
+      fn: function (btn) {
+        if (btn === 'ok') {
+          Ext.Ajax.request({
+            url: Nexus.siesta.basePath + '/analytics/events',
+            method: 'DELETE',
+            suppressStatus: true,
+            callback: function () {
+              // TODO:
+              //store.load();
+            },
+            success: function () {
+              me.showMessage('Event data has been cleared');
+            },
+            failure: function (response) {
+              me.showMessage('Failed to clear event data: ' + me.parseExceptionMessage(response));
+            }
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * Export and download events.
+   *
+   * @private
+   */
+  exportEvents: function(button) {
+    // TODO
+  },
+
+  /**
+   * Submit events to Sonatype.
+   *
+   * @private
+   */
+  submitEvents: function(button) {
+    // TODO
   }
 });
