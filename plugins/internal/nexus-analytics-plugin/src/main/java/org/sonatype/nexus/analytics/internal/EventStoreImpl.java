@@ -13,6 +13,7 @@
 package org.sonatype.nexus.analytics.internal;
 
 import java.util.Iterator;
+import java.util.List;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -20,6 +21,10 @@ import javax.inject.Singleton;
 import org.sonatype.nexus.analytics.EventData;
 import org.sonatype.nexus.analytics.EventStore;
 import org.sonatype.sisu.goodies.lifecycle.LifecycleSupport;
+
+import com.google.common.collect.Lists;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Default {@link EventStore} implementation.
@@ -32,33 +37,37 @@ public class EventStoreImpl
   extends LifecycleSupport
   implements EventStore
 {
+  // HACK: For now using in-memory just to move things forward
+  private final List<EventData> storage = Lists.newLinkedList();
+
   @Override
   protected void doStart() throws Exception {
-
+    // nop
   }
 
   @Override
   protected void doStop() throws Exception {
-
+    // nop
   }
 
   @Override
   public void add(final EventData data) {
-
+    checkNotNull(data);
+    storage.add(data);
   }
 
   @Override
   public void clear() {
-
+    storage.clear();
   }
 
   @Override
   public long size() {
-    return 0;
+    return storage.size();
   }
 
   @Override
   public Iterator<EventData> iterator() {
-    return null;
+    return storage.iterator();
   }
 }

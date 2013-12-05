@@ -19,6 +19,9 @@ import javax.inject.Named;
 
 import org.sonatype.nexus.capability.support.CapabilitySupport;
 import org.sonatype.nexus.plugins.capabilities.Condition;
+import org.sonatype.sisu.goodies.i18n.I18N;
+import org.sonatype.sisu.goodies.i18n.MessageBundle;
+import org.sonatype.sisu.goodies.template.TemplateParameters;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -31,6 +34,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class CollectionCapability
     extends CapabilitySupport<CollectionCapabilityConfiguration>
 {
+  private static interface Messages
+      extends MessageBundle
+  {
+    @DefaultMessage("Events: %s")
+    String description(long count);
+  }
+
+  private static final Messages messages = I18N.create(Messages.class);
+
   private final EventStoreImpl store;
 
   private final EventRecorderImpl recorder;
@@ -68,5 +80,26 @@ public class CollectionCapability
   protected void onPassivate(final CollectionCapabilityConfiguration config) throws Exception {
     recorder.setEnabled(false);
     store.stop();
+  }
+
+  @Override
+  protected String renderDescription() throws Exception {
+    if (!context().isActive()) {
+      return null;
+    }
+
+    return messages.description(store.size());
+  }
+
+  @Override
+  protected String renderStatus() throws Exception {
+    if (!context().isActive()) {
+      return null;
+    }
+
+    return render(CollectionCapabilityDescriptor.TYPE_ID + "-status.vm", new TemplateParameters()
+        .set("store", store)
+        .get()
+    );
   }
 }
