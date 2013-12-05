@@ -11,12 +11,28 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-/*global define,NX*/
-define('nexus-analytics-plugin-boot', [
-  'Nexus/analytics/controller/Analytics'
-],
-function () {
-  NX.log.debug('Module loaded: nexus-analytics-plugin-boot');
+package org.sonatype.nexus.analytics.internal;
 
-  NX.create('Nexus.analytics.controller.Analytics').init();
-});
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.sonatype.nexus.analytics.AnalyticsPlugin;
+import org.sonatype.nexus.plugins.ui.contribution.UiContributor;
+import org.sonatype.nexus.plugins.ui.contribution.UiContributorSupport;
+
+/**
+ * Analytics {@link UiContributor}.
+ *
+ * @since 2.8
+ */
+@Named
+@Singleton
+public class UiContributorImpl
+    extends UiContributorSupport
+{
+  @Inject
+  public UiContributorImpl(final AnalyticsPlugin owner) {
+    super(owner);
+  }
+}
