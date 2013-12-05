@@ -59,6 +59,7 @@ public class EventStoreImpl
   @Override
   public void clear() {
     storage.clear();
+    log.debug("Cleared");
   }
 
   @Override
