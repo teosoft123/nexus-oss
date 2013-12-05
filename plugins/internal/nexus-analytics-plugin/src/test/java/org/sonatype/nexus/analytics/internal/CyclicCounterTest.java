@@ -41,6 +41,17 @@ public class CyclicCounterTest
     assertThat(counter.next(), is(0L));
   }
 
+  @Test
+  public void resetCounter() {
+    CyclicCounter counter = new CyclicCounter(3);
+    assertThat(counter.get(), is(0L));
+    assertThat(counter.next(), is(1L));
+
+    counter.reset();
+    assertThat(counter.get(), is(0L));
+    assertThat(counter.next(), is(1L));
+  }
+
   @Test(expected=IllegalArgumentException.class)
   public void maxZero() {
     new CyclicCounter(0);

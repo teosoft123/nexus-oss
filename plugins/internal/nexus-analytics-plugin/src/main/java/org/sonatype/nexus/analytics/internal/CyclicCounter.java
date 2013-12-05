@@ -34,6 +34,10 @@ public class CyclicCounter
     this.value = new AtomicLong(0);
   }
 
+  public void reset() {
+    value.set(0);
+  }
+
   public long get() {
     return value.get();
   }
