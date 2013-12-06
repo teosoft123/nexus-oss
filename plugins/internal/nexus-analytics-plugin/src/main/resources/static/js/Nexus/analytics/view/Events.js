@@ -24,7 +24,8 @@ NX.define('Nexus.analytics.view.Events', {
   ],
 
   requires: [
-    'Nexus.analytics.Icons'
+    'Nexus.analytics.Icons',
+    'Nexus.analytics.store.Events'
   ],
 
   xtype: 'nx-analytics-view-events',
@@ -40,20 +41,65 @@ NX.define('Nexus.analytics.view.Events', {
    */
   initComponent: function () {
     var me = this,
-        icons = Nexus.analytics.Icons;
+        icons = Nexus.analytics.Icons,
+        grid;
+
+    me.grid = NX.create('Ext.grid.GridPanel', {
+      border: false,
+      autoScroll: true,
+
+      loadMask: {
+        msg: 'Loading...',
+        msgCls: 'loading-indicator'
+      },
+
+      store: NX.create('Nexus.analytics.store.Events'),
+      stripeRows: true,
+
+      columns: [
+        {
+          id: 'type',
+          header: 'Type',
+          dataIndex: 'type'
+        },
+        {
+          id: 'timestamp',
+          header: 'Timestamp',
+          dataIndex: 'timestamp'
+        },
+        {
+          id: 'sequence',
+          header: 'Sequence',
+          dataIndex: 'sequence'
+        },
+        {
+          id: 'orgId',
+          header: 'Organization',
+          dataIndex: 'orgId',
+          hidden: true
+        },
+        {
+          id: 'hostId',
+          header: 'Host',
+          dataIndex: 'hostId',
+          hidden: true
+        },
+        {
+          id: 'userId',
+          header: 'User',
+          dataIndex: 'userId'
+        },
+        {
+          id: 'sessionId',
+          header: 'Session',
+          dataIndex: 'sessionId'
+        }
+      ]
+    });
 
     Ext.apply(me, {
       items: [
-        {
-          xtype: 'container',
-          items: [
-            {
-              cls: 'nx-analytics-view-events-description',
-              border: false,
-              html: 'TODO'
-            }
-          ]
-        }
+        me.grid
       ],
       
       tbar: [
@@ -85,10 +131,24 @@ NX.define('Nexus.analytics.view.Events', {
           text: 'Submit',
           tooltip: 'Submit event data to Sonatype',
           iconCls: icons.get('submit').cls
+        },
+        '->',
+        {
+          xtype: 'nx-grid-filter-box',
+          filteredGrid: me.grid
         }
       ]
     });
 
     me.constructor.superclass.initComponent.apply(me, arguments);
+  },
+
+  /**
+   * Returns the events grid.
+   *
+   * @public
+   */
+  getGrid: function() {
+    return this.grid;
   }
 });

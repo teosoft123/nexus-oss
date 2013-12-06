@@ -31,6 +31,9 @@ NX.define('Nexus.analytics.controller.Analytics', {
     var me = this;
 
     me.control({
+      '#nx-analytics-view-events': {
+        'activate': me.loadEvents
+      },
       '#nx-analytics-view-events-button-refresh': {
         'click': me.refreshEvents
       },
@@ -79,12 +82,24 @@ NX.define('Nexus.analytics.controller.Analytics', {
   },
 
   /**
+   * Load events.
+   *
+   * @private
+   */
+  loadEvents: function(panel) {
+    var store = panel.getGrid().getStore();
+    store.load();
+  },
+
+  /**
    * Refresh events panel.
    *
    * @private
    */
   refreshEvents: function(button) {
-    // TODO
+    var me = this,
+        panel = button.up('nx-analytics-view-events');
+    me.loadEvents(panel);
   },
 
   /**
@@ -94,7 +109,8 @@ NX.define('Nexus.analytics.controller.Analytics', {
    */
   clearEvents: function(button) {
     var me = this,
-        icons = Nexus.analytics.Icons;
+        icons = Nexus.analytics.Icons,
+        store = panel = button.up('nx-analytics-view-events').getGrid().getStore();
 
     Ext.Msg.show({
       title: 'Clear all events',
@@ -108,8 +124,7 @@ NX.define('Nexus.analytics.controller.Analytics', {
             method: 'DELETE',
             suppressStatus: true,
             callback: function () {
-              // TODO:
-              //store.load();
+              store.load();
             },
             success: function () {
               me.showMessage('Event data has been cleared');
