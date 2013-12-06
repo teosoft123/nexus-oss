@@ -59,6 +59,13 @@ NX.define('Nexus.analytics.Icons', {
         type_REST: '@transmit'
       }
     });
-  }
+  },
 
+  /**
+   * Return icon for given type.
+   */
+  forType: function(name) {
+    // TODO: return generic icon for unknown type
+    return this.get('type_' + name);
+  }
 });

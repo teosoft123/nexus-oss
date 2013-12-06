@@ -65,7 +65,7 @@ NX.define('Nexus.analytics.view.Events', {
           hideable: false,
           menuDisabled: true,
           renderer: function (value, metaData, record) {
-            return icons.get('type_' + record.get('type')).img;
+            return icons.forType(record.get('type')).img;
           }
         },
         {
