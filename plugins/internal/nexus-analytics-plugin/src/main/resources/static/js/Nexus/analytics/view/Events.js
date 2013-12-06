@@ -58,6 +58,17 @@ NX.define('Nexus.analytics.view.Events', {
 
       columns: [
         {
+          width: 30,
+          resizable: false,
+          sortable: false,
+          fixed: true,
+          hideable: false,
+          menuDisabled: true,
+          renderer: function (value, metaData, record) {
+            return icons.get('type_' + record.get('type')).img;
+          }
+        },
+        {
           id: 'type',
           header: 'Type',
           dataIndex: 'type'

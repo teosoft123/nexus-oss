@@ -48,12 +48,15 @@ NX.define('Nexus.analytics.Icons', {
         delete: iconConfig('delete.png'),
         download: iconConfig('download.png'),
         external: iconConfig('external.png'),
+        transmit: iconConfig('transmit.png'),
 
         refresh: '@arrow_refresh',
         analytics: '@action_log',
         clear: '@delete',
         export: '@download',
-        submit: '@external'
+        submit: '@external',
+
+        type_REST: '@transmit'
       }
     });
   }
