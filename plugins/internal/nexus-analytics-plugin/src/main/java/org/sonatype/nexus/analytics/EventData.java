@@ -14,16 +14,7 @@ package org.sonatype.nexus.analytics;
 
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
-import org.sonatype.nexus.analytics.internal.CyclicCounter;
-
 import com.google.common.collect.Maps;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Container for analytics event data.
@@ -32,73 +23,58 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class EventData
 {
-  private final String type;
+  private String type;
 
-  private final long timestamp = System.currentTimeMillis();
+  private Long timestamp;
 
-  private static final CyclicCounter counter = new CyclicCounter(999_999_999_999_999_999L);
-
-  private final long sequence = counter.next();
+  private Long sequence;
 
   // TODO: hostId, orgId... these may be sent in surrounding data as these will always be the same?
 
-  private final String userId;
+  private String userId;
 
-  private final String sessionId;
+  private String sessionId;
 
   private final Map<String,Object> attributes = Maps.newHashMap();
-
-  public EventData(final String type) {
-    this.type = checkNotNull(type);
-
-    String userId = null;
-    String sessionId = null;
-
-    // capture the user and session ids if we can
-    Subject subject = SecurityUtils.getSubject();
-    if (subject != null) {
-      Object principal = subject.getPrincipal();
-      if (principal != null) {
-        userId = principal.toString();
-      }
-
-      Session session = subject.getSession(false);
-      if (session != null) {
-        sessionId = session.getId().toString();
-      }
-    }
-
-    this.userId = userId;
-    this.sessionId = sessionId;
-  }
 
   public String getType() {
     return type;
   }
 
-  public long getTimestamp() {
+  public void setType(final String type) {
+    this.type = type;
+  }
+
+  public Long getTimestamp() {
     return timestamp;
   }
 
-  public long getSequence() {
+  public void setTimestamp(final Long timestamp) {
+    this.timestamp = timestamp;
+  }
+
+  public Long getSequence() {
     return sequence;
   }
 
-  @Nullable
+  public void setSequence(final Long sequence) {
+    this.sequence = sequence;
+  }
+
   public String getUserId() {
     return userId;
   }
 
-  @Nullable
+  public void setUserId(final String userId) {
+    this.userId = userId;
+  }
+
   public String getSessionId() {
     return sessionId;
   }
 
-  public EventData set(final String name, final Object value) {
-    checkNotNull(name);
-    checkNotNull(value);
-    attributes.put(name, value);
-    return this;
+  public void setSessionId(final String sessionId) {
+    this.sessionId = sessionId;
   }
 
   public Map<String, Object> getAttributes() {
