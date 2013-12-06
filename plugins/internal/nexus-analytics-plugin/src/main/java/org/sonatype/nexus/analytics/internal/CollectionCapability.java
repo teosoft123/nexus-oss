@@ -39,6 +39,9 @@ public class CollectionCapability
   {
     @DefaultMessage("Events: %s")
     String description(long count);
+
+    @DefaultMessage("Collection is disabled")
+    String disabledDescription();
   }
 
   private static final Messages messages = I18N.create(Messages.class);
@@ -85,7 +88,7 @@ public class CollectionCapability
   @Override
   protected String renderDescription() throws Exception {
     if (!context().isActive()) {
-      return null;
+      return messages.disabledDescription();
     }
 
     return messages.description(store.size());
