@@ -57,7 +57,10 @@ public class EventData
     // capture the user and session ids if we can
     Subject subject = SecurityUtils.getSubject();
     if (subject != null) {
-      userId = subject.getPrincipal().toString();
+      Object principal = subject.getPrincipal();
+      if (principal != null) {
+        userId = principal.toString();
+      }
 
       Session session = subject.getSession(false);
       if (session != null) {
