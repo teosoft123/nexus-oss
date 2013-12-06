@@ -42,31 +42,30 @@ public class EventData
 
   // TODO: hostId, orgId... these may be sent in surrounding data as these will always be the same?
 
-  private final Object principal;
+  private final String userId;
 
-  private final Object sessionId;
+  private final String sessionId;
 
   private final Map<String,Object> attributes = Maps.newHashMap();
 
   public EventData(final String type) {
     this.type = checkNotNull(type);
 
-    // capture in native format to avoid premature string conversion
-    Object principal = null;
-    Object sessionId = null;
+    String userId = null;
+    String sessionId = null;
 
     // capture the user and session ids if we can
     Subject subject = SecurityUtils.getSubject();
     if (subject != null) {
-      principal = subject.getPrincipal();
+      userId = subject.getPrincipal().toString();
 
       Session session = subject.getSession(false);
       if (session != null) {
-        sessionId = session.getId();
+        sessionId = session.getId().toString();
       }
     }
 
-    this.principal = principal;
+    this.userId = userId;
     this.sessionId = sessionId;
   }
 
@@ -83,12 +82,12 @@ public class EventData
   }
 
   @Nullable
-  public Object getPrincipal() {
-    return principal;
+  public String getUserId() {
+    return userId;
   }
 
   @Nullable
-  public Object getSessionId() {
+  public String getSessionId() {
     return sessionId;
   }
 
@@ -106,11 +105,11 @@ public class EventData
   @Override
   public String toString() {
     return "EventData{" +
-        "timestamp=" + timestamp +
+        "type='" + type + '\'' +
+        ", timestamp=" + timestamp +
         ", sequence=" + sequence +
-        ", principal=" + principal +
-        ", sessionId=" + sessionId +
-        ", type='" + type + '\'' +
+        ", userId='" + userId + '\'' +
+        ", sessionId='" + sessionId + '\'' +
         ", attributes=" + attributes +
         '}';
   }
