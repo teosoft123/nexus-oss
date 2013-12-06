@@ -110,7 +110,7 @@ NX.define('Nexus.analytics.controller.Analytics', {
   clearEvents: function(button) {
     var me = this,
         icons = Nexus.analytics.Icons,
-        store = panel = button.up('nx-analytics-view-events').getGrid().getStore();
+        store = button.up('nx-analytics-view-events').getGrid().getStore();
 
     Ext.Msg.show({
       title: 'Clear all events',
