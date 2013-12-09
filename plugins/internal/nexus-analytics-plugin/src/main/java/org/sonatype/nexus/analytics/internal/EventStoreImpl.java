@@ -12,7 +12,9 @@
  */
 package org.sonatype.nexus.analytics.internal;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Named;
@@ -38,7 +40,8 @@ public class EventStoreImpl
   implements EventStore
 {
   // HACK: For now using in-memory just to move things forward
-  private final List<EventData> storage = Lists.newLinkedList();
+
+  private final List<EventData> storage = Collections.synchronizedList(new LinkedList<EventData>());
 
   @Override
   protected void doStart() throws Exception {

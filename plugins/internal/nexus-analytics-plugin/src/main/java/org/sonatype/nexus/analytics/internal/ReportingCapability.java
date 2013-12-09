@@ -19,6 +19,8 @@ import javax.inject.Named;
 import org.sonatype.nexus.capability.support.CapabilitySupport;
 import org.sonatype.nexus.plugins.capabilities.Condition;
 
+// TODO: rename to autosubmit ?
+
 /**
  * Analytics reporting capability.
  *
