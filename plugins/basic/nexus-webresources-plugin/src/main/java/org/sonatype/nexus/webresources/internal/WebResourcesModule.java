@@ -11,46 +11,43 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.web;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.sonatype.nexus.webresources.internal;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
-import org.sonatype.security.web.guice.SecurityWebFilter;
+import org.sonatype.nexus.web.ErrorPageFilter;
+import org.sonatype.nexus.web.Renderer;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.servlet.ServletModule;
 import org.eclipse.sisu.inject.DefaultRankingFunction;
 import org.eclipse.sisu.inject.RankingFunction;
 
 /**
- * Guice module for binding nexus servlets.
+ * Web resources module.
  *
- * @author adreghiciu
+ * @since 2.8
  */
 @Named
-@Singleton
-public class NexusServletModule
-    extends ServletModule
+public class WebResourcesModule
+    extends AbstractModule
 {
   @Override
-  protected void configureServlets() {
-    requestStaticInjection(NexusGuiceFilter.class);
+  protected void configure() {
+    requireBinding(Renderer.class);
 
-    serve("/service/local/*").with(NexusRestletServlet.class, nexusRestletServletInitParams());
+    install(new ServletModule()
+    {
+      @Override
+      protected void configureServlets() {
+        serve("/*").with(WebResourcesServlet.class);
+        filter("/*").through(ErrorPageFilter.class);
 
-    filter("/service/local/*").through(SecurityWebFilter.class);
-    filter("/service/local/*").through(MdcUserContextFilter.class);
-  }
-
-  private Map<String, String> nexusRestletServletInitParams() {
-    Map<String, String> params = new HashMap<String, String>();
-    params.put("nexus.role", "org.restlet.Application");
-    params.put("nexus.roleHint", "nexus");
-    params.put("nexus.org.restlet.clients", "FILE CLAP");
-    params.put("plexus.discoverResources", "true");
-    return params;
+        // Give components contributed by this plugin a low-level ranking (same level as Nexus core) so they are ordered
+        // after components from other plugins. This makes sure all the their non-root servlets will be invoked and this
+        // one will not "grab all" of the requests as it's mounted on root.
+        bind(RankingFunction.class).toInstance(new DefaultRankingFunction(0));
+      }
+    });
   }
 }
