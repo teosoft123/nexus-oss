@@ -11,15 +11,19 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.rest;
+package org.sonatype.nexus.webresources;
 
-import org.sonatype.plexus.rest.RetargetableRestlet;
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * @deprecated Unused class, since NEXUS-6045 this does not function anymore as before. Will be dropped in next release.
+ * Component rendering the "/index.html" entry page.
+ *
+ * @since 2.8.0
  */
-@Deprecated
-public interface NexusApplicationCustomizer
+public interface IndexPageRenderer
 {
-  void customize(NexusApplication nexusApplication, RetargetableRestlet root);
+  void render(HttpServletRequest request, HttpServletResponse response, String appRootUrl) throws IOException;
 }
