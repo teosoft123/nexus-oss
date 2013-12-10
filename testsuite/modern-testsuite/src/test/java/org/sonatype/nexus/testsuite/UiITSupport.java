@@ -86,66 +86,91 @@ public class UiITSupport
     WebDriver driver = driverFactory.create();
     JavascriptExecutor js = (JavascriptExecutor) driver;
     logger.info("Started web driver {}", driver);
+
     try {
-      driver.navigate().to(nexus().getUrl() + "static/rapture/nexus-ui-tests.html");
-
-      By runCheckedButton = By.cssSelector(".x-btn a[title='Run checked']");
-      driverWait(driver).until(elementToBeClickable(runCheckedButton));
-
-      WebElement testRowElement = getTestRow(driver, test);
-      assertThat(testRowElement, notNullValue());
-      testRowElement.findElement(By.cssSelector(".x-tree-checkbox")).click();
-
-      logger.info("Running {}", test);
-      runTest(driver, runCheckedButton);
+      loadTestHarness(driver);
+      markTest(driver, test);
+      runTest(driver, test);
       waitForTestToFinish(driver, js);
 
-      Object result = js.executeScript(
-          "return Siesta.my.activeHarness.testsByURL['" + test + "'].getResults().toJSON();"
-      );
-      String failure = null;
-      Map resultAsMap = (Map) result;
-      List<Map> assertions = (List<Map>) resultAsMap.get("assertions");
-      logger.info("----------------------------------------");
-      for (Map assertion : assertions) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(assertion.get("description").toString().replace("  ", " "));
-        Object isException = assertion.get("isException");
-        if (isException != null && (boolean) isException) {
-          Object annotation = assertion.get("annotation");
-          if (annotation != null) {
-            sb.append(" -> ").append(annotation.toString().replace("  ", " "));
-          }
-        }
-        Object passed = assertion.get("passed");
-        String prefix = "      ";
-        if (passed != null) {
-          if ((boolean) passed) {
-            prefix = "[PASS]";
-          }
-          else {
-            prefix = "[FAIL]";
-            failure = sb.toString();
-          }
+      String failure = logResults(getTestResults(test, js));
 
-        }
-        logger.info(prefix + " " + sb.toString());
-      }
-      logger.info("----------------------------------------");
-
-      assertThat(failure, (Boolean) resultAsMap.get("passed"));
+      assertThat(failure, failure == null);
     }
     finally {
       driver.quit();
     }
   }
 
-  private void runTest(final WebDriver driver, final By runCheckedButton) {
-    driver.findElement(runCheckedButton).click();
+  private String logResults(final Map resultAsMap) {
+    String failure = null;
+    List<Map> assertions = (List<Map>) resultAsMap.get("assertions");
+    logger.info("----------------------------------------");
+    for (Map assertion : assertions) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(assertion.get("description").toString().replace("  ", " "));
+      Object isException = assertion.get("isException");
+      if (isException != null && (boolean) isException) {
+        Object annotation = assertion.get("annotation");
+        if (annotation != null) {
+          sb.append(" -> ").append(annotation.toString().replace("  ", " "));
+        }
+      }
+      Object passed = assertion.get("passed");
+      String prefix = "      ";
+      if (passed != null) {
+        if ((boolean) passed) {
+          prefix = "[PASS]";
+        }
+        else {
+          prefix = "[FAIL]";
+          failure = sb.toString();
+        }
+
+      }
+      logger.info(prefix + " " + sb.toString());
+    }
+    logger.info("----------------------------------------");
+    return (Boolean) resultAsMap.get("passed") ? failure : null;
+  }
+
+  private Map getTestResults(final String test, final JavascriptExecutor js) {
+    return (Map) js.executeScript(
+        "return Siesta.my.activeHarness.testsByURL['" + test + "'].getResults().toJSON();"
+    );
+  }
+
+  private void loadTestHarness(final WebDriver driver) {
+    driver.navigate().to(nexus().getUrl() + "static/rapture/nexus-ui-tests.html");
+    driverWait(driver).until(elementToBeClickable(By.cssSelector(".x-btn a[title='Run checked']")));
+  }
+
+  private void markTest(final WebDriver driver, final String test) {
+    WebElement testRow = findTest(driver, test);
+    assertThat("Test " + test + " not found in test harness", testRow, notNullValue());
+    WebElement checkbox = testRow.findElement(By.cssSelector(".x-tree-checkbox"));
+    assertThat("Test " + test + " not found in test harness", checkbox, notNullValue());
+    checkbox.click();
+  }
+
+  private WebElement findTest(final WebDriver driver, final String test) {
+    List<WebElement> elements = driver.findElements(By.cssSelector(".tr-testgrid .x-grid-tree-node-leaf"));
+    if (elements != null) {
+      for (WebElement element : elements) {
+        if (test.equals(element.getAttribute("data-recordid"))) {
+          return element;
+        }
+      }
+    }
+    return null;
+  }
+
+  private void runTest(final WebDriver driver, final String test) {
+    logger.info("Running {}", test);
+    driver.findElement(By.cssSelector(".x-btn a[title='Run checked']")).click();
   }
 
   private void waitForTestToFinish(final WebDriver driver, final JavascriptExecutor js) {
-    logger.info("Waiting for test harness");
     driverWait(driver).pollingEvery(1, TimeUnit.SECONDS).withTimeout(5, TimeUnit.MINUTES).until(
         new Predicate<WebDriver>()
         {
@@ -156,18 +181,6 @@ public class UiITSupport
           }
         }
     );
-  }
-
-  private WebElement getTestRow(final WebDriver driver, final String test) {
-    List<WebElement> elements = driver.findElements(By.cssSelector(".tr-testgrid .x-grid-tree-node-leaf"));
-    if (elements != null) {
-      for (WebElement element : elements) {
-        if (test.equals(element.getAttribute("data-recordid"))) {
-          return element;
-        }
-      }
-    }
-    return null;
   }
 
   private FluentWait<WebDriver> driverWait(WebDriver driver) {
