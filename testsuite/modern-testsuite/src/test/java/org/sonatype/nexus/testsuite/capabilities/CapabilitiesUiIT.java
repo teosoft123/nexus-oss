@@ -13,7 +13,7 @@
 
 package org.sonatype.nexus.testsuite.capabilities;
 
-import org.sonatype.nexus.testsuite.UiITSupport;
+import org.sonatype.nexus.testsuite.UiISiestaStandardTSupport;
 
 import org.junit.Test;
 
@@ -21,16 +21,16 @@ import org.junit.Test;
  * @since 2.8
  */
 public class CapabilitiesUiIT
-    extends UiITSupport
+    extends UiISiestaStandardTSupport
 {
 
-  public CapabilitiesUiIT(final WebDriverFactory driverFactory) {
-    super(driverFactory);
+  public CapabilitiesUiIT(final String executable, final String[] options) {
+    super(executable, options);
   }
 
   @Test
   public void capability_directjengine() throws Exception {
-    run("tests/capability/directjengine.js");
+    run("tests/capability/directjengine");
   }
 
   @Test

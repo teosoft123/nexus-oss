@@ -13,7 +13,7 @@
 
 package org.sonatype.nexus.testsuite.repository;
 
-import org.sonatype.nexus.testsuite.UiITSupport;
+import org.sonatype.nexus.testsuite.UiISiestaLiteTSupport;
 
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ import org.junit.Test;
  * @since 2.8
  */
 public class RepositoryUiIT
-    extends UiITSupport
+    extends UiISiestaLiteTSupport
 {
 
   public RepositoryUiIT(final WebDriverFactory driverFactory) {

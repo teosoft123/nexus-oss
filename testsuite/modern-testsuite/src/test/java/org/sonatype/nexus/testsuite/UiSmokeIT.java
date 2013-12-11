@@ -19,7 +19,7 @@ import org.junit.Test;
  * @since 2.8
  */
 public class UiSmokeIT
-    extends UiITSupport
+    extends UiISiestaLiteTSupport
 {
 
   public UiSmokeIT(final WebDriverFactory driverFactory) {
