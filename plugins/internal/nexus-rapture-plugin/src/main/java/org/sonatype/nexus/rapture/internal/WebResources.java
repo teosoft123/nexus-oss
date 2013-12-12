@@ -15,9 +15,9 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.sonatype.nexus.configuration.application.ApplicationConfiguration;
-import org.sonatype.nexus.plugins.rest.DefaultStaticResource;
-import org.sonatype.nexus.plugins.rest.NexusResourceBundle;
-import org.sonatype.nexus.plugins.rest.StaticResource;
+import org.sonatype.nexus.plugin.support.DefaultWebResource;
+import org.sonatype.nexus.web.WebResource;
+import org.sonatype.nexus.web.WebResourceBundle;
 import org.sonatype.sisu.goodies.template.TemplateEngine;
 import org.sonatype.sisu.goodies.template.TemplateParameters;
 
@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkState;
 @Named
 @Singleton
 public class WebResources
-    implements NexusResourceBundle
+    implements WebResourceBundle
 {
   private static final Logger log = LoggerFactory.getLogger(WebResources.class);
 
@@ -45,12 +45,12 @@ public class WebResources
 
   private final TemplateEngine templateEngine;
 
-  private final List<NexusResourceBundle> resourceBundles;
+  private final List<WebResourceBundle> resourceBundles;
 
   @Inject
   public WebResources(final ApplicationConfiguration applicationConfiguration,
                       final TemplateEngine templateEngine,
-                      final List<NexusResourceBundle> resourceBundles)
+                      final List<WebResourceBundle> resourceBundles)
   {
     this.applicationConfiguration = checkNotNull(applicationConfiguration);
     this.templateEngine = checkNotNull(templateEngine);
@@ -58,7 +58,7 @@ public class WebResources
   }
 
   @Override
-  public List<StaticResource> getContributedResouces() {
+  public List<WebResource> getResources() {
     return Arrays.asList(
         new AppJs(),
         directjngine()
@@ -68,10 +68,10 @@ public class WebResources
   /**
    * FIXME: please document what this is for and why its needed.
    */
-  private StaticResource directjngine() {
+  private WebResource directjngine() {
     try {
       File file = new File(applicationConfiguration.getTemporaryDirectory(), "djn/Nexus-debug.js");
-      return new DefaultStaticResource(
+      return new DefaultWebResource(
           file.toURI().toURL(), "/static/rapture/app-direct-debug.js", "application/x-javascript"
       );
     }
@@ -87,7 +87,7 @@ public class WebResources
    * {@code NX._package_.app.PluginConfig} extjs classes.
    */
   private class AppJs
-      implements StaticResource
+      implements WebResource
   {
     public static final String NS_PREFIX = "/static/rapture/NX/";
 
@@ -136,8 +136,8 @@ public class WebResources
      */
     private List<String> getPluginConfigClassNames() {
       List<String> classNames = Lists.newArrayList();
-      for (NexusResourceBundle bundle : resourceBundles) {
-        for (StaticResource resource : bundle.getContributedResouces()) {
+      for (WebResourceBundle bundle : resourceBundles) {
+        for (WebResource resource : bundle.getResources()) {
           String path = resource.getPath();
           if (path.startsWith(NS_PREFIX) && path.endsWith(PLUGIN_CONFIG_SUFFIX)) {
             // rebuild the class name which has NX. prefix and minus the .js suffix
