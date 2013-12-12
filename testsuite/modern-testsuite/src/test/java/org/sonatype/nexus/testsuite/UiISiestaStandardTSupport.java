@@ -53,7 +53,13 @@ public class UiISiestaStandardTSupport
     return Lists.newArrayList(
         new Object[]{"webdriver", new String[]{"--browser=firefox"}},
         //new Object[]{"webdriver", new String[]{"--browser=chrome"}},
-        new Object[]{"phantomjs", new String[]{}}
+        new Object[]{"phantomjs", new String[]{}},
+        new Object[]{
+            "webdriver", new String[]{
+            "--browser=chrome", "--host=http://adreghiciu:13a9920f-5910-42e8-9f54-854f638470b0@ondemand.saucelabs.com",
+            "--port=80"
+        }
+        }
     );
   }
 
@@ -114,6 +120,10 @@ public class UiISiestaStandardTSupport
   }
 
   private void runTest(final String test, final File siestaDir) throws Exception {
+    logger.info("Running {}", test);
+
+    System.out.println("----------------------------------------");
+
     List<String> command = Lists.newArrayList();
     command.add(new File(siestaDir, executable + (Os.isFamily(Os.FAMILY_WINDOWS) ? ".bat" : "")).getAbsolutePath());
     command.add(nexus().getUrl() + "static/rapture/nexus-ui-tests.html");
@@ -124,13 +134,15 @@ public class UiISiestaStandardTSupport
     command.add("--verbose");
     command.add("--report-format=JSON");
     command.add("--report-file=report.json");
-    System.out.println(command);
+
     ProcessBuilder processBuilder = new ProcessBuilder(command);
     processBuilder.directory(siestaDir);
     processBuilder.redirectErrorStream(true);
     processBuilder.redirectOutput(Redirect.INHERIT);
-    Process process = processBuilder.start();
-    int exitCode = process.waitFor();
+
+    int exitCode = processBuilder.start().waitFor();
+
+    System.out.println("----------------------------------------");
 
     logger.debug("Siesta exit code: {}", exitCode);
   }
