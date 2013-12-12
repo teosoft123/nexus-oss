@@ -179,7 +179,11 @@ public class ContentServlet
 
     // put the incoming URLs
     result.setRequestAppRootUrl(webUtils.getAppRootUrl(request));
-    result.setRequestUrl(request.getRequestURL().toString());
+    final StringBuffer sb = request.getRequestURL();
+    if (request.getQueryString() != null) {
+      sb.append("?").append(request.getQueryString());
+    }
+    result.setRequestUrl(sb.toString());
     return result;
   }
 
@@ -281,7 +285,27 @@ public class ContentServlet
   {
     webUtils.equipResponseWithStandardHeaders(response);
     response.setHeader("Accept-Ranges", "bytes");
-    super.service(request, response);
+
+    final String method = request.getMethod();
+    if (method.equals("GET") || method.equals("HEAD")) {
+      doGet(request, response);
+    }
+    else if (method.equals("PUT") || method.equals("POST")) {
+      doPut(request, response);
+    }
+    else if (method.equals("DELETE")) {
+      doDelete(request, response);
+    }
+    else if (method.equals("OPTIONS")) {
+      doOptions(request, response);
+    }
+    else if (method.equals("TRACE")) {
+      doTrace(request, response);
+    }
+    else {
+      throw new ErrorStatusServletException(HttpServletResponse.SC_METHOD_NOT_ALLOWED, null,
+          "Method " + method + " not supported.");
+    }
   }
 
   // GET
