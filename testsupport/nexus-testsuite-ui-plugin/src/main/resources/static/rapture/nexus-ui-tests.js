@@ -17,7 +17,7 @@ Harness.start(
     {
       group: 'Capability',
       items: [
-        'tests/capability/directjengine.js',
+        'tests/capability/direct.js',
         'tests/capability/list.js',
         'tests/capability/sanity.js'
       ]
@@ -25,7 +25,7 @@ Harness.start(
     {
       group: 'Repository',
       items: [
-        'tests/repository/directjengine.js',
+        'tests/repository/direct.js',
         'tests/repository/sanity.js',
         {
           preload: [],
