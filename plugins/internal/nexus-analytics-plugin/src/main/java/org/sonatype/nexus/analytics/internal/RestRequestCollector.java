@@ -76,7 +76,7 @@ public class RestRequestCollector
           .set("method", httpRequest.getMethod())
           .set("path", getPath(httpRequest))
           .set("userAgent", httpRequest.getHeader("User-Agent"));
-      start = System.currentTimeMillis();
+      start = System.nanoTime();
     }
 
     try {
@@ -85,7 +85,7 @@ public class RestRequestCollector
     finally {
       if (builder != null) {
         builder.set("status", httpResponse.getStatus());
-        builder.set("duration", System.currentTimeMillis() - start);
+        builder.set("duration", System.nanoTime() - start);
         recorder.record(builder.build());
       }
     }
