@@ -20,7 +20,6 @@ import java.util.Iterator;
  * @since 2.8
  */
 public interface EventStore
-  extends Iterable<EventData>
 {
   void add(EventData data);
 
@@ -28,6 +27,5 @@ public interface EventStore
 
   long size();
 
-  @Override
-  Iterator<EventData> iterator();
+  Iterator<EventData> iterator(int index);
 }

@@ -29,6 +29,7 @@ import javax.ws.rs.GET
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType
 
 import static com.google.common.base.Preconditions.checkNotNull
@@ -59,18 +60,27 @@ class EventsResource
     this.eventStore = checkNotNull(eventStore)
   }
 
-  // FIXME: This will need to be updated to support paging and support start/limit params
-
   /**
-   * List all events.
+   * List events in range.
+   *
+   * @param start   Starting index
+   * @param limit   Limit number of events, or -1 for unlimited.
    */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @RequiresPermissions('nexus:analytics')
-  List<EventData> list() {
+  List<EventData> list(final @QueryParam('start') int start,
+                       final @QueryParam('limit') int limit)
+  {
     List<EventData> events = []
-    for (EventData data : eventStore) {
-      events << data
+    def iter = eventStore.iterator(start)
+    def count = 0
+    while (iter.hasNext()) {
+      events << iter.next()
+      count++
+      if (limit > 0 && count >= limit) {
+        break
+      }
     }
     return events
   }

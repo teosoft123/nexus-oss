@@ -24,8 +24,6 @@ import org.sonatype.nexus.analytics.EventData;
 import org.sonatype.nexus.analytics.EventStore;
 import org.sonatype.sisu.goodies.lifecycle.LifecycleSupport;
 
-import com.google.common.collect.Lists;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -71,7 +69,7 @@ public class EventStoreImpl
   }
 
   @Override
-  public Iterator<EventData> iterator() {
-    return storage.iterator();
+  public Iterator<EventData> iterator(final int index) {
+    return storage.listIterator(index);
   }
 }
