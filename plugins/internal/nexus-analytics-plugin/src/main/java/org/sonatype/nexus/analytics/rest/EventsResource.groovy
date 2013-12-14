@@ -59,6 +59,8 @@ class EventsResource
     this.eventStore = checkNotNull(eventStore)
   }
 
+  // FIXME: This will need to be updated to support paging and support start/limit params
+
   /**
    * List all events.
    */
