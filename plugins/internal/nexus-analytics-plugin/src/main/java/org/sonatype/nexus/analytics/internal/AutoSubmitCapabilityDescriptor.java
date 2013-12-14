@@ -10,10 +10,9 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-
 package org.sonatype.nexus.analytics.internal;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +22,6 @@ import javax.inject.Singleton;
 import org.sonatype.nexus.analytics.AnalyticsPlugin;
 import org.sonatype.nexus.capability.support.CapabilityDescriptorSupport;
 import org.sonatype.nexus.formfields.FormField;
-import org.sonatype.nexus.formfields.StringTextFormField;
 import org.sonatype.nexus.plugins.capabilities.CapabilityType;
 import org.sonatype.nexus.plugins.capabilities.Tag;
 import org.sonatype.nexus.plugins.capabilities.Taggable;
@@ -39,61 +37,29 @@ import static org.sonatype.nexus.plugins.capabilities.Tag.categoryTag;
 import static org.sonatype.nexus.plugins.capabilities.Tag.tags;
 
 /**
- * {@link CollectionCapability} descriptor.
+ * {@link AutoSubmitCapability} descriptor.
  *
  * @since 2.8
  */
-@Named(CollectionCapabilityDescriptor.TYPE_ID)
+@Named(AutoSubmitCapabilityDescriptor.TYPE_ID)
 @Singleton
-public class CollectionCapabilityDescriptor
+public class AutoSubmitCapabilityDescriptor
     extends CapabilityDescriptorSupport
     implements Taggable
 {
   @NonNls
-  public static final String TYPE_ID = AnalyticsPlugin.ID_PREFIX + ".collection";
+  public static final String TYPE_ID = AnalyticsPlugin.ID_PREFIX + ".autosubmit";
 
   public static final CapabilityType TYPE = capabilityType(TYPE_ID);
 
   private static interface Messages
       extends MessageBundle
   {
-    @DefaultMessage("Analytics: Collection")
+    @DefaultMessage("Analytics: Automatic Submission")
     String name();
-
-    @DefaultMessage("Host Identifier")
-    String hostIdLabel();
-
-    @DefaultMessage("Random identifier to group analytics event data for a specific host.")
-    String hostIdHelp();
-
-    @DefaultMessage("Anonymization Salt")
-    String saltLabel();
-
-    @DefaultMessage("Random data used to anonymize data.")
-    String saltHelp();
   }
 
   private static final Messages messages = I18N.create(Messages.class);
-
-  private final FormField hostId;
-
-  private final FormField salt;
-
-  public CollectionCapabilityDescriptor() {
-    this.hostId = new StringTextFormField(
-        CollectionCapabilityConfiguration.HOST_ID,
-        messages.hostIdLabel(),
-        messages.hostIdHelp(),
-        FormField.MANDATORY
-    );
-
-    this.salt = new StringTextFormField(
-        CollectionCapabilityConfiguration.SALT,
-        messages.saltLabel(),
-        messages.saltHelp(),
-        FormField.MANDATORY
-    );
-  }
 
   @Override
   public CapabilityType type() {
@@ -107,10 +73,7 @@ public class CollectionCapabilityDescriptor
 
   @Override
   public List<FormField> formFields() {
-    return Arrays.asList(
-        hostId,
-        salt
-    );
+    return Collections.emptyList();
   }
 
   @Override
@@ -128,5 +91,4 @@ public class CollectionCapabilityDescriptor
   public Set<Tag> getTags() {
     return tags(categoryTag(CAPABILITY_CATEGORY_TAG));
   }
-
 }

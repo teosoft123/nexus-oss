@@ -18,21 +18,33 @@ import javax.inject.Named;
 
 import org.sonatype.nexus.capability.support.CapabilitySupport;
 import org.sonatype.nexus.plugins.capabilities.Condition;
-
-// TODO: rename to autosubmit ?
+import org.sonatype.sisu.goodies.i18n.I18N;
+import org.sonatype.sisu.goodies.i18n.MessageBundle;
 
 /**
- * Analytics reporting capability.
+ * Analytics automatic submission capability.
  *
  * @since 2.8
  */
-@Named(ReportingCapabilityDescriptor.TYPE_ID)
-public class ReportingCapability
-    extends CapabilitySupport<ReportingCapabilityConfiguration>
+@Named(AutoSubmitCapabilityDescriptor.TYPE_ID)
+public class AutoSubmitCapability
+    extends CapabilitySupport<AutoSubmitCapabilityConfiguration>
 {
+  private static interface Messages
+      extends MessageBundle
+  {
+    @DefaultMessage("Automatic sumission is enabled")
+    String description();
+
+    @DefaultMessage("Automatic submission is disabled")
+    String disabledDescription();
+  }
+
+  private static final Messages messages = I18N.create(Messages.class);
+
   @Override
-  protected ReportingCapabilityConfiguration createConfig(final Map<String, String> properties) throws Exception {
-    return new ReportingCapabilityConfiguration(properties);
+  protected AutoSubmitCapabilityConfiguration createConfig(final Map<String, String> properties) throws Exception {
+    return new AutoSubmitCapabilityConfiguration(properties);
   }
 
   @Override
@@ -42,5 +54,24 @@ public class ReportingCapability
         conditions().capabilities().capabilityOfTypeActive(CollectionCapabilityDescriptor.TYPE),
         conditions().capabilities().passivateCapabilityDuringUpdate()
     );
+  }
+
+  @Override
+  protected void onActivate(final AutoSubmitCapabilityConfiguration config) throws Exception {
+    // TODO
+  }
+
+  @Override
+  protected void onPassivate(final AutoSubmitCapabilityConfiguration config) throws Exception {
+    // TODO
+  }
+
+  @Override
+  protected String renderDescription() throws Exception {
+    if (!context().isActive()) {
+      return messages.disabledDescription();
+    }
+
+    return messages.description();
   }
 }

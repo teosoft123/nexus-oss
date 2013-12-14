@@ -19,14 +19,14 @@ import org.sonatype.nexus.capability.support.CapabilityConfigurationSupport;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * {@link ReportingCapability} configuration.
+ * {@link AutoSubmitCapability} configuration.
  *
  * @since 2.8
  */
-public class ReportingCapabilityConfiguration
+public class AutoSubmitCapabilityConfiguration
   extends CapabilityConfigurationSupport
 {
-  public ReportingCapabilityConfiguration(final Map<String, String> properties) {
+  public AutoSubmitCapabilityConfiguration(final Map<String, String> properties) {
     checkNotNull(properties);
   }
 }
