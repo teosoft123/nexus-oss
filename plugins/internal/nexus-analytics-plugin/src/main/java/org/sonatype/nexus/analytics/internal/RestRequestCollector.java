@@ -68,7 +68,7 @@ public class RestRequestCollector
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     HttpServletResponse httpResponse = (HttpServletResponse) response;
     EventDataBuilder builder = null;
-    Long start = null;
+    Long startTime = null;
 
     // only attempt to record details if collection is enabled
     if (recorder.isEnabled()) {
@@ -76,7 +76,7 @@ public class RestRequestCollector
           .set("method", httpRequest.getMethod())
           .set("path", getPath(httpRequest))
           .set("userAgent", httpRequest.getHeader("User-Agent"));
-      start = System.nanoTime();
+      startTime = System.nanoTime();
     }
 
     try {
@@ -85,7 +85,7 @@ public class RestRequestCollector
     finally {
       if (builder != null) {
         builder.set("status", httpResponse.getStatus());
-        builder.set("duration", System.nanoTime() - start);
+        builder.set("duration", System.nanoTime() - startTime);
         recorder.record(builder.build());
       }
     }
