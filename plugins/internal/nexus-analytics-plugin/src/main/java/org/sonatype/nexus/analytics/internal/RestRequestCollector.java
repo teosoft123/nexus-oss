@@ -14,7 +14,6 @@
 package org.sonatype.nexus.analytics.internal;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,8 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.sonatype.nexus.analytics.EventDataBuilder;
 import org.sonatype.nexus.analytics.EventRecorder;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
-
-import com.google.common.base.Stopwatch;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -71,7 +68,7 @@ public class RestRequestCollector
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     HttpServletResponse httpResponse = (HttpServletResponse) response;
     EventDataBuilder builder = null;
-    Stopwatch watch = null;
+    Long start = null;
 
     // only attempt to record details if collection is enabled
     if (recorder.isEnabled()) {
@@ -79,7 +76,7 @@ public class RestRequestCollector
           .set("method", httpRequest.getMethod())
           .set("path", getPath(httpRequest))
           .set("userAgent", httpRequest.getHeader("User-Agent"));
-      watch = new Stopwatch().start();
+      start = System.currentTimeMillis();
     }
 
     try {
@@ -88,7 +85,7 @@ public class RestRequestCollector
     finally {
       if (builder != null) {
         builder.set("status", httpResponse.getStatus());
-        builder.set("duration", watch.elapsed(TimeUnit.MILLISECONDS));
+        builder.set("duration", System.currentTimeMillis() - start);
         recorder.record(builder.build());
       }
     }
