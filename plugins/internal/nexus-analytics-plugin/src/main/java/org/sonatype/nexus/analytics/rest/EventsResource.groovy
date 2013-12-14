@@ -15,6 +15,7 @@ package org.sonatype.nexus.analytics.rest
 
 import org.apache.shiro.authz.annotation.RequiresPermissions
 import org.sonatype.nexus.analytics.EventData
+import org.sonatype.nexus.analytics.EventRecorder
 import org.sonatype.nexus.analytics.EventStore
 import org.sonatype.sisu.goodies.common.ComponentSupport
 import org.sonatype.sisu.siesta.common.Resource
@@ -46,10 +47,15 @@ class EventsResource
 {
   static final String RESOURCE_URI = '/analytics/events'
 
+  private final EventRecorder eventRecorder
+
   private final EventStore eventStore
 
   @Inject
-  EventsResource(final EventStore eventStore) {
+  EventsResource(final EventRecorder eventRecorder,
+                 final EventStore eventStore)
+  {
+    this.eventRecorder = checkNotNull(eventRecorder);
     this.eventStore = checkNotNull(eventStore)
   }
 
@@ -82,8 +88,12 @@ class EventsResource
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   void append(List<EventData> events) {
+    if (!eventRecorder.enabled) {
+      log.warn 'Ignoring event; recording is disabled'
+      return
+    }
     events.each {
-      eventStore.add(it)
+      eventRecorder.record(it)
     }
   }
 }
