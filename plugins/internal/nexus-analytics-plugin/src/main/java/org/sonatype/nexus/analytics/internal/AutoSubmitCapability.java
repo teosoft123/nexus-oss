@@ -33,7 +33,8 @@ public class AutoSubmitCapability
   private static interface Messages
       extends MessageBundle
   {
-    @DefaultMessage("Automatic sumission is enabled")
+    // TODO: change this to last submission time or something
+    @DefaultMessage("Automatic submission is enabled")
     String description();
 
     @DefaultMessage("Automatic submission is disabled")
