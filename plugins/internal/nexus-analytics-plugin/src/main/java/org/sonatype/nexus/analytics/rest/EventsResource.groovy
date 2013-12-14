@@ -89,7 +89,8 @@ class EventsResource
   @Path('submit')
   @RequiresPermissions('nexus:analytics')
   void submit() {
-    // TODO: submit data
+    // TODO: submit data, probably should fire up a background task.
+    // TODO: we may need an automatic task, and a manual task impl?
   }
 
   /**
