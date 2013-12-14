@@ -25,6 +25,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
+import javax.ws.rs.DefaultValue
 import javax.ws.rs.GET
 import javax.ws.rs.POST
 import javax.ws.rs.Path
@@ -69,8 +70,8 @@ class EventsResource
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @RequiresPermissions('nexus:analytics')
-  List<EventData> list(final @QueryParam('start') int start,
-                       final @QueryParam('limit') int limit)
+  List<EventData> list(final @QueryParam('start') @DefaultValue('0') int start,
+                       final @QueryParam('limit') @DefaultValue('-1') int limit)
   {
     List<EventData> events = []
     def iter = eventStore.iterator(start)
