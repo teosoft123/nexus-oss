@@ -83,13 +83,42 @@ class EventsResource
   }
 
   /**
+   * Submit all event data.
+   */
+  @POST
+  @Path('submit')
+  @RequiresPermissions('nexus:analytics')
+  void submit() {
+    // TODO: submit data
+  }
+
+  /**
+   * Export all event data.
+   */
+  @POST
+  @Path('export')
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @RequiresPermissions('nexus:analytics')
+  Map export(final Map params) {
+    // TODO: export data based on request params, return ref for download
+    return [
+        'file': '/foo/bar/baz/fixme.zip',
+        'name': 'fixme.zip',
+        'size': 1234
+    ]
+  }
+
+  // TODO: Add 'download' protected by authtoken, see SupportZipResource
+
+  /**
    * Append events.  This requires no permissions.
    */
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   void append(List<EventData> events) {
     if (!eventRecorder.enabled) {
-      log.warn 'Ignoring event; recording is disabled'
+      log.warn 'Ignoring events; recording is disabled'
       return
     }
     events.each {
