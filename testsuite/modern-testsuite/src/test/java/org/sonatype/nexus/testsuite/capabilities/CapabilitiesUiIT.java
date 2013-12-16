@@ -30,7 +30,7 @@ public class CapabilitiesUiIT
 
   @Test
   public void capability_directjengine() throws Exception {
-    run("tests/capability/directjengine.js");
+    run("tests/capability/direct.js");
   }
 
   @Test
