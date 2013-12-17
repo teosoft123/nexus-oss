@@ -131,7 +131,20 @@ public class HttpClientRemoteStorage
   private static final boolean CAN_WRITE = true;
 
   /**
+   * Key used in HttpGet method parameters in {@link #retrieveItem(ProxyRepository, ResourceStoreRequest, String)}
+   * method
+   * that this request is about content retrieval, hence, the special redirection strategy set up in
+   * {@link HttpClientManagerImpl#getProxyRepositoryRedirectStrategy(ProxyRepository, RemoteStorageContext)} should
+   * be applied. See that method for more.
+   *
+   * @since 2.7.0
+   */
+  public static final String CONTENT_RETRIEVAL_MARKER_KEY = HttpClientRemoteStorage.class.getName() + "#retrieveItem";
+
+  /**
    * How many "redirect hops" we follow.
+   *
+   * @since 2.8.0
    */
   private static final int REDIRECT_HOPS_COUNT = 5;
 
@@ -192,44 +205,47 @@ public class HttpClientRemoteStorage
     }
 
     final HttpGet method = new HttpGet(remoteURL.toString());
+    method.getParams().setBooleanParameter(CONTENT_RETRIEVAL_MARKER_KEY, true);
 
     final HttpResponse httpResponse = executeRequest(repository, request, method, remoteURL.toString());
-    try {
-      if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-        InputStream is;
-        try {
-          is = new Hc4InputStream(repository,
-              new InterruptableInputStream(method, httpResponse.getEntity().getContent()));
+    if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+      try {
+        final InputStream is = new Hc4InputStream(repository,
+            new InterruptableInputStream(method, httpResponse.getEntity().getContent()));
 
-          String mimeType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
-          if (mimeType == null) {
-            mimeType =
-                getMimeSupport().guessMimeTypeFromPath(repository.getMimeRulesSource(),
-                    request.getRequestPath());
-          }
-
-          final long entityLength = httpResponse.getEntity().getContentLength();
-          final DefaultStorageFileItem httpItem =
-              new DefaultStorageFileItem(repository, request, CAN_READ, CAN_WRITE, new PreparedContentLocator(
-                  is, mimeType, entityLength != -1 ? entityLength : ContentLocator.UNKNOWN_LENGTH));
-
-          httpItem.setRemoteUrl(remoteURL.toString());
-          httpItem.setModified(makeDateFromHeader(httpResponse.getFirstHeader("last-modified")));
-          httpItem.setCreated(httpItem.getModified());
-
-          return httpItem;
+        String mimeType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
+        if (mimeType == null) {
+          mimeType =
+              getMimeSupport().guessMimeTypeFromPath(repository.getMimeRulesSource(),
+                  request.getRequestPath());
         }
-        catch (IOException ex) {
-          throw new RemoteStorageException("IO Error during response stream handling [repositoryId=\""
-              + repository.getId() + "\", requestPath=\"" + request.getRequestPath() + "\", remoteUrl=\""
-              + remoteURL.toString() + "\"]!", ex);
-        }
-        catch (RuntimeException ex) {
-          throw ex;
-        }
+
+        final long entityLength = httpResponse.getEntity().getContentLength();
+        final DefaultStorageFileItem httpItem =
+            new DefaultStorageFileItem(repository, request, CAN_READ, CAN_WRITE, new PreparedContentLocator(
+                is, mimeType, entityLength != -1 ? entityLength : ContentLocator.UNKNOWN_LENGTH));
+
+        httpItem.setRemoteUrl(remoteURL.toString());
+        httpItem.setModified(makeDateFromHeader(httpResponse.getFirstHeader("last-modified")));
+        httpItem.setCreated(httpItem.getModified());
+
+        return httpItem;
       }
-      else {
+      catch (IOException ex) {
+        release(httpResponse);
+        throw new RemoteStorageException("IO Error during response stream handling [repositoryId=\""
+            + repository.getId() + "\", requestPath=\"" + request.getRequestPath() + "\", remoteUrl=\""
+            + remoteURL.toString() + "\"]!", ex);
+      }
+      catch (RuntimeException ex) {
+        release(httpResponse);
+        throw ex;
+      }
+    }
+    else {
+      try {
         if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+          release(httpResponse);
           throw new RemoteItemNotFoundException(request, repository, "NotFound", remoteURL.toString());
         }
         else if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY
@@ -245,15 +261,16 @@ public class HttpClientRemoteStorage
           }
         }
         else {
+          release(httpResponse);
           throw new RemoteStorageException("The method execution returned result code "
               + httpResponse.getStatusLine().getStatusCode() + " (expected 200). [repositoryId=\""
               + repository.getId() + "\", requestPath=\"" + request.getRequestPath() + "\", remoteUrl=\""
               + remoteURL.toString() + "\"]");
         }
       }
-    }
-    finally {
-      release(httpResponse);
+      finally {
+        release(httpResponse);
+      }
     }
   }
 
@@ -299,7 +316,8 @@ public class HttpClientRemoteStorage
                 "Proxy repository {} remote URL misconfiguration, host name change during redirection {} -> {}",
                 repository, remoteURL, redirectionURL);
           }
-          if (redirectionURL.getPath().endsWith("/")) {
+          if (httpRequest.getParams().isParameterTrue(CONTENT_RETRIEVAL_MARKER_KEY) &&
+              redirectionURL.getPath().endsWith("/")) {
             // assuming properly set up remote server following conventions
             // http://googlewebmastercentral.blogspot.hu/2010/04/to-slash-or-not-to-slash.html
             // We assume paths ending with slash denote directories, so do not follow
