@@ -531,6 +531,7 @@ public class HttpClientRemoteStorage
     }
     catch (IOException e) {
       // just fall trough
+      log.warn(e.getMessage());
     }
     return false;
   }
