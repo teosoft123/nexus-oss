@@ -305,7 +305,7 @@ public class HttpClientRemoteStorage
             if ("https".equals(redirectionURL.getProtocol().toLowerCase(Locale.US))) {
               // misconfiguration: your repository uses wrong protocol and causes performance problems?
               log.info(
-                  "Proxy repository {} remote URL misconfiguration, schema change during redirection {} -> {}",
+                  "Proxy repository {} remote URL misconfiguration, protocol upgrade during redirection {} -> {}",
                   repository, remoteURL, redirectionURL);
             }
           }
@@ -313,7 +313,7 @@ public class HttpClientRemoteStorage
           if (!Objects.equals(remoteURL.getHost().toLowerCase(Locale.US), redirectionURL.getHost().toLowerCase(
               Locale.US))) {
             log.info(
-                "Proxy repository {} remote URL misconfiguration, host name change during redirection {} -> {}",
+                "Proxy repository {} remote URL misconfiguration, hostname change during redirection {} -> {}",
                 repository, remoteURL, redirectionURL);
           }
           if (httpRequest.getParams().isParameterTrue(CONTENT_RETRIEVAL_MARKER_KEY) &&
