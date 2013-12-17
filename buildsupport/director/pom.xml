@@ -18,39 +18,33 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.sonatype.nexus</groupId>
-    <artifactId>nexus-oss</artifactId>
+    <groupId>org.sonatype.nexus.buildsupport</groupId>
+    <artifactId>nexus-buildsupport</artifactId>
     <version>2.8.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.sonatype.nexus.buildsupport</groupId>
-  <artifactId>nexus-buildsupport</artifactId>
+  <artifactId>nexus-buildsupport-director</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
   <packaging>pom</packaging>
 
-  <modules>
-    <module>bouncycastle</module>
-    <module>commons</module>
-    <module>director</module>
-    <module>goodies</module>
-    <module>groovy</module>
-    <module>guice</module>
-    <module>httpclient</module>
-    <module>jetty</module>
-    <module>logging</module>
-    <module>maven</module>
-    <module>metrics</module>
-    <module>other</module>
-    <module>plexus</module>
-    <module>rest</module>
-    <module>shiro</module>
-    <module>testing</module>
-
-    <!-- aggregator -->
-    <module>all</module>
-
-    <!-- ancillary -->
-    <module>scripts</module>
-  </modules>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.googlecode.director</groupId>
+        <artifactId>director-core</artifactId>
+        <version>1.0.9-SNAPSHOT</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>
