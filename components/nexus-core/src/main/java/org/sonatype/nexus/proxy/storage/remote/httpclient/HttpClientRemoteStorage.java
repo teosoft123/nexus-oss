@@ -130,6 +130,11 @@ public class HttpClientRemoteStorage
    */
   private static final boolean CAN_WRITE = true;
 
+  /**
+   * How many "redirect hops" we follow.
+   */
+  private static final int REDIRECT_HOPS_COUNT = 5;
+
   private final MetricsRegistry metricsRegistry;
 
   private final QueryStringBuilder queryStringBuilder;
@@ -175,9 +180,9 @@ public class HttpClientRemoteStorage
                                            final List<URL> urls)
       throws ItemNotFoundException, RemoteStorageException
   {
-    if (urls.size() >= 5) {
+    if (urls.size() >= REDIRECT_HOPS_COUNT) {
       log.info("Proxy repository {} followed too many redirects, giving up: {}", repository, urls);
-      throw new RemoteItemNotFoundException(request, repository, "TooManyRedirects", urls.get(0).toExternalForm());
+      throw new RemoteStorageException("Proxy repository " + repository + " too many redirects: " + urls);
     }
     final URL remoteURL = urls.get(urls.size() - 1); // last URL in list is "current" one
 
@@ -396,6 +401,10 @@ public class HttpClientRemoteStorage
                                           final List<URL> urls)
       throws RemoteStorageException
   {
+    if (urls.size() >= REDIRECT_HOPS_COUNT) {
+      log.info("Proxy repository {} followed too many redirects, giving up: {}", repository, urls);
+      throw new RemoteStorageException("Proxy repository " + repository + " too many redirects: " + urls);
+    }
     final URL remoteUrl = urls.get(urls.size() - 1);
 
     HttpRequestBase method;
