@@ -18,6 +18,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -52,6 +55,7 @@ import org.sonatype.nexus.proxy.storage.remote.RemoteStorageContext;
 import org.sonatype.nexus.proxy.storage.remote.http.QueryStringBuilder;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.MetricsRegistry;
 import com.yammer.metrics.core.Timer;
@@ -164,75 +168,156 @@ public class HttpClientRemoteStorage
   {
     final URL remoteURL =
         appendQueryString(getAbsoluteUrlFromBase(baseUrl, request.getRequestPath()), repository);
+    return retrieveItem(repository, request, Lists.newArrayList(remoteURL));
+  }
 
-    final String url = remoteURL.toExternalForm();
+  private AbstractStorageItem retrieveItem(final ProxyRepository repository, final ResourceStoreRequest request,
+                                           final List<URL> urls)
+      throws ItemNotFoundException, RemoteStorageException
+  {
+    if (urls.size() >= 5) {
+      log.info("Proxy repository {} followed too many redirects, giving up: {}", repository, urls);
+      throw new RemoteItemNotFoundException(request, repository, "TooManyRedirects", urls.get(0).toExternalForm());
+    }
+    final URL remoteURL = urls.get(urls.size() - 1); // last URL in list is "current" one
+
     if (remoteURL.getPath().endsWith("/")) {
-      // NEXUS-5125 we do not want to fetch any collection
-      // Even though it is unlikely that we actually see a request for a collection here,
-      // requests for paths like this over the REST layer will be localOnly not trigger a remote request.
-      //
-      // The usual case is that there is a request for a directory that is redirected to '/', see below behavior
-      // for SC_MOVED_*
+      // we do not want to fetch index pages
       throw new RemoteItemNotFoundException(request, repository, "remoteIsCollection", remoteURL.toString());
     }
 
-    final HttpGet method = new HttpGet(url);
+    final HttpGet method = new HttpGet(remoteURL.toString());
 
-    final HttpResponse httpResponse = executeRequest(repository, request, method, baseUrl);
+    final HttpResponse httpResponse = executeRequest(repository, request, method, remoteURL.toString());
+    try {
+      if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+        InputStream is;
+        try {
+          is = new Hc4InputStream(repository,
+              new InterruptableInputStream(method, httpResponse.getEntity().getContent()));
 
-    if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-      InputStream is;
-      try {
-        is = new Hc4InputStream(repository,
-            new InterruptableInputStream(method, httpResponse.getEntity().getContent()));
+          String mimeType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
+          if (mimeType == null) {
+            mimeType =
+                getMimeSupport().guessMimeTypeFromPath(repository.getMimeRulesSource(),
+                    request.getRequestPath());
+          }
 
-        String mimeType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
-        if (mimeType == null) {
-          mimeType =
-              getMimeSupport().guessMimeTypeFromPath(repository.getMimeRulesSource(),
-                  request.getRequestPath());
+          final long entityLength = httpResponse.getEntity().getContentLength();
+          final DefaultStorageFileItem httpItem =
+              new DefaultStorageFileItem(repository, request, CAN_READ, CAN_WRITE, new PreparedContentLocator(
+                  is, mimeType, entityLength != -1 ? entityLength : ContentLocator.UNKNOWN_LENGTH));
+
+          httpItem.setRemoteUrl(remoteURL.toString());
+          httpItem.setModified(makeDateFromHeader(httpResponse.getFirstHeader("last-modified")));
+          httpItem.setCreated(httpItem.getModified());
+
+          return httpItem;
         }
-
-        final long entityLength = httpResponse.getEntity().getContentLength();
-        final DefaultStorageFileItem httpItem =
-            new DefaultStorageFileItem(repository, request, CAN_READ, CAN_WRITE, new PreparedContentLocator(
-                is, mimeType, entityLength != -1 ? entityLength : ContentLocator.UNKNOWN_LENGTH));
-
-        httpItem.setRemoteUrl(remoteURL.toString());
-        httpItem.setModified(makeDateFromHeader(httpResponse.getFirstHeader("last-modified")));
-        httpItem.setCreated(httpItem.getModified());
-
-        return httpItem;
-      }
-      catch (IOException ex) {
-        release(httpResponse);
-        throw new RemoteStorageException("IO Error during response stream handling [repositoryId=\""
-            + repository.getId() + "\", requestPath=\"" + request.getRequestPath() + "\", remoteUrl=\""
-            + remoteURL.toString() + "\"]!", ex);
-      }
-      catch (RuntimeException ex) {
-        release(httpResponse);
-        throw ex;
-      }
-    }
-    else {
-      release(httpResponse);
-      if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-        throw new RemoteItemNotFoundException(request, repository, "NotFound", remoteURL.toString());
-      }
-      else if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY
-          || httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_PERMANENTLY) {
-        // NEXUS-5125 unfollowed redirect means collection (path.endsWith("/"))
-        // see also HttpClientUtil#configure
-        throw new RemoteItemNotFoundException(request, repository, "redirected", remoteURL.toString());
+        catch (IOException ex) {
+          throw new RemoteStorageException("IO Error during response stream handling [repositoryId=\""
+              + repository.getId() + "\", requestPath=\"" + request.getRequestPath() + "\", remoteUrl=\""
+              + remoteURL.toString() + "\"]!", ex);
+        }
+        catch (RuntimeException ex) {
+          throw ex;
+        }
       }
       else {
-        throw new RemoteStorageException("The method execution returned result code "
-            + httpResponse.getStatusLine().getStatusCode() + " (expected 200). [repositoryId=\""
-            + repository.getId() + "\", requestPath=\"" + request.getRequestPath() + "\", remoteUrl=\""
-            + remoteURL.toString() + "\"]");
+        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+          throw new RemoteItemNotFoundException(request, repository, "NotFound", remoteURL.toString());
+        }
+        else if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY
+            || httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_PERMANENTLY
+            || httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_TEMPORARY_REDIRECT) {
+          final URL redirectionUrl = shouldFollowRedirect(repository, request, method, httpResponse, remoteURL);
+          if (redirectionUrl != null) {
+            urls.add(redirectionUrl);
+            return retrieveItem(repository, request, urls);
+          }
+          else {
+            throw new RemoteItemNotFoundException(request, repository, "RedirectedNotFollowing", remoteURL.toString());
+          }
+        }
+        else {
+          throw new RemoteStorageException("The method execution returned result code "
+              + httpResponse.getStatusLine().getStatusCode() + " (expected 200). [repositoryId=\""
+              + repository.getId() + "\", requestPath=\"" + request.getRequestPath() + "\", remoteUrl=\""
+              + remoteURL.toString() + "\"]");
+        }
       }
     }
+    finally {
+      release(httpResponse);
+    }
+  }
+
+  /**
+   * Returns {@link URL} if received response is redirect, and redirection should be followed. In any other case
+   * {@code null} is returned.
+   *
+   * @since 2.8.0
+   */
+  protected URL shouldFollowRedirect(final ProxyRepository repository, final ResourceStoreRequest request,
+                                     final HttpUriRequest httpRequest, final HttpResponse httpResponse,
+                                     final URL remoteURL)
+      throws RemoteStorageException
+  {
+    if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY
+        || httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_PERMANENTLY
+        || httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_TEMPORARY_REDIRECT) {
+      final Header locationHeader = httpResponse.getFirstHeader("location");
+      if (locationHeader != null) {
+        final String redirectionUrlHeader = locationHeader.getValue();
+        try {
+          final URL redirectionURL = new URL(redirectionUrlHeader);
+          // protocol change?
+          if (!Objects.equals(remoteURL.getProtocol().toLowerCase(Locale.US), redirectionURL.getProtocol().toLowerCase(
+              Locale.US))) {
+            if ("http".equals(redirectionURL.getProtocol().toLowerCase(Locale.US))) {
+              // security risk: HTTPS > HTTP downgrade, you are not safe as you think!
+              log.info(
+                  "Proxy repository {} remote access issue, downgrade from HTTPS to HTTP during redirection {} -> {}",
+                  repository, remoteURL, redirectionURL);
+            }
+            if ("https".equals(redirectionURL.getProtocol().toLowerCase(Locale.US))) {
+              // misconfiguration: your repository uses wrong protocol and causes performance problems?
+              log.info(
+                  "Proxy repository {} remote URL misconfiguration, schema change during redirection {} -> {}",
+                  repository, remoteURL, redirectionURL);
+            }
+          }
+          // host change?
+          if (!Objects.equals(remoteURL.getHost().toLowerCase(Locale.US), redirectionURL.getHost().toLowerCase(
+              Locale.US))) {
+            log.info(
+                "Proxy repository {} remote URL misconfiguration, host name change during redirection {} -> {}",
+                repository, remoteURL, redirectionURL);
+          }
+          if (redirectionURL.getPath().endsWith("/")) {
+            // assuming properly set up remote server following conventions
+            // http://googlewebmastercentral.blogspot.hu/2010/04/to-slash-or-not-to-slash.html
+            // We assume paths ending with slash denote directories, so do not follow
+            return null;
+          }
+          return redirectionURL;
+        }
+        catch (MalformedURLException e) {
+          throw new RemoteStorageException("Remote server returned redirection "
+              + httpResponse.getStatusLine() + " but provided illegal Location header URL " +
+              redirectionUrlHeader + " [repositoryId=\""
+              + repository.getId() + "\", requestPath=\"" + request.getRequestPath() + "\", remoteUrl=\""
+              + request.getRequestUrl() + "\"]", e);
+        }
+      }
+      else {
+        throw new RemoteStorageException("Remote server returned redirection "
+            + httpResponse.getStatusLine() + " but provided no Location header " + " [repositoryId=\""
+            + repository.getId() + "\", requestPath=\"" + request.getRequestPath() + "\", remoteUrl=\""
+            + request.getRequestUrl() + "\"]");
+      }
+    }
+    return null;
   }
 
   @Override
@@ -265,7 +350,7 @@ public class HttpClientRemoteStorage
     entity.setContentType(fileItem.getMimeType());
     method.setEntity(entity);
 
-    final HttpResponse httpResponse = executeRequestAndRelease(repository, request, method, repository.getRemoteUrl());
+    final HttpResponse httpResponse = executeRequestAndRelease(repository, request, method, remoteUrl.toExternalForm());
     final int statusCode = httpResponse.getStatusLine().getStatusCode();
 
     if (statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_CREATED
@@ -285,7 +370,7 @@ public class HttpClientRemoteStorage
 
     final HttpDelete method = new HttpDelete(remoteUrl.toExternalForm());
 
-    final HttpResponse httpResponse = executeRequestAndRelease(repository, request, method, repository.getRemoteUrl());
+    final HttpResponse httpResponse = executeRequestAndRelease(repository, request, method, remoteUrl.toExternalForm());
     final int statusCode = httpResponse.getStatusLine().getStatusCode();
 
     if (statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_NO_CONTENT
@@ -302,7 +387,16 @@ public class HttpClientRemoteStorage
                                             final ResourceStoreRequest request, final boolean isStrict)
       throws RemoteStorageException
   {
-    final URL remoteUrl = appendQueryString(getAbsoluteUrlFromBase(repository, request), repository);
+    return checkRemoteAvailability(newerThen, repository, request, isStrict,
+        Lists.newArrayList(appendQueryString(getAbsoluteUrlFromBase(repository, request), repository)));
+  }
+
+  private boolean checkRemoteAvailability(final long newerThen, final ProxyRepository repository,
+                                          final ResourceStoreRequest request, final boolean isStrict,
+                                          final List<URL> urls)
+      throws RemoteStorageException
+  {
+    final URL remoteUrl = urls.get(urls.size() - 1);
 
     HttpRequestBase method;
     HttpResponse httpResponse = null;
@@ -314,8 +408,13 @@ public class HttpClientRemoteStorage
     {
       method = new HttpHead(remoteUrl.toExternalForm());
       try {
-        httpResponse = executeRequestAndRelease(repository, request, method, repository.getRemoteUrl());
+        httpResponse = executeRequestAndRelease(repository, request, method, remoteUrl.toExternalForm());
         statusCode = httpResponse.getStatusLine().getStatusCode();
+        final URL redirectionUrl = shouldFollowRedirect(repository, request, method, httpResponse, remoteUrl);
+        if (redirectionUrl != null) {
+          urls.add(redirectionUrl);
+          return checkRemoteAvailability(newerThen, repository, request, isStrict, urls);
+        }
       }
       catch (RemoteStorageException e) {
         // If HEAD failed, attempt a GET. Some repos may not support HEAD method
@@ -339,8 +438,13 @@ public class HttpClientRemoteStorage
         method = new HttpGet(remoteUrl.toExternalForm());
 
         // execute it
-        httpResponse = executeRequestAndRelease(repository, request, method, repository.getRemoteUrl());
+        httpResponse = executeRequestAndRelease(repository, request, method, remoteUrl.toExternalForm());
         statusCode = httpResponse.getStatusLine().getStatusCode();
+        final URL redirectionUrl = shouldFollowRedirect(repository, request, method, httpResponse, remoteUrl);
+        if (redirectionUrl != null) {
+          urls.add(redirectionUrl);
+          return checkRemoteAvailability(newerThen, repository, request, isStrict, urls);
+        }
       }
     }
 
@@ -365,24 +469,11 @@ public class HttpClientRemoteStorage
           // NEXUS-5944: Give it a chance: it might be remote Nexus with browsing disabled?
           // to check that, we will check is remote is Nexus by pinging "well know" location
           // if we got it, we will know it's only browsing forbidden on remote
-          final RemoteStorageContext ctx = getRemoteStorageContext(repository);
-          final HttpClient httpClient = (HttpClient) ctx.getContextObject(CTX_KEY_CLIENT);
-          final PageContext pageContext = new RepositoryPageContext(httpClient, repository);
-          final URL nxRepoMetadataUrl = appendQueryString(
-              getAbsoluteUrlFromBase(repository, new ResourceStoreRequest("/.meta/repository-metadata.xml")),
-              repository);
-          try {
-            final Page page = Page.getPageFor(pageContext, nxRepoMetadataUrl.toExternalForm());
-            if (page.getStatusCode() == 200) {
-              // this is a Nexus with browsing disabled. say OK
-              log.debug(
-                  "Original GET request for URL {} failed with 404, but GET request for URL {} succeeded, we assume remote is a Nexus repository having browsing disabled.",
-                  remoteUrl, nxRepoMetadataUrl);
-              return true;
-            }
-          }
-          catch (IOException e) {
-            // just fall trough
+          if (isRemoteNexus(repository)) {
+            log.debug(
+                "Original GET request for URL {} failed with 404, but remote detected as Nexus, we assume remote is a Nexus repository having browsing disabled.",
+                remoteUrl);
+            return true;
           }
         }
         return false;
@@ -395,6 +486,28 @@ public class HttpClientRemoteStorage
       }
     }
   }
+
+  @Override
+  protected boolean isRemoteNexus(final ProxyRepository repository) throws RemoteStorageException {
+    final RemoteStorageContext ctx = getRemoteStorageContext(repository);
+    final HttpClient httpClient = (HttpClient) ctx.getContextObject(CTX_KEY_CLIENT);
+    final PageContext pageContext = new RepositoryPageContext(httpClient, repository);
+    final URL nxRepoMetadataUrl = appendQueryString(
+        getAbsoluteUrlFromBase(repository, new ResourceStoreRequest("/.meta/repository-metadata.xml")),
+        repository);
+    try {
+      final Page page = Page.getPageFor(pageContext, nxRepoMetadataUrl.toExternalForm());
+      if (page.getStatusCode() == 200) {
+        // remote is a Nexus, it has published repository-metadata
+        return true;
+      }
+    }
+    catch (IOException e) {
+      // just fall trough
+    }
+    return false;
+  }
+
 
   @Override
   protected void updateContext(final ProxyRepository repository, final RemoteStorageContext ctx)
