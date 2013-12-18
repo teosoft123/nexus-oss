@@ -55,6 +55,7 @@ import org.sonatype.nexus.proxy.storage.remote.RemoteStorageContext;
 import org.sonatype.nexus.proxy.storage.remote.http.QueryStringBuilder;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.MetricsRegistry;
@@ -186,11 +187,11 @@ public class HttpClientRemoteStorage
   {
     final URL remoteURL =
         appendQueryString(getAbsoluteUrlFromBase(baseUrl, request.getRequestPath()), repository);
-    return retrieveItem(repository, request, Lists.newArrayList(remoteURL));
+    return retrieveItem(repository, request, baseUrl, Lists.newArrayList(remoteURL));
   }
 
   private AbstractStorageItem retrieveItem(final ProxyRepository repository, final ResourceStoreRequest request,
-                                           final List<URL> urls)
+                                           final String currentBaseUrl, final List<URL> urls)
       throws ItemNotFoundException, RemoteStorageException
   {
     if (urls.size() >= REDIRECT_HOPS_COUNT) {
@@ -207,7 +208,7 @@ public class HttpClientRemoteStorage
     final HttpGet method = new HttpGet(remoteURL.toString());
     method.getParams().setBooleanParameter(CONTENT_RETRIEVAL_MARKER_KEY, true);
 
-    final HttpResponse httpResponse = executeRequest(repository, request, method, remoteURL.toString());
+    final HttpResponse httpResponse = executeRequest(repository, request, method, currentBaseUrl);
     if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
       try {
         final InputStream is = new Hc4InputStream(repository,
@@ -254,7 +255,7 @@ public class HttpClientRemoteStorage
           final URL redirectionUrl = shouldFollowRedirect(repository, request, method, httpResponse, remoteURL);
           if (redirectionUrl != null) {
             urls.add(redirectionUrl);
-            return retrieveItem(repository, request, urls);
+            return retrieveItem(repository, request, currentBaseUrl, urls);
           }
           else {
             throw new RemoteItemNotFoundException(request, repository, "RedirectedNotFollowing", remoteURL.toString());
@@ -373,7 +374,7 @@ public class HttpClientRemoteStorage
     entity.setContentType(fileItem.getMimeType());
     method.setEntity(entity);
 
-    final HttpResponse httpResponse = executeRequestAndRelease(repository, request, method, remoteUrl.toExternalForm());
+    final HttpResponse httpResponse = executeRequestAndRelease(repository, request, method, repository.getRemoteUrl());
     final int statusCode = httpResponse.getStatusLine().getStatusCode();
 
     if (statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_CREATED
@@ -393,7 +394,7 @@ public class HttpClientRemoteStorage
 
     final HttpDelete method = new HttpDelete(remoteUrl.toExternalForm());
 
-    final HttpResponse httpResponse = executeRequestAndRelease(repository, request, method, remoteUrl.toExternalForm());
+    final HttpResponse httpResponse = executeRequestAndRelease(repository, request, method, repository.getRemoteUrl());
     final int statusCode = httpResponse.getStatusLine().getStatusCode();
 
     if (statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_NO_CONTENT
@@ -435,7 +436,7 @@ public class HttpClientRemoteStorage
     {
       method = new HttpHead(remoteUrl.toExternalForm());
       try {
-        httpResponse = executeRequestAndRelease(repository, request, method, remoteUrl.toExternalForm());
+        httpResponse = executeRequestAndRelease(repository, request, method, repository.getRemoteUrl());
         statusCode = httpResponse.getStatusLine().getStatusCode();
         final URL redirectionUrl = shouldFollowRedirect(repository, request, method, httpResponse, remoteUrl);
         if (redirectionUrl != null) {
@@ -465,7 +466,7 @@ public class HttpClientRemoteStorage
         method = new HttpGet(remoteUrl.toExternalForm());
 
         // execute it
-        httpResponse = executeRequestAndRelease(repository, request, method, remoteUrl.toExternalForm());
+        httpResponse = executeRequestAndRelease(repository, request, method, repository.getRemoteUrl());
         statusCode = httpResponse.getStatusLine().getStatusCode();
         final URL redirectionUrl = shouldFollowRedirect(repository, request, method, httpResponse, remoteUrl);
         if (redirectionUrl != null) {
@@ -586,19 +587,28 @@ public class HttpClientRemoteStorage
   {
     final Timer timer = timer(repository, httpRequest, baseUrl);
     final TimerContext timerContext = timer.time();
+    Stopwatch stopwatch = null;
+    if (outboundRequestLog.isDebugEnabled()) {
+      stopwatch = new Stopwatch().start();
+    }
     try {
       return doExecuteRequest(repository, request, httpRequest);
     }
     finally {
       timerContext.stop();
-      if (outboundRequestLog.isDebugEnabled()) {
-        outboundRequestLog.debug("[{}] {} {}", repository.getId(), httpRequest.getMethod(), httpRequest.getURI());
+      if (stopwatch != null) {
+        // log actual request completely with timing
+        outboundRequestLog.debug("[{}] {} - {}", repository.getId(), httpRequest.getRequestLine(), stopwatch);
       }
     }
   }
 
   private Timer timer(final ProxyRepository repository, final HttpUriRequest httpRequest, final String baseUrl) {
-    return metricsRegistry.newTimer(HttpClientRemoteStorage.class, baseUrl, httpRequest.getMethod());
+    return metricsRegistry
+        .newTimer(HttpClientRemoteStorage.class, baseUrl, repository.getId());
+    // TODO: Better would be this below, as would distinguish between HEADs and GETs as some servers behave wildly differently
+    // return metricsRegistry
+    //    .newTimer(HttpClientRemoteStorage.class, httpRequest.getMethod() + " " + baseUrl, repository.getId());
   }
 
   private HttpResponse doExecuteRequest(final ProxyRepository repository, final ResourceStoreRequest request,
