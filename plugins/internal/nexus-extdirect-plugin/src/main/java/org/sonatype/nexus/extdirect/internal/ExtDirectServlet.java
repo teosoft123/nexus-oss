@@ -52,9 +52,8 @@ public class ExtDirectServlet
   protected void service(final HttpServletRequest request, final HttpServletResponse response)
       throws ServletException, IOException
   {
-    response.setContentType("text/plain");
+    response.setContentType("application/json");
     response.setCharacterEncoding(ENCODING);
-    response.setHeader("Content-Disposition", "inline");
 
     String providerId = request.getParameter(configuration.getProviderParamName());
     // TODO throw 403 if no provider id
