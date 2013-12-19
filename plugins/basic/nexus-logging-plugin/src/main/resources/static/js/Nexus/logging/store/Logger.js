@@ -52,7 +52,7 @@ NX.define('Nexus.logging.store.Logger', {
       }),
 
       reader: NX.create('Ext.data.JsonReader', {
-        root: 'entries',
+        root: 'data',
         idProperty: 'name',
         successProperty: 'success',
         fields: [

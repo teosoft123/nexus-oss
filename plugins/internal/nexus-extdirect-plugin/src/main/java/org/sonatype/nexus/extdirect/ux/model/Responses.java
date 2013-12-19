@@ -18,8 +18,6 @@ import java.util.List;
 import org.sonatype.configuration.validation.InvalidConfigurationException;
 import org.sonatype.configuration.validation.ValidationMessage;
 
-import com.google.common.collect.Lists;
-
 /**
  * Ext.Direct response builder.
  *
@@ -28,8 +26,12 @@ import com.google.common.collect.Lists;
 public class Responses
 {
 
-  public static Response success() {
-    return new Response<>(true, Lists.newArrayList());
+  public static Response<Object> success() {
+    return success(null);
+  }
+
+  public static <T> Response<T> success(T data) {
+    return new Response<>(true, data);
   }
 
   public static ErrorResponse error(final Throwable cause) {
@@ -46,10 +48,6 @@ public class Responses
 
   public static ValidationResponse invalid(final List<ValidationMessage> messages) {
     return new ValidationResponse(messages);
-  }
-
-  public static <E> Response<E> success(List<E> entities) {
-    return new Response<>(true, entities);
   }
 
 }

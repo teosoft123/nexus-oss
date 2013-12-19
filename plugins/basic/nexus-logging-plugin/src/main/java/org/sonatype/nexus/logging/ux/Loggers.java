@@ -103,7 +103,7 @@ public class Loggers
 
     configurator.remove(name);
 
-    return success();
+    return success(Lists.newArrayList());
   }
 
   /**

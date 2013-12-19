@@ -13,23 +13,21 @@
 
 package org.sonatype.nexus.extdirect.ux.model;
 
-import java.util.List;
-
 /**
  * Ext.Direct response.
  *
  * @since 2.8
  */
-public class Response<E>
+public class Response<T>
 {
 
   private boolean success;
 
-  private List<E> entries;
+  private T data;
 
-  public Response(boolean success, List<E> entries) {
+  public Response(boolean success, T data) {
     this.success = success;
-    this.entries = entries;
+    this.data = data;
   }
 
 }
