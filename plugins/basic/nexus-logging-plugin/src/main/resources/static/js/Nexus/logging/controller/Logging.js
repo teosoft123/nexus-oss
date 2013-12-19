@@ -26,7 +26,8 @@ NX.define('Nexus.logging.controller.Logging', {
     'Nexus.logging.view.Panel',
     'Nexus.logging.view.Add',
     'Nexus.logging.view.Mark',
-    'Nexus.util.DownloadHelper'
+    'Nexus.util.DownloadHelper',
+    'Nexus.util.ExtDirect'
   ],
 
   init: function () {
@@ -290,18 +291,15 @@ NX.define('Nexus.logging.controller.Logging', {
       icon: icons.get('loggers_reset').variant('x32').cls,
       fn: function (btn) {
         if (btn === 'ok') {
-          Ext.Ajax.request({
-            url: Nexus.siesta.basePath + '/logging/loggers',
-            method: 'DELETE',
-            suppressStatus: true,
-            callback: function () {
+          NX.direct.Loggers.reset(function (response, status) {
+            if (!Nexus.util.ExtDirect.showExceptionIfPresent('Loggers', response, status)) {
               store.load();
-            },
-            success: function () {
-              Nexus.messages.show('Logging', 'Loggers had been reset');
-            },
-            failure: function (response) {
-              Nexus.messages.show('Logging', 'Failed to reset loggers: ' + me.parseExceptionMessage(response));
+              if (response.success) {
+                Nexus.messages.show('Logging', 'Loggers had been reset');
+              }
+              else {
+                Nexus.messages.show('Logging', 'Failed to reset loggers: ' + response.message);
+              }
             }
           });
         }
