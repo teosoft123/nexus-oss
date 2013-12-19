@@ -11,28 +11,18 @@
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
 
-package org.sonatype.nexus.plugins.helper.extdirect;
+package com.director.core.annotation;
 
-import java.util.Date;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.sonatype.nexus.extdirect.ExtDirectResource;
-
-import com.director.core.annotation.DirectAction;
-import com.director.core.annotation.DirectMethod;
-
-@Singleton
-@Named
-@DirectAction(action = "Test")
-public class TestDirectResource
-    implements ExtDirectResource
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+public @interface DirectAction
 {
-
-  @DirectMethod
-  public String currentTime() {
-    return new Date().toString();
-  }
-
+  String action() default "";
 }

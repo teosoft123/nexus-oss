@@ -24,6 +24,7 @@ import javax.inject.Singleton;
 import org.sonatype.nexus.extdirect.ExtDirectResource;
 
 import com.director.core.DirectConfiguration;
+import com.director.core.annotation.DirectAction;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -70,9 +71,12 @@ public class ExtDirectConfiguration
     );
     for (Class<?> entry : apiClasses) {
       LOG.debug("Registering direct resource {}", entry.getName());
-      registerClass(
-          entry, "NX.direct", entry.getSimpleName().replace("DirectResource", "")
-      );
+      DirectAction actionAnno = entry.getAnnotation(DirectAction.class);
+      String actionName = entry.getSimpleName();
+      if (actionAnno != null && !actionAnno.action().trim().equals("")) {
+        actionName = actionAnno.action().trim();
+      }
+      registerClass(entry, "NX.direct", actionName);
     }
   }
 
