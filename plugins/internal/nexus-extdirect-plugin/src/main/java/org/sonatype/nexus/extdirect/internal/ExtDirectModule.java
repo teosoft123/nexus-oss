@@ -16,8 +16,7 @@ package org.sonatype.nexus.extdirect.internal;
 import javax.inject.Named;
 
 import org.sonatype.nexus.guice.FilterChainModule;
-import org.sonatype.nexus.web.MdcUserContextFilter;
-import org.sonatype.security.web.guice.SecurityWebFilter;
+import org.sonatype.nexus.web.internal.SecurityFilter;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.servlet.ServletModule;
@@ -38,15 +37,12 @@ public class ExtDirectModule
 
   @Override
   protected void configure() {
-    bind(SecurityWebFilter.class);
-
     install(new ServletModule()
     {
       @Override
       protected void configureServlets() {
         serve(ROUTER_MOUNT_POINT).with(ExtDirectServlet.class);
-        filter(MOUNT_POINT + "/*").through(SecurityWebFilter.class);
-        filter(MOUNT_POINT + "/*").through(MdcUserContextFilter.class);
+        filter(MOUNT_POINT + "/*").through(SecurityFilter.class);
       }
     });
 
@@ -54,7 +50,6 @@ public class ExtDirectModule
     {
       @Override
       protected void configure() {
-        // FIXME: This should be anonymous content only
         addFilterChain(MOUNT_POINT + "/**", "noSessionCreation,authcBasic");
       }
     });
