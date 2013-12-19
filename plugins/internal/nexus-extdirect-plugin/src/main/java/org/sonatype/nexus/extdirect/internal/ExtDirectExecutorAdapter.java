@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.sonatype.nexus.extdirect.ux.model.Response;
+
 import com.director.core.DirectAction;
 import com.director.core.DirectContext;
 import com.director.core.DirectException;
@@ -36,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.sonatype.nexus.extdirect.ux.model.Responses.error;
+import static org.sonatype.nexus.extdirect.ux.model.Responses.success;
 
 /**
  * An {@link ExecutorAdapter} that invokes actions on guice components.
@@ -88,8 +91,20 @@ public class ExtDirectExecutorAdapter
   }
 
   private DirectTransactionResult result(final DirectMethod directMethod, final Object result) {
+    Response response;
+    if (result == null) {
+      response = success();
+    }
+    else {
+      if (result instanceof Response) {
+        response = (Response) result;
+      }
+      else {
+        response = success(result);
+      }
+    }
     JsonParser parser = DirectContext.get().getConfiguration().getParser();
-    return parser.buildResult(directMethod, result);
+    return parser.buildResult(directMethod, response);
   }
 
 }

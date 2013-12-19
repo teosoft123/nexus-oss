@@ -13,12 +13,13 @@
 
 package org.sonatype.nexus.logging.ux;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.sonatype.nexus.extdirect.ExtDirectResource;
-import org.sonatype.nexus.extdirect.ux.model.Response;
 import org.sonatype.nexus.logging.LoggingConfigurator;
 import org.sonatype.nexus.logging.LoggingPlugin;
 import org.sonatype.nexus.logging.model.LoggerXO;
@@ -32,7 +33,6 @@ import org.codehaus.plexus.util.StringUtils;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.sonatype.nexus.extdirect.ux.model.Responses.success;
 
 /**
  * Loggers Ext.Direct resource.
@@ -61,10 +61,8 @@ public class Loggers
    */
   @DirectMethod
   @RequiresPermissions(LoggingPlugin.PERMISSION_PREFIX_LOGGERS + "read")
-  public Response read() {
-    return success(
-        Lists.newArrayList(configurator.getLoggers())
-    );
+  public List<LoggerXO> read() {
+    return Lists.newArrayList(configurator.getLoggers());
   }
 
   /**
@@ -76,7 +74,7 @@ public class Loggers
    */
   @DirectMethod
   @RequiresPermissions(LoggingPlugin.PERMISSION_PREFIX_LOGGERS + "update")
-  public Response update(final LoggerXO logger)
+  public List<LoggerXO> update(final LoggerXO logger)
       throws Exception
   {
     checkNotNull(logger, "logger");
@@ -85,7 +83,7 @@ public class Loggers
 
     configurator.setLevel(logger.getName(), logger.getLevel());
 
-    return success(Lists.newArrayList(logger));
+    return Lists.newArrayList(logger);
   }
 
   /**
@@ -96,14 +94,14 @@ public class Loggers
    */
   @DirectMethod
   @RequiresPermissions(LoggingPlugin.PERMISSION_PREFIX_LOGGERS + "update")
-  public Response destroy(final String name)
+  public List<LoggerXO> destroy(final String name)
       throws Exception
   {
     checkNotNull(name, "name");
 
     configurator.remove(name);
 
-    return success(Lists.newArrayList());
+    return Lists.newArrayList();
   }
 
   /**
@@ -111,12 +109,10 @@ public class Loggers
    */
   @DirectMethod
   @RequiresPermissions(LoggingPlugin.PERMISSION_PREFIX_LOGGERS + "update")
-  public Response reset()
+  public void reset()
       throws Exception
   {
     configurator.reset();
-
-    return success();
   }
 
 

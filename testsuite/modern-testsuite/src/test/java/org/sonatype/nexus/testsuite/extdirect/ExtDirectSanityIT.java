@@ -74,6 +74,8 @@ public class ExtDirectSanityIT
     ExtDirectResponse result = results.get(0);
     assertThat(result, is(notNullValue()));
     assertThat(result.result, is(notNullValue()));
+    assertThat(result.result.success, is(true));
+    assertThat(result.result.data, is(notNullValue()));
   }
 
   public static class ExtDirectPayload
@@ -110,13 +112,22 @@ public class ExtDirectSanityIT
     private String method;
 
     @JsonProperty("result")
-    private String result;
+    private Result result;
 
     @JsonProperty("type")
     private String type = "rpc";
 
     @JsonProperty("tid")
     private int tid;
+
+    public static class Result
+    {
+      @JsonProperty("success")
+      private boolean success;
+
+      @JsonProperty("data")
+      private String data;
+    }
 
   }
 
