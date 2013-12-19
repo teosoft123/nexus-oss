@@ -25,18 +25,11 @@ public class Response<E>
 
   private boolean success;
 
-  private boolean shouldRefresh;
-
   private List<E> entries;
 
   public Response(boolean success, List<E> entries) {
     this.success = success;
     this.entries = entries;
-  }
-
-  public Response shouldRefresh() {
-    shouldRefresh = true;
-    return this;
   }
 
 }

@@ -64,7 +64,7 @@ public class Loggers
   public Response read() {
     return success(
         Lists.newArrayList(configurator.getLoggers())
-    ).shouldRefresh();
+    );
   }
 
   /**
@@ -85,7 +85,7 @@ public class Loggers
 
     configurator.setLevel(logger.getName(), logger.getLevel());
 
-    return success(Lists.newArrayList(logger)).shouldRefresh();
+    return success(Lists.newArrayList(logger));
   }
 
   /**
@@ -103,7 +103,7 @@ public class Loggers
 
     configurator.remove(name);
 
-    return success().shouldRefresh();
+    return success();
   }
 
   /**
@@ -116,7 +116,7 @@ public class Loggers
   {
     configurator.reset();
 
-    return success().shouldRefresh();
+    return success();
   }
 
 
