@@ -15,6 +15,8 @@ package org.sonatype.nexus.extdirect.ux.model;
 
 import com.google.common.collect.Lists;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Ext.Direct error response.
  *
@@ -27,8 +29,12 @@ public class ErrorResponse
   private String message;
 
   public ErrorResponse(final Throwable cause) {
+    this(checkNotNull(cause).getMessage());
+  }
+
+  public ErrorResponse(final String message) {
     super(false, Lists.newArrayList());
-    message = cause.getMessage();
+    this.message = checkNotNull(message);
   }
 
 }

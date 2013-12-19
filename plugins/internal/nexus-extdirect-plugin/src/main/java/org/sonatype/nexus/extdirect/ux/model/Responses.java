@@ -36,6 +36,10 @@ public class Responses
     return new ErrorResponse(cause);
   }
 
+  public static ErrorResponse error(final String message) {
+    return new ErrorResponse(message);
+  }
+
   public static ValidationResponse invalid(final InvalidConfigurationException cause) {
     return new ValidationResponse(cause.getValidationResponse().getValidationErrors());
   }

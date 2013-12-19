@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.sonatype.nexus.extdirect.ux.model.Responses.error;
 
 /**
  * An {@link ExecutorAdapter} that invokes actions on guice components.
@@ -68,17 +69,27 @@ public class ExtDirectExecutorAdapter
       );
       Object actionClassInstance = actionInstance.iterator().next().getValue();
       Object result = directMethod.getMethod().invoke(actionClassInstance, directMethod.parseParameters(data));
-      JsonParser parser = DirectContext.get().getConfiguration().getParser();
-      return parser.buildResult(directMethod, result);
+      return result(directMethod, result);
     }
     catch (InvocationTargetException e) {
-      String message = "Cannot invoke the action method " + directMethod + " of the direct class " + directAction;
-      throw new DirectException(message, e.getTargetException());
+      LOG.error(
+          "Failed to invoke action method {} of direct class {}",
+          directMethod.getName(), directAction.getName(), e.getTargetException()
+      );
+      return result(directMethod, error(e.getTargetException().getMessage()));
     }
     catch (Throwable e) {
-      String message = "Cannot invoke the action method " + directMethod + " of the direct class " + directAction;
-      throw new DirectException(message, e);
+      LOG.error(
+          "Failed to invoke action method {} of direct class {}",
+          directMethod.getName(), directAction.getName(), e
+      );
+      return result(directMethod, error(e.getMessage()));
     }
+  }
+
+  private DirectTransactionResult result(final DirectMethod directMethod, final Object result) {
+    JsonParser parser = DirectContext.get().getConfiguration().getParser();
+    return parser.buildResult(directMethod, result);
   }
 
 }
