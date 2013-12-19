@@ -119,6 +119,7 @@ NX.define('Nexus.logging.controller.Logging', {
 
     me.controlSelection(grid);
     store.on('write', me.onSuccessfulWrite, me);
+    store.on('exception', me.onFailingWrite, store);
     store.load();
   },
 
@@ -177,6 +178,17 @@ NX.define('Nexus.logging.controller.Logging', {
       });
       store.load();
     }
+  },
+
+  /**
+   * Shows success messages after records has been successfully written.
+   * @private
+   */
+  onFailingWrite: function (proxy, type, action, options, response, args) {
+    Nexus.messages.show('Logging', 'Failed to ' + action + ' loggers: ' + response.message);
+    // HACK: this is the store not Logging controller
+    // This is because we get the proxy as first param when we should get the store
+    this.load();
   },
 
   /**
