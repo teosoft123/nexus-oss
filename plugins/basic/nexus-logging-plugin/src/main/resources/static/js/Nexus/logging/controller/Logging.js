@@ -328,18 +328,16 @@ NX.define('Nexus.logging.controller.Logging', {
 
     win.close();
 
-    Ext.Ajax.request({
-      url: Nexus.siesta.basePath + '/logging/log/mark',
-      method: 'PUT',
-      suppressStatus: true,
-      jsonData: values,
-      success: function () {
-        Nexus.messages.show('Logging', 'Log has been marked with: ' + values.message);
-        // refresh the log view
-        me.retrieveLog(Ext.getCmp('nx-logging-view-log'));
-      },
-      failure: function (response) {
-        Nexus.messages.show('Logging', 'Failed to mark log file: ' + me.parseExceptionMessage(response));
+    NX.direct.Log.mark(values, function (response, status) {
+      if (!Nexus.util.ExtDirect.showExceptionIfPresent('Logging', response, status)) {
+        if (response.success) {
+          Nexus.messages.show('Logging', 'Log has been marked with: ' + values.message);
+          // refresh the log view
+          me.retrieveLog(Ext.getCmp('nx-logging-view-log'));
+        }
+        else {
+          Nexus.messages.show('Logging', 'Failed to mark log file: ' + response.message);
+        }
       }
     });
   },
