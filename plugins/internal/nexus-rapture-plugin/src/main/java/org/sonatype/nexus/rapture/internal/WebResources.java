@@ -17,12 +17,11 @@ import org.sonatype.nexus.configuration.application.ApplicationConfiguration;
 import org.sonatype.nexus.plugin.support.FileWebResource;
 import org.sonatype.nexus.web.WebResource;
 import org.sonatype.nexus.web.WebResourceBundle;
+import org.sonatype.sisu.goodies.common.ComponentSupport;
 import org.sonatype.sisu.goodies.template.TemplateEngine;
 import org.sonatype.sisu.goodies.template.TemplateParameters;
 
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -35,10 +34,9 @@ import static com.google.common.base.Preconditions.checkState;
 @Named
 @Singleton
 public class WebResources
+    extends ComponentSupport
     implements WebResourceBundle
 {
-  private static final Logger log = LoggerFactory.getLogger(WebResources.class);
-
   private final ApplicationConfiguration applicationConfiguration;
 
   private final TemplateEngine templateEngine;

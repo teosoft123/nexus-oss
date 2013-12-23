@@ -1,14 +1,11 @@
-package org.sonatype.nexus.rapture;
+package org.sonatype.nexus.rapture.internal;
 
 import java.util.Map;
 
 import javax.inject.Named;
 
 import org.sonatype.nexus.guice.FilterChainModule;
-import org.sonatype.nexus.rapture.internal.DirectServlet;
-import org.sonatype.nexus.rapture.internal.ResourceServlet;
 import org.sonatype.nexus.web.internal.SecurityFilter;
-import org.sonatype.security.web.guice.SecurityWebFilter;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
@@ -26,19 +23,14 @@ import org.slf4j.LoggerFactory;
 public class RaptureModule
     extends AbstractModule
 {
-
   private static final Logger log = LoggerFactory.getLogger(RaptureModule.class);
 
   public static final String RAPTURE_MOUNT_POINT = "/service/rapture";
-
-  public static final String RESOURCE_MOUNT_POINT = RAPTURE_MOUNT_POINT + "/resource";
 
   public static final String DIRECT_MOUNT_POINT = RAPTURE_MOUNT_POINT + "/direct";
 
   @Override
   protected void configure() {
-    bind(SecurityWebFilter.class);
-
     install(new ServletModule()
     {
       @Override
@@ -47,9 +39,8 @@ public class RaptureModule
             GlobalParameters.PROVIDERS_URL, DIRECT_MOUNT_POINT.substring(1),
             GlobalParameters.DEBUG, Boolean.toString(log.isDebugEnabled())
         );
-
-        serve(RESOURCE_MOUNT_POINT).with(ResourceServlet.class);
         serve(DIRECT_MOUNT_POINT).with(DirectServlet.class, directServletConfig);
+
         filter(RAPTURE_MOUNT_POINT + "/*").through(SecurityFilter.class);
       }
     });
