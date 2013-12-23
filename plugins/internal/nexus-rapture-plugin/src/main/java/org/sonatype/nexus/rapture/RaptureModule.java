@@ -7,10 +7,10 @@ import javax.inject.Named;
 import org.sonatype.nexus.guice.FilterChainModule;
 import org.sonatype.nexus.rapture.internal.DirectServlet;
 import org.sonatype.nexus.rapture.internal.ResourceServlet;
-import org.sonatype.nexus.web.MdcUserContextFilter;
+import org.sonatype.nexus.web.internal.SecurityFilter;
 import org.sonatype.security.web.guice.SecurityWebFilter;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.AbstractModule;
 import com.google.inject.servlet.ServletModule;
 import com.softwarementors.extjs.djn.servlet.DirectJNgineServlet.GlobalParameters;
@@ -43,14 +43,14 @@ public class RaptureModule
     {
       @Override
       protected void configureServlets() {
-        Map<String, String> directServletConfig = Maps.newHashMap();
-        directServletConfig.put(GlobalParameters.PROVIDERS_URL, DIRECT_MOUNT_POINT.substring(1));
-        directServletConfig.put(GlobalParameters.DEBUG, Boolean.toString(log.isDebugEnabled()));
+        Map<String, String> directServletConfig = ImmutableMap.of(
+            GlobalParameters.PROVIDERS_URL, DIRECT_MOUNT_POINT.substring(1),
+            GlobalParameters.DEBUG, Boolean.toString(log.isDebugEnabled())
+        );
 
         serve(RESOURCE_MOUNT_POINT).with(ResourceServlet.class);
         serve(DIRECT_MOUNT_POINT).with(DirectServlet.class, directServletConfig);
-        filter(RAPTURE_MOUNT_POINT + "/*").through(SecurityWebFilter.class);
-        filter(RAPTURE_MOUNT_POINT + "/*").through(MdcUserContextFilter.class);
+        filter(RAPTURE_MOUNT_POINT + "/*").through(SecurityFilter.class);
       }
     });
 

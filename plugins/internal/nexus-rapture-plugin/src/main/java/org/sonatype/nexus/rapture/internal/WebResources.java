@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -15,13 +14,12 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.sonatype.nexus.configuration.application.ApplicationConfiguration;
-import org.sonatype.nexus.plugin.support.DefaultWebResource;
+import org.sonatype.nexus.plugin.support.FileWebResource;
 import org.sonatype.nexus.web.WebResource;
 import org.sonatype.nexus.web.WebResourceBundle;
 import org.sonatype.sisu.goodies.template.TemplateEngine;
 import org.sonatype.sisu.goodies.template.TemplateParameters;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,15 +67,8 @@ public class WebResources
    * FIXME: please document what this is for and why its needed.
    */
   private WebResource directjngine() {
-    try {
-      File file = new File(applicationConfiguration.getTemporaryDirectory(), "djn/Nexus-debug.js");
-      return new DefaultWebResource(
-          file.toURI().toURL(), "/static/rapture/app-direct-debug.js", "application/x-javascript"
-      );
-    }
-    catch (MalformedURLException e) {
-      throw Throwables.propagate(e);
-    }
+    File file = new File(applicationConfiguration.getTemporaryDirectory(), "djn/Nexus-debug.js");
+    return new FileWebResource(file, "/static/rapture/app-direct-debug.js", "application/x-javascript", false);
   }
 
   // FIXME: Add index.html generation here too
@@ -105,12 +96,17 @@ public class WebResources
 
     @Override
     public long getSize() {
-      return -1;
+      return UNKNOWN_SIZE;
     }
 
     @Override
-    public Long getLastModified() {
+    public long getLastModified() {
       return System.currentTimeMillis();
+    }
+
+    @Override
+    public boolean isCacheable() {
+      return false;
     }
 
     @Override
@@ -136,6 +132,8 @@ public class WebResources
      */
     private List<String> getPluginConfigClassNames() {
       List<String> classNames = Lists.newArrayList();
+
+      // FIXME: Replace with WebResourceService calls
       for (WebResourceBundle bundle : resourceBundles) {
         for (WebResource resource : bundle.getResources()) {
           String path = resource.getPath();
