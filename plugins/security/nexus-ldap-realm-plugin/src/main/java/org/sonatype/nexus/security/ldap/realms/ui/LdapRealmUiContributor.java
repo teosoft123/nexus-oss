@@ -13,11 +13,12 @@
 
 package org.sonatype.nexus.security.ldap.realms.ui;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.nexus.plugins.ui.contribution.UiContributionBuilder;
-import org.sonatype.nexus.plugins.ui.contribution.UiContributor;
+import org.sonatype.nexus.plugins.ui.contribution.UiContributorSupport;
+import org.sonatype.nexus.security.ldap.realms.LdapPlugin;
 
 /**
  * @since 2.6
@@ -25,13 +26,10 @@ import org.sonatype.nexus.plugins.ui.contribution.UiContributor;
 @Named
 @Singleton
 public class LdapRealmUiContributor
-    implements UiContributor
+    extends UiContributorSupport
 {
-
-  public static final String ARTIFACT_ID = "nexus-ldap-realm-plugin";
-
-  @Override
-  public UiContribution contribute(final boolean debug) {
-    return new UiContributionBuilder(this, OSS_PLUGIN_GROUP, ARTIFACT_ID).build(debug);
+  @Inject
+  public LdapRealmUiContributor(final LdapPlugin owner) {
+    super(owner);
   }
 }
