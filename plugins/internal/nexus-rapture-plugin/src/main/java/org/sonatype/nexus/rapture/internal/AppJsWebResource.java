@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Provides {@code app.js}.
+ * Provides {@code /static/rapture/app.js}.
  *
  * @since 2.8
  */
