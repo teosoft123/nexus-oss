@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Rapture module.
  *
- * @since 2.7
+ * @since 2.8
  */
 @Named
 public class RaptureModule

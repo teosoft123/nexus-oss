@@ -16,7 +16,7 @@ package org.sonatype.nexus.rapture.direct;
 /**
  * Ext.Direct response.
  *
- * @since 2.7
+ * @since 2.8
  */
 public class IdResponse<T>
     extends Response

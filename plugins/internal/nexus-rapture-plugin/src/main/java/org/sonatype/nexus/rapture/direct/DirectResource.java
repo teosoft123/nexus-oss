@@ -14,7 +14,7 @@
 package org.sonatype.nexus.rapture.direct;
 
 /**
- * @since 2.7
+ * @since 2.8
  */
 public interface DirectResource
 {

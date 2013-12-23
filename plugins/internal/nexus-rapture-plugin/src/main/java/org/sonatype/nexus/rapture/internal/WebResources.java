@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * Rapture web-resources.
  *
- * @since 2.7
+ * @since 2.8
  */
 @Named
 @Singleton

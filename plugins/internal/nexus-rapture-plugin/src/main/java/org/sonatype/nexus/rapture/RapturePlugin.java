@@ -2,13 +2,14 @@ package org.sonatype.nexus.rapture;
 
 import javax.inject.Named;
 
-import org.eclipse.sisu.EagerSingleton;
 import org.sonatype.nexus.plugin.PluginIdentity;
+
+import org.eclipse.sisu.EagerSingleton;
 
 /**
  * Rapture plugin.
  *
- * @since 2.7
+ * @since 2.8
  */
 @Named
 @EagerSingleton
