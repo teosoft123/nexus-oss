@@ -31,7 +31,6 @@
   <modules>
     <module>bouncycastle</module>
     <module>commons</module>
-    <module>director</module>
     <module>goodies</module>
     <module>groovy</module>
     <module>guice</module>
@@ -45,6 +44,7 @@
     <module>rest</module>
     <module>shiro</module>
     <module>testing</module>
+    <module>ui</module>
 
     <!-- aggregator -->
     <module>all</module>

@@ -153,7 +153,7 @@
 
       <dependency>
         <groupId>org.sonatype.nexus.buildsupport</groupId>
-        <artifactId>nexus-buildsupport-director</artifactId>
+        <artifactId>nexus-buildsupport-ui</artifactId>
         <type>pom</type>
         <version>2.8.0-SNAPSHOT</version>
         <scope>import</scope>
