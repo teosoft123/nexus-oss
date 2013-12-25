@@ -52,6 +52,7 @@ import org.sonatype.nexus.proxy.storage.remote.RemoteStorageContext;
 import org.sonatype.nexus.proxy.storage.remote.http.QueryStringBuilder;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Stopwatch;
 import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.MetricsRegistry;
 import com.yammer.metrics.core.Timer;
@@ -90,7 +91,7 @@ public class HttpClientRemoteStorage
     implements RemoteRepositoryStorage
 {
 
-  private static final Logger outboundRequestLog = LoggerFactory.getLogger("remote.storage.outbound");
+  static final Logger outboundRequestLog = LoggerFactory.getLogger("remote.storage.outbound");
 
   // ----------------------------------------------------------------------
   // Constants
@@ -157,6 +158,16 @@ public class HttpClientRemoteStorage
     return PROVIDER_STRING;
   }
 
+  /**
+   * Key used in HttpGet method parameters in {@link #retrieveItem(ProxyRepository, ResourceStoreRequest, String)} method
+   * that this request is about content retrieval, hence, the special redirection strategy set up in
+   * {@link HttpClientManagerImpl#getProxyRepositoryRedirectStrategy(ProxyRepository, RemoteStorageContext)} should
+   * be applied. See that method for more.
+   *
+   * @since 2.7.0
+   */
+  public static final String CONTENT_RETRIEVAL_MARKER_KEY = HttpClientRemoteStorage.class.getName() + "#retrieveItem";
+
   @Override
   public AbstractStorageItem retrieveItem(final ProxyRepository repository, final ResourceStoreRequest request,
                                           final String baseUrl)
@@ -177,6 +188,7 @@ public class HttpClientRemoteStorage
     }
 
     final HttpGet method = new HttpGet(url);
+    method.getParams().setBooleanParameter(CONTENT_RETRIEVAL_MARKER_KEY, true);
 
     final HttpResponse httpResponse = executeRequest(repository, request, method, baseUrl);
 
@@ -445,13 +457,17 @@ public class HttpClientRemoteStorage
   {
     final Timer timer = timer(repository, httpRequest, baseUrl);
     final TimerContext timerContext = timer.time();
+    Stopwatch stopwatch = null;
+    if (outboundRequestLog.isDebugEnabled()) {
+      stopwatch = new Stopwatch().start();
+    }
     try {
       return doExecuteRequest(repository, request, httpRequest);
     }
     finally {
       timerContext.stop();
-      if (outboundRequestLog.isDebugEnabled()) {
-        outboundRequestLog.debug("[{}] {} {}", repository.getId(), httpRequest.getMethod(), httpRequest.getURI());
+      if (stopwatch != null) {
+        outboundRequestLog.debug("[{}] {} {} - {}", repository.getId(), httpRequest.getMethod(), httpRequest.getURI(), stopwatch);
       }
     }
   }
@@ -620,7 +636,7 @@ public class HttpClientRemoteStorage
         EntityUtils.consume(httpResponse.getEntity());
       }
       catch (IOException e) {
-        log.warn(e.getMessage());
+        log.warn("Failed to consume entity: " + e); // terse
       }
     }
   }
