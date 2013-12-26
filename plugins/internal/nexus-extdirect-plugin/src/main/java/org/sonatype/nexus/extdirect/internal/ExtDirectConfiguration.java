@@ -76,7 +76,13 @@ public class ExtDirectConfiguration
       if (actionAnno != null && !actionAnno.action().trim().equals("")) {
         actionName = actionAnno.action().trim();
       }
-      registerClass(entry, "NX.direct", actionName);
+      String nameSpace = "NX.direct";
+      if (actionName.contains(".")) {
+        int pos = actionName.lastIndexOf(".");
+        nameSpace += "." + actionName.substring(0, pos);
+        actionName = actionName.substring(pos + 1);
+      }
+      registerClass(entry, nameSpace, actionName);
     }
   }
 

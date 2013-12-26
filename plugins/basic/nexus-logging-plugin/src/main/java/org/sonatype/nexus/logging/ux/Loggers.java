@@ -41,7 +41,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Named
 @Singleton
-@DirectAction(action = "Loggers")
+@DirectAction(action = "logging.Loggers")
 public class Loggers
     extends ComponentSupport
     implements ExtDirectResource

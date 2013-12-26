@@ -39,7 +39,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Named
 @Singleton
-@DirectAction(action = "Log")
+@DirectAction(action = "logging.Log")
 public class Log
     extends ComponentSupport
     implements ExtDirectResource
