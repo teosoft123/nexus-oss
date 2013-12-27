@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Named
 @Singleton
 @DirectAction(action = "logging.Loggers")
-public class Loggers
+public class LoggersDirectComponent
     extends ComponentSupport
     implements DirectComponent
 {
@@ -50,7 +50,7 @@ public class Loggers
   private final LoggingConfigurator configurator;
 
   @Inject
-  public Loggers(final LoggingConfigurator configurator) {
+  public LoggersDirectComponent(final LoggingConfigurator configurator) {
     this.configurator = checkNotNull(configurator, "configurator");
   }
 
