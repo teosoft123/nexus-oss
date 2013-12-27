@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.sonatype.configuration.validation.InvalidConfigurationException;
 import org.sonatype.nexus.extdirect.ux.model.Response;
 
 import com.director.core.DirectAction;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.sonatype.nexus.extdirect.ux.model.Responses.error;
+import static org.sonatype.nexus.extdirect.ux.model.Responses.invalid;
 import static org.sonatype.nexus.extdirect.ux.model.Responses.success;
 
 /**
@@ -79,6 +81,9 @@ public class ExtDirectExecutorAdapter
           "Failed to invoke action method {} of direct class {}",
           directMethod.getName(), directAction.getName(), e.getTargetException()
       );
+      if (e.getTargetException() instanceof InvalidConfigurationException) {
+        return result(directMethod, invalid((InvalidConfigurationException) e.getTargetException()));
+      }
       return result(directMethod, error(e.getTargetException().getMessage()));
     }
     catch (Throwable e) {
@@ -86,6 +91,9 @@ public class ExtDirectExecutorAdapter
           "Failed to invoke action method {} of direct class {}",
           directMethod.getName(), directAction.getName(), e
       );
+      if (e instanceof InvalidConfigurationException) {
+        return result(directMethod, invalid((InvalidConfigurationException) e));
+      }
       return result(directMethod, error(e.getMessage()));
     }
   }
