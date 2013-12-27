@@ -30,7 +30,6 @@ import org.sonatype.nexus.capability.ux.model.CapabilityUX;
 import org.sonatype.nexus.capability.ux.model.PropertyUX;
 import org.sonatype.nexus.capability.ux.model.TagUX;
 import org.sonatype.nexus.extdirect.ExtDirectResource;
-import org.sonatype.nexus.extdirect.ux.model.Response;
 import org.sonatype.nexus.plugins.capabilities.Capability;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
 import org.sonatype.nexus.plugins.capabilities.CapabilityReference;
@@ -52,8 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.sonatype.nexus.extdirect.ux.model.Responses.invalid;
-import static org.sonatype.nexus.extdirect.ux.model.Responses.success;
 import static org.sonatype.nexus.plugins.capabilities.CapabilityIdentity.capabilityIdentity;
 import static org.sonatype.nexus.plugins.capabilities.CapabilityType.capabilityType;
 
@@ -125,40 +122,26 @@ public class CapabilityDirectResource
    * Add a new capability.
    */
   @DirectMethod
-  public Response create(final CapabilityUX capability) throws IOException {
-    try {
-      return success(
-          capabilityRegistry.add(
-              capabilityType(capability.getTypeId()),
-              capability.isEnabled(),
-              capability.getNotes(),
-              asMap(capability.getProperties())
-          ).context().id().toString()
-      );
-    }
-    catch (InvalidConfigurationException e) {
-      return invalid(e);
-    }
+  public String create(final CapabilityUX capability) throws IOException, InvalidConfigurationException {
+    return capabilityRegistry.add(
+        capabilityType(capability.getTypeId()),
+        capability.isEnabled(),
+        capability.getNotes(),
+        asMap(capability.getProperties())
+    ).context().id().toString();
   }
 
   /**
    * Update the configuration of an existing capability.
    */
   @DirectMethod
-  public Response update(final CapabilityUX capability) throws IOException {
-    try {
-      return success(
-          capabilityRegistry.update(
-              capabilityIdentity(capability.getId()),
-              capability.isEnabled(),
-              capability.getNotes(),
-              asMap(capability.getProperties())
-          ).context().id().toString()
-      );
-    }
-    catch (InvalidConfigurationException e) {
-      return invalid(e);
-    }
+  public String update(final CapabilityUX capability) throws IOException, InvalidConfigurationException {
+    return capabilityRegistry.update(
+        capabilityIdentity(capability.getId()),
+        capability.isEnabled(),
+        capability.getNotes(),
+        asMap(capability.getProperties())
+    ).context().id().toString();
   }
 
   /**
