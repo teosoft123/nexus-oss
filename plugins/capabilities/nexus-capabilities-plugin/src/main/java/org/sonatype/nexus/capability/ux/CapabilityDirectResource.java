@@ -13,6 +13,7 @@
 
 package org.sonatype.nexus.capability.ux;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -28,36 +29,33 @@ import org.sonatype.nexus.capability.ux.model.CapabilityStatusUX;
 import org.sonatype.nexus.capability.ux.model.CapabilityUX;
 import org.sonatype.nexus.capability.ux.model.PropertyUX;
 import org.sonatype.nexus.capability.ux.model.TagUX;
+import org.sonatype.nexus.extdirect.ExtDirectResource;
+import org.sonatype.nexus.extdirect.ux.model.Response;
 import org.sonatype.nexus.plugins.capabilities.Capability;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
-import org.sonatype.nexus.plugins.capabilities.CapabilityNotFoundException;
 import org.sonatype.nexus.plugins.capabilities.CapabilityReference;
 import org.sonatype.nexus.plugins.capabilities.CapabilityRegistry;
 import org.sonatype.nexus.plugins.capabilities.Tag;
 import org.sonatype.nexus.plugins.capabilities.Taggable;
 import org.sonatype.nexus.plugins.capabilities.support.CapabilityReferenceFilterBuilder;
-import org.sonatype.nexus.rapture.direct.DirectResource;
-import org.sonatype.nexus.rapture.direct.Response;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
 
+import com.director.core.annotation.DirectAction;
+import com.director.core.annotation.DirectMethod;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.softwarementors.extjs.djn.config.annotations.DirectAction;
-import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.sonatype.nexus.extdirect.ux.model.Responses.invalid;
+import static org.sonatype.nexus.extdirect.ux.model.Responses.success;
 import static org.sonatype.nexus.plugins.capabilities.CapabilityIdentity.capabilityIdentity;
 import static org.sonatype.nexus.plugins.capabilities.CapabilityType.capabilityType;
-import static org.sonatype.nexus.rapture.direct.Responses.error;
-import static org.sonatype.nexus.rapture.direct.Responses.id;
-import static org.sonatype.nexus.rapture.direct.Responses.invalid;
-import static org.sonatype.nexus.rapture.direct.Responses.success;
 
 /**
  * Capabilities Ext.Direct resource.
@@ -66,10 +64,10 @@ import static org.sonatype.nexus.rapture.direct.Responses.success;
  */
 @Named
 @Singleton
-@DirectAction(action = "Capability")
+@DirectAction(action = "capabilities.Capability")
 public class CapabilityDirectResource
     extends ComponentSupport
-    implements DirectResource
+    implements ExtDirectResource
 {
 
   private static final Logger log = LoggerFactory.getLogger(CapabilityDirectResource.class);
@@ -85,78 +83,61 @@ public class CapabilityDirectResource
    * Returns status of all capabilities.
    */
   @DirectMethod
-  public Response readStatus() {
-    try {
-      final Collection<? extends CapabilityReference> references = capabilityRegistry.get(
-          CapabilityReferenceFilterBuilder.capabilities()
-      );
-      return success(
-          Lists.transform(Lists.newArrayList(references), new Function<CapabilityReference, CapabilityStatusUX>()
-          {
-            @Nullable
-            @Override
-            public CapabilityStatusUX apply(@Nullable final CapabilityReference input) {
-              if (input == null) {
-                return null;
-              }
-              return asCapabilityStatus(input);
-            }
-          })
-      ).shouldRefresh();
-    }
-    catch (Exception e) {
-      return error(e);
-    }
+  public List<CapabilityStatusUX> readStatus() {
+    final Collection<? extends CapabilityReference> references = capabilityRegistry.get(
+        CapabilityReferenceFilterBuilder.capabilities()
+    );
+    return Lists.transform(Lists.newArrayList(references), new Function<CapabilityReference, CapabilityStatusUX>()
+    {
+      @Nullable
+      @Override
+      public CapabilityStatusUX apply(@Nullable final CapabilityReference input) {
+        if (input == null) {
+          return null;
+        }
+        return asCapabilityStatus(input);
+      }
+    });
   }
 
   /**
    * Returns all capabilities.
    */
   @DirectMethod
-  public Response read() {
-    try {
-      final Collection<? extends CapabilityReference> references = capabilityRegistry.get(
-          CapabilityReferenceFilterBuilder.capabilities()
-      );
-      return success(
-          Lists.transform(Lists.newArrayList(references), new Function<CapabilityReference, CapabilityUX>()
-          {
-            @Nullable
-            @Override
-            public CapabilityUX apply(@Nullable final CapabilityReference input) {
-              if (input == null) {
-                return null;
-              }
-              return asCapability(input);
-            }
-          })
-      ).shouldRefresh();
-    }
-    catch (Exception e) {
-      return error(e);
-    }
+  public List<CapabilityUX> read() {
+    final Collection<? extends CapabilityReference> references = capabilityRegistry.get(
+        CapabilityReferenceFilterBuilder.capabilities()
+    );
+    return Lists.transform(Lists.newArrayList(references), new Function<CapabilityReference, CapabilityUX>()
+    {
+      @Nullable
+      @Override
+      public CapabilityUX apply(@Nullable final CapabilityReference input) {
+        if (input == null) {
+          return null;
+        }
+        return asCapability(input);
+      }
+    });
   }
 
   /**
    * Add a new capability.
    */
   @DirectMethod
-  public Response create(final CapabilityUX capability) {
+  public Response create(final CapabilityUX capability) throws IOException {
     try {
-      return id(
+      return success(
           capabilityRegistry.add(
               capabilityType(capability.getTypeId()),
               capability.isEnabled(),
               capability.getNotes(),
               asMap(capability.getProperties())
           ).context().id().toString()
-      ).shouldRefresh();
+      );
     }
     catch (InvalidConfigurationException e) {
       return invalid(e);
-    }
-    catch (Exception e) {
-      return error(e);
     }
   }
 
@@ -164,25 +145,19 @@ public class CapabilityDirectResource
    * Update the configuration of an existing capability.
    */
   @DirectMethod
-  public Response update(final CapabilityUX capability) {
+  public Response update(final CapabilityUX capability) throws IOException {
     try {
-      return id(
+      return success(
           capabilityRegistry.update(
               capabilityIdentity(capability.getId()),
               capability.isEnabled(),
               capability.getNotes(),
               asMap(capability.getProperties())
           ).context().id().toString()
-      ).shouldRefresh();
+      );
     }
     catch (InvalidConfigurationException e) {
       return invalid(e);
-    }
-    catch (CapabilityNotFoundException e) {
-      return error(e).shouldRefresh();
-    }
-    catch (Exception e) {
-      return error(e);
     }
   }
 
@@ -190,51 +165,24 @@ public class CapabilityDirectResource
    * Delete an existing capability.
    */
   @DirectMethod
-  public Response delete(final String id) {
-    try {
-      capabilityRegistry.remove(capabilityIdentity(id));
-      return success().shouldRefresh();
-    }
-    catch (CapabilityNotFoundException e) {
-      return error(e).shouldRefresh();
-    }
-    catch (Exception e) {
-      return error(e);
-    }
+  public void delete(final String id) throws IOException {
+    capabilityRegistry.remove(capabilityIdentity(id));
   }
 
   /**
    * Enable an existing capability.
    */
   @DirectMethod
-  public Response enable(final String id) {
-    try {
-      capabilityRegistry.enable(capabilityIdentity(id));
-      return success().shouldRefresh();
-    }
-    catch (CapabilityNotFoundException e) {
-      return error(e).shouldRefresh();
-    }
-    catch (Exception e) {
-      return error(e);
-    }
+  public void enable(final String id) throws IOException {
+    capabilityRegistry.enable(capabilityIdentity(id));
   }
 
   /**
    * Disable an existing capability.
    */
   @DirectMethod
-  public Response disable(final String id) {
-    try {
-      capabilityRegistry.disable(capabilityIdentity(id));
-      return success().shouldRefresh();
-    }
-    catch (CapabilityNotFoundException e) {
-      return error(e).shouldRefresh();
-    }
-    catch (Exception e) {
-      return error(e);
-    }
+  public void disable(final String id) throws IOException {
+    capabilityRegistry.disable(capabilityIdentity(id));
   }
 
   private static CapabilityStatusUX asCapabilityStatus(final CapabilityReference reference) {

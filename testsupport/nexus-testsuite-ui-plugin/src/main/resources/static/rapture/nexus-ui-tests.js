@@ -8,8 +8,7 @@ Harness.configure({
     "resources/baseapp-debug.css",
     "resources/rapture.css",
     "baseapp-debug.js",
-    "directjngine-2.2/djn-remote-call-support.js",
-    "app-direct-debug.js"
+    "../../js/extdirect.js"
   ]
 });
 

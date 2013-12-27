@@ -6,12 +6,12 @@ Ext.define('NX.pluginconsole.store.PluginInfo', {
     type: 'direct',
     paramsAsHash: false,
     api: {
-      read: NX.direct.PluginConsole.read
+      read: NX.direct.pluginconsole.PluginConsole.read
     },
 
     reader: {
       type: 'json',
-      root: 'entries',
+      root: 'data',
       idProperty: 'id',
       successProperty: 'success'
     }

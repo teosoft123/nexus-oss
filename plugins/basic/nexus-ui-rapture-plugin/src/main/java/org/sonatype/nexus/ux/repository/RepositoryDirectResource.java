@@ -13,10 +13,13 @@
 
 package org.sonatype.nexus.ux.repository;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.sonatype.nexus.extdirect.ExtDirectResource;
 import org.sonatype.nexus.proxy.NoSuchRepositoryException;
 import org.sonatype.nexus.proxy.ResourceStoreRequest;
 import org.sonatype.nexus.proxy.item.RepositoryItemUid;
@@ -27,18 +30,13 @@ import org.sonatype.nexus.proxy.repository.ProxyRepository;
 import org.sonatype.nexus.proxy.repository.RemoteStatus;
 import org.sonatype.nexus.proxy.repository.Repository;
 import org.sonatype.nexus.proxy.repository.ShadowRepository;
-import org.sonatype.nexus.rapture.direct.DirectResource;
-import org.sonatype.nexus.rapture.direct.Response;
 import org.sonatype.nexus.rest.RepositoryURLBuilder;
 import org.sonatype.nexus.ux.model.RepositoryInfoUX;
 
+import com.director.core.annotation.DirectAction;
+import com.director.core.annotation.DirectMethod;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.softwarementors.extjs.djn.config.annotations.DirectAction;
-import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
-
-import static org.sonatype.nexus.rapture.direct.Responses.error;
-import static org.sonatype.nexus.rapture.direct.Responses.success;
 
 /**
  * Repository Ext.Direct resource.
@@ -47,9 +45,9 @@ import static org.sonatype.nexus.rapture.direct.Responses.success;
  */
 @Named
 @Singleton
-@DirectAction(action = "Repository")
+@DirectAction(action = "repository.Repository")
 public class RepositoryDirectResource
-    implements DirectResource
+    implements ExtDirectResource
 {
 
   private final RepositoryRegistry repositoryRegistry;
@@ -68,52 +66,38 @@ public class RepositoryDirectResource
    * Retrieve a list of available repositories info.
    */
   @DirectMethod
-  public Response readInfo() {
-    try {
-      return success(Lists.transform(repositoryRegistry.getRepositories(), new Function<Repository, RepositoryInfoUX>()
-      {
-        @Override
-        public RepositoryInfoUX apply(final Repository input) {
-          RepositoryInfoUX info = new RepositoryInfoUX()
-              .withId(input.getId())
-              .withName(input.getName())
-              .withType(getRepositoryType(input))
-              .withFormat(input.getProviderHint())
-              .withLocalStatus(input.getLocalStatus().toString())
-              .withUrl(repositoryURLBuilder.getExposedRepositoryContentUrl(input));
+  public List<RepositoryInfoUX> readInfo() {
+    return Lists.transform(repositoryRegistry.getRepositories(), new Function<Repository, RepositoryInfoUX>()
+    {
+      @Override
+      public RepositoryInfoUX apply(final Repository input) {
+        RepositoryInfoUX info = new RepositoryInfoUX()
+            .withId(input.getId())
+            .withName(input.getName())
+            .withType(getRepositoryType(input))
+            .withFormat(input.getProviderHint())
+            .withLocalStatus(input.getLocalStatus().toString())
+            .withUrl(repositoryURLBuilder.getExposedRepositoryContentUrl(input));
 
-          ProxyRepository proxyRepository = input.adaptToFacet(ProxyRepository.class);
-          if (proxyRepository != null) {
-            RemoteStatus remoteStatus = proxyRepository.getRemoteStatus(
-                new ResourceStoreRequest(RepositoryItemUid.PATH_ROOT), false
-            );
-            info
-                .withProxyMode(proxyRepository.getProxyMode().toString())
-                .withRemoteStatus(remoteStatus.toString())
-                .withRemoteStatusReason(remoteStatus.getReason());
-          }
-
-          return info;
+        ProxyRepository proxyRepository = input.adaptToFacet(ProxyRepository.class);
+        if (proxyRepository != null) {
+          RemoteStatus remoteStatus = proxyRepository.getRemoteStatus(
+              new ResourceStoreRequest(RepositoryItemUid.PATH_ROOT), false
+          );
+          info
+              .withProxyMode(proxyRepository.getProxyMode().toString())
+              .withRemoteStatus(remoteStatus.toString())
+              .withRemoteStatusReason(remoteStatus.getReason());
         }
-      }));
-    }
-    catch (Exception e) {
-      return error(e);
-    }
+
+        return info;
+      }
+    });
   }
 
   @DirectMethod
-  public Response delete(final String id) {
-    try {
-      repositoryRegistry.removeRepository(id);
-      return success().shouldRefresh();
-    }
-    catch (NoSuchRepositoryException e) {
-      return error(e).shouldRefresh();
-    }
-    catch (Exception e) {
-      return error(e);
-    }
+  public void delete(final String id) throws NoSuchRepositoryException {
+    repositoryRegistry.removeRepository(id);
   }
 
   private String getRepositoryType(final Repository repository) {

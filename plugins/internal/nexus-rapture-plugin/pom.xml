@@ -57,31 +57,6 @@
       <groupId>org.sonatype.nexus.plugins</groupId>
       <artifactId>nexus-rapture-baseapp</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>com.softwarementors.extjs</groupId>
-      <artifactId>directjngine</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.yahoo.platform.yui</groupId>
-      <artifactId>yuicompressor</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>rhino</groupId>
-      <artifactId>js</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-fileupload</groupId>
-      <artifactId>commons-fileupload</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
@@ -89,11 +64,6 @@
       <plugin>
         <groupId>org.sonatype.nexus</groupId>
         <artifactId>nexus-plugin-bundle-maven-plugin</artifactId>
-        <configuration>
-          <sharedDependencies>
-            <sharedDependency>com.softwarementors.extjs:directjngine</sharedDependency>
-          </sharedDependencies>
-        </configuration>
       </plugin>
 
       <plugin>

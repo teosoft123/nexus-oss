@@ -31,7 +31,6 @@
   <modules>
     <module>bouncycastle</module>
     <module>commons</module>
-    <module>directjngine</module>
     <module>goodies</module>
     <module>groovy</module>
     <module>guice</module>

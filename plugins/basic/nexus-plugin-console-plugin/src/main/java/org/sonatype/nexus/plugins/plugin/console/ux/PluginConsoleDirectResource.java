@@ -13,20 +13,19 @@
 
 package org.sonatype.nexus.plugins.plugin.console.ux;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.sonatype.nexus.extdirect.ExtDirectResource;
 import org.sonatype.nexus.plugins.plugin.console.PluginConsoleManager;
-import org.sonatype.nexus.rapture.direct.DirectResource;
-import org.sonatype.nexus.rapture.direct.Response;
+import org.sonatype.nexus.plugins.plugin.console.model.PluginInfo;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
 
-import com.softwarementors.extjs.djn.config.annotations.DirectAction;
-import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
-
-import static org.sonatype.nexus.rapture.direct.Responses.error;
-import static org.sonatype.nexus.rapture.direct.Responses.success;
+import com.director.core.annotation.DirectAction;
+import com.director.core.annotation.DirectMethod;
 
 /**
  * Plugin Console Ext.Direct resource.
@@ -35,10 +34,10 @@ import static org.sonatype.nexus.rapture.direct.Responses.success;
  */
 @Named
 @Singleton
-@DirectAction(action = "PluginConsole")
+@DirectAction(action = "pluginconsole.PluginConsole")
 public class PluginConsoleDirectResource
     extends ComponentSupport
-    implements DirectResource
+    implements ExtDirectResource
 {
 
   private final PluginConsoleManager pluginConsoleManager;
@@ -49,13 +48,8 @@ public class PluginConsoleDirectResource
   }
 
   @DirectMethod
-  public Response read() {
-    try {
-      return success(pluginConsoleManager.listPluginInfo());
-    }
-    catch (Exception e) {
-      return error(e);
-    }
+  public List<PluginInfo> read() {
+    return pluginConsoleManager.listPluginInfo();
   }
 
 }

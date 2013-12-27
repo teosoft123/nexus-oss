@@ -55,7 +55,7 @@
 
     <dependency>
       <groupId>org.sonatype.nexus.plugins</groupId>
-      <artifactId>nexus-rapture-plugin</artifactId>
+      <artifactId>nexus-extdirect-plugin</artifactId>
       <type>${nexus-plugin.type}</type>
       <scope>provided</scope>
     </dependency>

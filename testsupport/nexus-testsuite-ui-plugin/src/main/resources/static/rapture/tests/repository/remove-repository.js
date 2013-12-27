@@ -14,7 +14,7 @@ startTest({
       function (next, comps) {
         var fb = comps[0];
 
-        fb.setActiveTab(1);
+        fb.setActiveTab(2);
 
         next();
       },

@@ -6,12 +6,12 @@ Ext.define('NX.repository.store.RepositoryInfo', {
     type: 'direct',
     paramsAsHash: false,
     api: {
-      read: NX.direct.Repository.readInfo
+      read: NX.direct.repository.Repository.readInfo
     },
 
     reader: {
       type: 'json',
-      root: 'entries',
+      root: 'data',
       idProperty: 'id',
       successProperty: 'success'
     }

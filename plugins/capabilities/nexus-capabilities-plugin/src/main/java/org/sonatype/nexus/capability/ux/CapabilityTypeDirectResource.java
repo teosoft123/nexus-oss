@@ -22,20 +22,16 @@ import javax.inject.Singleton;
 
 import org.sonatype.nexus.capability.ux.model.CapabilityTypeUX;
 import org.sonatype.nexus.capability.ux.model.FormFieldUX;
+import org.sonatype.nexus.extdirect.ExtDirectResource;
 import org.sonatype.nexus.formfields.FormField;
 import org.sonatype.nexus.formfields.Selectable;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptorRegistry;
-import org.sonatype.nexus.rapture.direct.DirectResource;
-import org.sonatype.nexus.rapture.direct.Response;
 
+import com.director.core.annotation.DirectAction;
+import com.director.core.annotation.DirectMethod;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.softwarementors.extjs.djn.config.annotations.DirectAction;
-import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
-
-import static org.sonatype.nexus.rapture.direct.Responses.error;
-import static org.sonatype.nexus.rapture.direct.Responses.success;
 
 /**
  * Capability Type Ext.Direct resource.
@@ -44,9 +40,9 @@ import static org.sonatype.nexus.rapture.direct.Responses.success;
  */
 @Named
 @Singleton
-@DirectAction(action = "CapabilityType")
+@DirectAction(action = "capabilities.CapabilityType")
 public class CapabilityTypeDirectResource
-    implements DirectResource
+    implements ExtDirectResource
 {
 
   private final CapabilityDescriptorRegistry capabilityDescriptorRegistry;
@@ -60,65 +56,60 @@ public class CapabilityTypeDirectResource
    * Retrieve a list of capability types available.
    */
   @DirectMethod
-  public Response read() {
-    try {
-      final List<CapabilityTypeUX> types = Lists.newArrayList();
-      final CapabilityDescriptor[] descriptors = capabilityDescriptorRegistry.getAll();
+  public List<CapabilityTypeUX> read() {
+    final List<CapabilityTypeUX> types = Lists.newArrayList();
+    final CapabilityDescriptor[] descriptors = capabilityDescriptorRegistry.getAll();
 
-      if (descriptors != null) {
-        for (final CapabilityDescriptor descriptor : descriptors) {
-          if (descriptor.isExposed()) {
+    if (descriptors != null) {
+      for (final CapabilityDescriptor descriptor : descriptors) {
+        if (descriptor.isExposed()) {
 
-            CapabilityTypeUX type = new CapabilityTypeUX()
-                .withId(descriptor.type().toString())
-                .withName(descriptor.name())
-                .withAbout(descriptor.about());
+          CapabilityTypeUX type = new CapabilityTypeUX()
+              .withId(descriptor.type().toString())
+              .withName(descriptor.name())
+              .withAbout(descriptor.about());
 
-            types.add(type);
+          types.add(type);
 
-            if (descriptor.formFields() != null) {
-              type.withFormFields(Lists.transform(descriptor.formFields(), new Function<FormField, FormFieldUX>()
-              {
-                @Nullable
-                @Override
-                public FormFieldUX apply(@Nullable final FormField input) {
-                  if (input == null) {
-                    return null;
-                  }
-
-                  FormFieldUX formField = new FormFieldUX()
-                      .withId(input.getId())
-                      .withType(input.getType())
-                      .withLabel(input.getLabel())
-                      .withHelpText(input.getHelpText())
-                      .withRequired(input.isRequired())
-                      .withRegexValidation(input.getRegexValidation());
-
-                  if (input.getInitialValue() != null) {
-                    formField.setInitialValue(input.getInitialValue().toString());
-                  }
-
-                  if (input instanceof Selectable) {
-                    formField
-                        .withStorePath(((Selectable) input).getStorePath())
-                        .withStoreRoot(((Selectable) input).getStoreRoot())
-                        .withIdMapping(((Selectable) input).getIdMapping())
-                        .withNameMapping(((Selectable) input).getNameMapping());
-                  }
-
-                  return formField;
+          if (descriptor.formFields() != null) {
+            type.withFormFields(Lists.transform(descriptor.formFields(), new Function<FormField, FormFieldUX>()
+            {
+              @Nullable
+              @Override
+              public FormFieldUX apply(@Nullable final FormField input) {
+                if (input == null) {
+                  return null;
                 }
-              }));
-            }
+
+                FormFieldUX formField = new FormFieldUX()
+                    .withId(input.getId())
+                    .withType(input.getType())
+                    .withLabel(input.getLabel())
+                    .withHelpText(input.getHelpText())
+                    .withRequired(input.isRequired())
+                    .withRegexValidation(input.getRegexValidation());
+
+                if (input.getInitialValue() != null) {
+                  formField.setInitialValue(input.getInitialValue().toString());
+                }
+
+                if (input instanceof Selectable) {
+                  formField
+                      .withStorePath(((Selectable) input).getStorePath())
+                      .withStoreRoot(((Selectable) input).getStoreRoot())
+                      .withIdMapping(((Selectable) input).getIdMapping())
+                      .withNameMapping(((Selectable) input).getNameMapping());
+                }
+
+                return formField;
+              }
+            }));
           }
         }
       }
+    }
 
-      return success(types);
-    }
-    catch (Exception e) {
-      return error(e);
-    }
+    return types;
   }
 
 }

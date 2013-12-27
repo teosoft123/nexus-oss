@@ -203,15 +203,13 @@ Ext.define('NX.capability.controller.Capabilities', {
 
     capabilityModel.set(values);
 
-    NX.direct.Capability.create(capabilityModel.data, function (response, status) {
+    NX.direct.capabilities.Capability.create(capabilityModel.data, function (response, status) {
       if (!NX.util.ExtDirect.showExceptionIfPresent('Capability could not be created', response, status)) {
         if (Ext.isDefined(response)) {
-          if (response.shouldRefresh) {
-            me.getCapabilityStatusStore().on('load', function (store) {
-              me.getList().getSelectionModel().select(store.getById(response.id));
-            }, me, {single: true});
-            me.loadStores();
-          }
+          me.getCapabilityStatusStore().on('load', function (store) {
+            me.getList().getSelectionModel().select(store.getById(response.id));
+          }, me, {single: true});
+          me.loadStores();
           if (response.success) {
             win.close();
           }
@@ -236,12 +234,10 @@ Ext.define('NX.capability.controller.Capabilities', {
 
     capabilityModel.set(values);
 
-    NX.direct.Capability.update(capabilityModel.data, function (response, status) {
+    NX.direct.capabilities.Capability.update(capabilityModel.data, function (response, status) {
       if (!NX.util.ExtDirect.showExceptionIfPresent('Capability could not be saved', response, status)) {
         if (Ext.isDefined(response)) {
-          if (response.shouldRefresh) {
-            me.loadStores();
-          }
+          me.loadStores();
           if (!response.success) {
             if (Ext.isDefined(response.validationMessages)) {
               NX.util.Msg.showError('Capability could not be saved', form.markInvalid(response.validationMessages));
@@ -261,12 +257,10 @@ Ext.define('NX.capability.controller.Capabilities', {
 
     if (Ext.isDefined(selection) && selection.length > 0) {
       NX.util.Msg.askConfirmation('Confirm deletion?', me.describeCapability(selection[0]), function () {
-        NX.direct.Capability.delete(selection[0].getId(), function (response, status) {
+        NX.direct.capabilities.Capability.delete(selection[0].getId(), function (response, status) {
           if (!NX.util.ExtDirect.showExceptionIfPresent('Capability could not be deleted', response, status)) {
             if (Ext.isDefined(response)) {
-              if (response.shouldRefresh) {
-                me.loadStores();
-              }
+              me.loadStores();
               if (!response.success) {
                 NX.util.Msg.showError(
                     'Capability could not be deleted',
