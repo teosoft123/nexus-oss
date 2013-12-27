@@ -206,11 +206,11 @@ Ext.define('NX.capability.controller.Capabilities', {
     NX.direct.capabilities.Capability.create(capabilityModel.data, function (response, status) {
       if (!NX.util.ExtDirect.showExceptionIfPresent('Capability could not be created', response, status)) {
         if (Ext.isDefined(response)) {
-          me.getCapabilityStatusStore().on('load', function (store) {
-            me.getList().getSelectionModel().select(store.getById(response.id));
-          }, me, {single: true});
-          me.loadStores();
           if (response.success) {
+            me.getCapabilityStatusStore().on('load', function (store) {
+              me.getList().getSelectionModel().select(store.getById(response.id));
+            }, me, {single: true});
+            me.loadStores();
             win.close();
           }
           else {
@@ -237,8 +237,10 @@ Ext.define('NX.capability.controller.Capabilities', {
     NX.direct.capabilities.Capability.update(capabilityModel.data, function (response, status) {
       if (!NX.util.ExtDirect.showExceptionIfPresent('Capability could not be saved', response, status)) {
         if (Ext.isDefined(response)) {
-          me.loadStores();
-          if (!response.success) {
+          if (response.success) {
+            me.loadStores();
+          }
+          else {
             if (Ext.isDefined(response.validationMessages)) {
               NX.util.Msg.showError('Capability could not be saved', form.markInvalid(response.validationMessages));
             }
@@ -260,8 +262,10 @@ Ext.define('NX.capability.controller.Capabilities', {
         NX.direct.capabilities.Capability.delete(selection[0].getId(), function (response, status) {
           if (!NX.util.ExtDirect.showExceptionIfPresent('Capability could not be deleted', response, status)) {
             if (Ext.isDefined(response)) {
-              me.loadStores();
-              if (!response.success) {
+              if (response.success) {
+                me.loadStores();
+              }
+              else {
                 NX.util.Msg.showError(
                     'Capability could not be deleted',
                     response.message
