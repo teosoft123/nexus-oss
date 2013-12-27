@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.nexus.extdirect.ExtDirectResource;
+import org.sonatype.nexus.extdirect.DirectComponent;
 
 import com.director.core.DirectConfiguration;
 import com.director.core.annotation.DirectAction;
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * {@link DirectConfiguration} pre-configured with available {@link ExtDirectResource}s.
+ * {@link DirectConfiguration} pre-configured with available {@link DirectComponent}s.
  *
  * @since 2.8
  */
@@ -56,15 +56,15 @@ public class ExtDirectConfiguration
     setRouterUrl(ExtDirectModule.ROUTER_MOUNT_POINT);
     registerAdapter(checkNotNull(executorAdapter));
 
-    Iterable<? extends BeanEntry<Annotation, ExtDirectResource>> entries = checkNotNull(beanLocator).locate(
-        Key.get(ExtDirectResource.class)
+    Iterable<? extends BeanEntry<Annotation, DirectComponent>> entries = checkNotNull(beanLocator).locate(
+        Key.get(DirectComponent.class)
     );
     List<Class<?>> apiClasses = Lists.newArrayList(
-        Iterables.transform(entries, new Function<BeanEntry<Annotation, ExtDirectResource>, Class<?>>()
+        Iterables.transform(entries, new Function<BeanEntry<Annotation, DirectComponent>, Class<?>>()
         {
           @Nullable
           @Override
-          public Class<?> apply(final BeanEntry<Annotation, ExtDirectResource> input) {
+          public Class<?> apply(final BeanEntry<Annotation, DirectComponent> input) {
             return input.getImplementationClass();
           }
         })

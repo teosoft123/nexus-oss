@@ -18,7 +18,7 @@ import java.util.Date;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.nexus.extdirect.ExtDirectResource;
+import org.sonatype.nexus.extdirect.DirectComponent;
 
 import com.director.core.annotation.DirectAction;
 import com.director.core.annotation.DirectMethod;
@@ -26,8 +26,8 @@ import com.director.core.annotation.DirectMethod;
 @Singleton
 @Named
 @DirectAction(action = "Test")
-public class TestDirectResource
-    implements ExtDirectResource
+public class TestDirectComponent
+    implements DirectComponent
 {
 
   @DirectMethod
