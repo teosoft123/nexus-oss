@@ -11,7 +11,7 @@ Ext.define('NX.capability.store.CapabilityType', {
 
     reader: {
       type: 'json',
-      root: 'entries',
+      root: 'data',
       idProperty: 'id',
       successProperty: 'success'
     }
