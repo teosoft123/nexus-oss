@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.nexus.extdirect.ExtDirectResource;
+import org.sonatype.nexus.extdirect.DirectComponent;
 import org.sonatype.nexus.proxy.NoSuchRepositoryException;
 import org.sonatype.nexus.proxy.ResourceStoreRequest;
 import org.sonatype.nexus.proxy.item.RepositoryItemUid;
@@ -46,8 +46,8 @@ import com.google.common.collect.Lists;
 @Named
 @Singleton
 @DirectAction(action = "repository.Repository")
-public class RepositoryDirectResource
-    implements ExtDirectResource
+public class RepositoryDirectComponent
+    implements DirectComponent
 {
 
   private final RepositoryRegistry repositoryRegistry;
@@ -55,8 +55,8 @@ public class RepositoryDirectResource
   private final RepositoryURLBuilder repositoryURLBuilder;
 
   @Inject
-  public RepositoryDirectResource(final RepositoryRegistry repositoryRegistry,
-                                  final RepositoryURLBuilder repositoryURLBuilder)
+  public RepositoryDirectComponent(final RepositoryRegistry repositoryRegistry,
+                                   final RepositoryURLBuilder repositoryURLBuilder)
   {
     this.repositoryRegistry = repositoryRegistry;
     this.repositoryURLBuilder = repositoryURLBuilder;

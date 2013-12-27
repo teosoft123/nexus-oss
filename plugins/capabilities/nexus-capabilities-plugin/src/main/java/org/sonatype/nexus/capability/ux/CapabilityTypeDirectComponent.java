@@ -22,7 +22,7 @@ import javax.inject.Singleton;
 
 import org.sonatype.nexus.capability.ux.model.CapabilityTypeUX;
 import org.sonatype.nexus.capability.ux.model.FormFieldUX;
-import org.sonatype.nexus.extdirect.ExtDirectResource;
+import org.sonatype.nexus.extdirect.DirectComponent;
 import org.sonatype.nexus.formfields.FormField;
 import org.sonatype.nexus.formfields.Selectable;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
@@ -41,14 +41,14 @@ import com.google.common.collect.Lists;
 @Named
 @Singleton
 @DirectAction(action = "capabilities.CapabilityType")
-public class CapabilityTypeDirectResource
-    implements ExtDirectResource
+public class CapabilityTypeDirectComponent
+    implements DirectComponent
 {
 
   private final CapabilityDescriptorRegistry capabilityDescriptorRegistry;
 
   @Inject
-  public CapabilityTypeDirectResource(final CapabilityDescriptorRegistry capabilityDescriptorRegistry) {
+  public CapabilityTypeDirectComponent(final CapabilityDescriptorRegistry capabilityDescriptorRegistry) {
     this.capabilityDescriptorRegistry = capabilityDescriptorRegistry;
   }
 

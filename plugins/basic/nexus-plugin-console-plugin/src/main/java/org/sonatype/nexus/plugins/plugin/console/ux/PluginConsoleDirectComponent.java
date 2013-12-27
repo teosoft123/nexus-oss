@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.nexus.extdirect.ExtDirectResource;
+import org.sonatype.nexus.extdirect.DirectComponent;
 import org.sonatype.nexus.plugins.plugin.console.PluginConsoleManager;
 import org.sonatype.nexus.plugins.plugin.console.model.PluginInfo;
 import org.sonatype.sisu.goodies.common.ComponentSupport;
@@ -35,15 +35,15 @@ import com.director.core.annotation.DirectMethod;
 @Named
 @Singleton
 @DirectAction(action = "pluginconsole.PluginConsole")
-public class PluginConsoleDirectResource
+public class PluginConsoleDirectComponent
     extends ComponentSupport
-    implements ExtDirectResource
+    implements DirectComponent
 {
 
   private final PluginConsoleManager pluginConsoleManager;
 
   @Inject
-  public PluginConsoleDirectResource(final PluginConsoleManager pluginConsoleManager) {
+  public PluginConsoleDirectComponent(final PluginConsoleManager pluginConsoleManager) {
     this.pluginConsoleManager = pluginConsoleManager;
   }
 

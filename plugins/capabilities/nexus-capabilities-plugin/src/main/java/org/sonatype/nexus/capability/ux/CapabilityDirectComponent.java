@@ -29,7 +29,7 @@ import org.sonatype.nexus.capability.ux.model.CapabilityStatusUX;
 import org.sonatype.nexus.capability.ux.model.CapabilityUX;
 import org.sonatype.nexus.capability.ux.model.PropertyUX;
 import org.sonatype.nexus.capability.ux.model.TagUX;
-import org.sonatype.nexus.extdirect.ExtDirectResource;
+import org.sonatype.nexus.extdirect.DirectComponent;
 import org.sonatype.nexus.plugins.capabilities.Capability;
 import org.sonatype.nexus.plugins.capabilities.CapabilityDescriptor;
 import org.sonatype.nexus.plugins.capabilities.CapabilityReference;
@@ -62,17 +62,17 @@ import static org.sonatype.nexus.plugins.capabilities.CapabilityType.capabilityT
 @Named
 @Singleton
 @DirectAction(action = "capabilities.Capability")
-public class CapabilityDirectResource
+public class CapabilityDirectComponent
     extends ComponentSupport
-    implements ExtDirectResource
+    implements DirectComponent
 {
 
-  private static final Logger log = LoggerFactory.getLogger(CapabilityDirectResource.class);
+  private static final Logger log = LoggerFactory.getLogger(CapabilityDirectComponent.class);
 
   private final CapabilityRegistry capabilityRegistry;
 
   @Inject
-  public CapabilityDirectResource(final CapabilityRegistry capabilityRegistry) {
+  public CapabilityDirectComponent(final CapabilityRegistry capabilityRegistry) {
     this.capabilityRegistry = checkNotNull(capabilityRegistry);
   }
 
