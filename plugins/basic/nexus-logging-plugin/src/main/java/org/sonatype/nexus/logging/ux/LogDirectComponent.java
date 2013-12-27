@@ -40,7 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Named
 @Singleton
 @DirectAction(action = "logging.Log")
-public class Log
+public class LogDirectComponent
     extends ComponentSupport
     implements DirectComponent
 {
@@ -48,7 +48,7 @@ public class Log
   private final LogManager logManager;
 
   @Inject
-  public Log(final LogManager logManager) {
+  public LogDirectComponent(final LogManager logManager) {
     this.logManager = checkNotNull(logManager);
   }
 
