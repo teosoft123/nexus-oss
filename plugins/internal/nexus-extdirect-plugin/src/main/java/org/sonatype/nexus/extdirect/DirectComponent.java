@@ -18,7 +18,7 @@ package org.sonatype.nexus.extdirect;
  *
  * @since 2.8
  */
-public interface ExtDirectResource
+public interface DirectComponent
 {
 
 }

@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.nexus.extdirect.ExtDirectResource;
+import org.sonatype.nexus.extdirect.DirectComponent;
 import org.sonatype.nexus.logging.LoggingConfigurator;
 import org.sonatype.nexus.logging.LoggingPlugin;
 import org.sonatype.nexus.logging.model.LoggerXO;
@@ -44,7 +44,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @DirectAction(action = "logging.Loggers")
 public class Loggers
     extends ComponentSupport
-    implements ExtDirectResource
+    implements DirectComponent
 {
 
   private final LoggingConfigurator configurator;
