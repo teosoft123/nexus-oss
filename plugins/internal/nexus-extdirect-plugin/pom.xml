@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Sonatype Nexus (TM) Open Source Version
@@ -14,29 +15,48 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.sonatype.nexus.plugins</groupId>
-    <artifactId>nexus-plugins</artifactId>
+    <artifactId>nexus-plugins-internal</artifactId>
     <version>2.8.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>nexus-plugins-internal</artifactId>
+  <artifactId>nexus-extdirect-plugin</artifactId>
   <name>${project.groupId}:${project.artifactId}</name>
-  <packaging>pom</packaging>
+  <packaging>nexus-plugin</packaging>
 
-  <modules>
-    <module>nexus-extdirect-plugin</module>
-    <module>nexus-groovyremote-client</module>
-    <module>nexus-groovyremote-plugin</module>
-    <module>nexus-plexusplugin-plugin</module>
-    <module>nexus-atlas-plugin</module>
-    <module>nexus-wonderland-model</module>
-    <module>nexus-wonderland-plugin</module>
-    <module>nexus-rapture-baseapp</module>
-    <module>nexus-rapture-plugin</module>
-  </modules>
+  <properties>
+    <pluginName>Nexus Ext.Direct Plugin</pluginName>
+    <pluginDescription>Nexus Ext.Direct implementation.</pluginDescription>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.sonatype.nexus</groupId>
+      <artifactId>nexus-plugin-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.googlecode.director</groupId>
+      <artifactId>director-core</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.nexus</groupId>
+        <artifactId>nexus-plugin-bundle-maven-plugin</artifactId>
+        <configuration>
+          <sharedDependencies>
+            <sharedDependency>com.googlecode.director:director-core</sharedDependency>
+          </sharedDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
